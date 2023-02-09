@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form action="">
+        <table id="mytable" border="1">
+            <!--table row-->
+            <tr>
+                <!--the header of the table-->
+                <th>Date</th>
+                <th>8.00AM</th>
+                <th>8.30AM</th>
+                <th>9.00AM</th>
+                <th>9.30AM</th>
+                <th>10.00AM</th>
+                <th>10.30AM</th>
+                <th>11.00AM</th>
+                <th>11.30AM</th>
+                <th>12.00PM</th>
+                <th>12.30PM</th>
+                <th>2.00PM</th>
+                <th>2.30PM</th>
+                <th>3.00PM</th>
+                <th>3.30PM</th>
+            </tr>
+
+            <!--table row-->
+
+            <% details.forEach(function(character) { %>
+                <tr>
+                    <!--the content of the table-->
+                    <td>
+                        <%= character.date %>
+                    </td>
+                    <td>
+                        <%= character.time1 %>
+                    </td>
+                    <td>
+                        <%= character.time2 %>
+                    </td>
+                    <td>
+                        <%= character.time3 %>
+                    </td>
+                    <td>
+                        <%= character.time4 %>
+                    </td>
+                    <td>
+                        <%= character.time5 %>
+                    </td>
+                    <td>
+                        <%= character.time6 %>
+                    </td>
+                    <td>
+                        <%= character.time7 %>
+                    </td>
+                    <td>
+                        <%= character.time8 %>
+                    </td>
+                    <td>
+                        <%= character.time9 %>
+                    </td>
+                    <td>
+                        <%= character.time10 %>
+                    </td>
+                    <td>
+                        <%= character.time11 %>
+                    </td>
+                    <td>
+                        <%= character.time12 %>
+                    </td>
+                    <td>
+                        <%= character.time13 %>
+                    </td>
+                    <td>
+                        <%= character.time14 %>
+                    </td>
+
+                </tr>
+
+                <%; }); %>
+
+        </table>
+    </form>
+
+    <script>
+        var table = document.getElementById('mytable'), rIndex, cIndex;
+        for (var i = 0; i < table.rows.length; i++) {
+
+            for (var j = 0; j < table.rows[i].cells.length; j++) {
+
+                table.rows[i].cells[j].onclick = function () {
+                    rIndex = this.parentElement.rowIndex;
+                    cIndex = this.cellIndex + 1;
+
+                    console.log(`Row: ${rIndex} , Cell: ${cIndex}`);
+                    console.log(table.rows[rIndex].cells[0].innerHTML);
+
+                    if (cIndex == 1) {
+                        alert("Please Click On the Time Slots to select Your preferred Time and date and not on the date")
+                        rIndex = null;
+                        cIndex = null;
+                        console.log(`Row: ${rIndex} , Cell: ${cIndex}`);
+                    }
+                    else {
+
+                    }
+                }
+
+
+            }
+        }
+
+    </script>
+</body>
+
+</html>

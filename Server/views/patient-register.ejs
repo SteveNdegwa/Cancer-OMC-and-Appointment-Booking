@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/patient-register.css">
+    <title>Register</title>
+</head>
+<body>
+
+    <form action="/register/patient" method="post">
+
+        <nav class="nav-bar">
+            <h4>Patient's Personal Details</h4>
+        </nav>
+
+        <% if(patientMsg.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= patientMsg %>
+            </div>
+       <% } %>
+
+        <div class="details-wrap">
+            <h6>Full Name</h6>
+            <input type="text" class="text"  id="name" name="name" value="<%= name %>" minlength="10"  required>
+        </div>
+        <div class="details-wrap">
+            <h6>Gender</h6>
+            <div class="type">
+                <input type="radio" class="gender-type" id="male" name="male" onclick="gender1()">
+                <label for="male" class="gender-label" id="male-label">Male</label>
+                <input type="radio" class="gender-type" id="female" name="female" onclick="gender2()">
+                <label for="female" class="gender-label" id="female-label">Female</label>
+            </div>
+    
+        </div>
+        <div class="details-wrap">
+            <h6>D.O.B</h6>
+            <input type="date" class="dob" id="dob" name="dob" value="<%= dob %>" required>
+        </div>
+        <div class="details-wrap">
+            <h6>Email Address</h6>
+            <input type="text" class="text" id="email" minlength="20"  name="email" value="<%= email %>" required>
+        </div>
+        <div class="details-wrap">
+            <h6>Phone Number</h6>
+            <input type="tel" class="text" id="phone" minlength="10" maxlength="10" name="phone" value="<%= phone %>" required>
+        </div>
+        <div class="details-wrap">
+            <h6>Location Address</h6>
+            <input type="text" class="text" id="location" minlength="10" name="location" value="<%= location %>" >
+        </div>
+        
+        <div class="buttons-wrap">
+            <input type="submit" class="buttons" id="next" value="Next">
+        </div>
+
+    </form>
+
+    <script src="patient-register.js"></script>
+</body>
+</html>

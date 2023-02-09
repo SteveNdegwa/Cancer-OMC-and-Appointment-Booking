@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/patient-register-medical.css">
+    <title>Medical Details</title>
+</head>
+<body>
+    <form action="/register/patient/medical-details" method="post">
+        <nav class="nav-bar">
+            <h4>Patient's Medical Details</h4>
+        </nav>
+
+        <% if(patientMedicalMsg.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= patientMedicalMsg %>
+            </div>
+       <% } %>
+
+        <div class="details-wrap">
+            <h6>Cancer Type</h6>
+            <select name="cancer" id="cancer" class="cancer">
+                <option value="select">Select...</option>
+                <option value="testicular">Testicular</option>
+                <option value="throat">Throat</option>
+                <option value="">Testicular</option>
+                <option value="">Testicular</option>
+                
+            </select>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Cancer Stage</h6>
+            <input type="'text'" class="text" id="stage" name="stage" value="<%= stage %>" required>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Any Lifestyle Diseases</h6>
+            <textarea name="lifestyle" id="speciality" cols="30" rows="6" class="lifestyle-diseases"  value="<%= lifestyleDiseases %>"></textarea>
+        </div>
+
+        <div class="buttons">
+            <input type="Submit" class="button" id="submit" value="Submit">
+        </div>
+
+    </form>
+
+    <script src="patient-register-medical.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/create-account.css">
+    <title>Create Account</title>
+</head>
+<body>
+
+    <form action="/login/create-account" method="post">
+
+        <nav class="nav-bar">
+            <h2>Create Account</h2>
+        </nav>
+
+        <div class="details-wrap">
+            <input type="text" class="text" id="username" name="username" placeholder="Enter Username" minlength="5"  maxlength="25" value="<%= username %>" required>
+        </div>
+
+        <div class="details-wrap">
+            <input type="password" class="text" id="password" name="password" placeholder="Enter Password" minlength="7" value="<%= password %>"required>
+        </div>
+
+        <div class="details-wrap">
+            <input type="password" class="text" id="confirm-password" name="confirm" placeholder="Confirm Password" minlength="7" value="<%= confirm %>"  required>
+        </div>
+
+        <div class="details-wrap-2">
+
+            <div class="type-wrap">
+                <input type="radio" class="type" id="patient" name="patient" onclick="type1()">
+                <label for="patient" class="type-label"  id="patient-label">Patient</label>
+
+                <input type="radio" class="type" id="doctor" name="doctor" onclick="type2()">
+                <label for="doctor" class="type-label" id="doctor-label">Doctor</label>
+            </div>
+        </div>
+
+        <% if(messageRegister.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= messageRegister %>
+            </div>
+       <% } %>
+
+        <div class="buttons">
+            <input type="submit" class="button" id="create" value="Create Account">
+        </div>
+    </form>
+    
+    <script src="/create-account.js"></script>
+</body>
+</html>

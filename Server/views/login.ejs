@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/login.css">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <title>Login</title>
+</head>
+<body>
+    <form action="/login" method="post">
+
+        <nav class="nav-bar">
+            <h2>Login</h2>
+        </nav>
+
+        <div class="details-wrap">
+            <input type="text" class="text" name="username" id="username" placeholder="Enter Username" minlength="10"  required>
+        </div>
+
+        <div class="details-wrap">
+            <input type="password" class="text" name="password" id="password" placeholder="Enter Password" minlength="7" required>
+        </div>
+
+        <div class="details-wrap-2">
+            <div class="links-wrap">
+                <a href="/login/forgot-password" class="link" id="forgot-password">Forgot Username/Password?</a>
+            <a href="/login/create-account" class="link" id="register">Register?</a>
+
+            </div>
+        </div>
+
+        <% if(message.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= message %>
+            </div>
+       <% } %>
+        <div class="buttons">
+            <button  type="submit" class="button" id="login">Login</button>
+            
+        </div>
+    </form>
+    
+    <script src="login.js"></script>
+    
+</body>
+</html>

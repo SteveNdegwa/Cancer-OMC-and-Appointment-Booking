@@ -1,0 +1,457 @@
+*{
+    background-color: darkslategray;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body{
+    scroll-behavior: smooth;
+}
+
+
+/**********Landing Page**************/
+
+.landing-body{
+    height: 100vh;
+    width: 100%;
+}
+
+
+.landing-body .nav-bar .name{
+    position: absolute;
+    background: -webkit-radial-gradient(white,orange);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 20px;
+    margin-left: 10px;
+    font-size: xx-large;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.landing-body .nav-bar .name:hover{
+    background: -webkit-radial-gradient(orange,white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+.landing-body .nav-bar .menu .menu-bar{
+    float: right;
+    margin-right: 30px;
+    margin-top: 10px;
+    display: flex;
+}
+.landing-body .nav-bar .menu .menu-bar .menu-items{
+    width: 120px;
+    line-height: 60px;
+    list-style: none;
+    text-align: center;
+    position: relative;
+    
+}
+.landing-body .nav-bar .menu .menu-bar .menu-items >a{
+    display: block;
+    width: 120px;
+    line-height: 60px;
+    text-decoration: none;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+.landing-body .nav-bar .menu .menu-bar .menu-items:hover >a{
+    background-color: white;
+    color: darkslategray;
+}
+.landing-body .nav-bar .menu .menu-items .sub-menu{
+    display: none;
+    position: absolute;
+    top: 60px;
+
+}
+
+
+#pages-item:hover > .sub-menu{
+    display: block;
+}
+
+.landing-body .nav-bar .menu .menu-items .sub-menu .sub-menu-items{
+    background-color: white;
+    color: darkslategray;
+    width: 120px;
+    line-height: 60px;
+    text-align: center;
+    list-style: none;
+}
+.landing-body .nav-bar .menu .menu-items .sub-menu .sub-menu-items > a{
+    display: block;
+    line-height: 60px;
+    width: 120px;
+    color: darkslategray;
+    background-color: whitesmoke;
+    text-decoration: none;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.landing-body .nav-bar .menu .menu-items .sub-menu .sub-menu-items > a:hover{
+    background-color: orange;
+    color: white;
+}
+
+
+.landing-body .landing-info{
+    position: absolute;
+    top: 28%;
+    margin-left: 8%;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    width: 500px;
+}
+.landing-body .landing-info span{
+    color: orange;
+    font-size: x-large;
+    font-weight: bolder;
+}
+.landing-body .landing-info span:hover{
+    background:-webkit-linear-gradient(white,orange);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.landing-body .landing-info > p{
+    word-spacing: 6px;
+    letter-spacing: 2px;
+}
+.landing-body .landing-info .appointment-btn{
+    display: block;
+    width: 150px;
+    line-height: 60px;
+    text-align: center;
+    text-decoration: none;
+    background-color: orange;
+    color: white;
+    margin-top: 20px;
+    border: 1px solid transparent;
+    font-family: 'Times New Roman', Times, serif;
+}
+.landing-body .landing-info .appointment-btn:hover{
+    border-color: white;
+}
+
+.top{
+    position: fixed;
+    display: block;
+    top: 85%;
+    right: 30px;
+    width: 40px;
+    line-height: 40px;
+    background-color: orange;
+    border-radius: 50%;
+    border: 2px solid white;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+
+
+/**********About body**************/
+
+.about-body{
+    height: 100%;
+    width: 100%;
+    margin-top: 100px;
+    padding-bottom: 150px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.about-body .about-wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-body .about-wrap .about-img video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-body .about-wrap .about-img, .about-text{
+    width: 40vw;
+    height: 80vh;
+    margin: 20px;
+    padding: 20px;
+    color: white;
+
+}
+
+.about-body .about-wrap .about-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.about-body .about-wrap .about-text .about-text-wrap >h1{
+    width: 100%;
+    margin-bottom: 15px;
+    color: orange;
+}
+
+
+
+
+/**********Doctors body**************/
+
+.doctors-body{
+    width: 100%;
+    height: 100%;
+    background-color: darkslategray;
+    padding-top: 100px;
+    padding-bottom: 200px;
+    
+}
+
+
+.doctors-body h1{
+    width: 100%;
+    text-align: center;
+    color: orange;
+    margin-bottom: 120px;
+}
+
+.doctors-body .doctors-wrap{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    background-color: darkslategray;
+
+}
+.doctors-tabs{
+    width: 300px;
+    height: 480px;
+    position: relative;
+    border: 1px outset white;
+    background-color: darkslategray;
+    border-radius: 10px;
+}
+.doctors-tabs .doctors-profile{
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 100%;
+    height: 140px;
+    background-color: darkslategray;
+    border: 1px outset white;
+    border-radius: 10px;
+}
+.doctors-tabs .doctors-profile .profile-pic{
+    width: 80px;
+    height: 80px;
+    border: 2px solid darkslategray;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    top: 5px;
+}
+.doctors-tabs .doctors-profile .name{
+    width: 100%;
+    text-align: center;
+    background-color: darkslategray;
+    color: white;
+    position: absolute;
+    top: 95px;
+    overflow: auto;
+}
+.doctors-tabs .doctor-details{
+    position: absolute;
+    top: 150px;
+    width: 280px;
+    height: 250px;
+    margin-left: 8px;
+    overflow-y: scroll;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background-color: slategray;
+}
+.doctors-tabs .doctor-details::-webkit-scrollbar{
+    background-color: slategray;
+    border-radius: 10px;
+}
+.doctors-tabs .doctor-details::-webkit-scrollbar-thumb{
+    background:darkgray;
+    border-radius: 10px;
+}
+.doctors-tabs .doctor-details .doctor-speciality{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 6px;
+    width: 220px;
+    height: auto;
+    background-color: slategray;
+
+}.doctors-tabs .doctor-details .doctor-location{
+    margin-bottom: 15px;
+    margin-left: 6px;
+    width: 220px;
+    height: auto;
+    background-color: slategray;
+}.doctors-tabs .doctor-details .doctor-phone{
+    margin-bottom: 15px;
+    margin-left: 6px;
+    width: 220px;
+    height: auto;
+    background-color: slategray;
+}.doctors-tabs .doctor-details .doctor-email{
+    margin-bottom: 15px;
+    margin-left: 6px;
+    width: 220px;
+    height: auto;
+    background-color: slategray;
+}.doctors-tabs .doctor-details h4{
+    color: gold;
+    background-color: slategray;
+}
+.doctors-tabs .doctor-details p{
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color: slategray;
+}
+.doctors-tabs .book-btn{
+    display: block;
+    position: absolute;
+    top: 88%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 140px;
+    line-height: 40px;
+    text-align: center;
+    background-color: darkslategray;
+    color: white;
+    text-decoration: none;
+    word-spacing: 3px;
+    border: 1px solid white;
+
+}
+
+.doctors-tabs .msg-btn {
+    display: block;
+    position: absolute;
+    top: 88%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 140px;
+    line-height: 40px;
+    text-align: center;
+    background-color: darkslategray;
+    color: white;
+    text-decoration: none;
+    word-spacing: 3px;
+    border: 1px solid white;
+
+}
+
+.doctors-tabs .book-btn:hover{
+    border: 1px solid white;
+    background-color: orange;
+}
+
+.doctors-tabs .msg-btn:hover {
+    border: 1px solid white;
+    background-color: orange;
+}
+
+
+
+
+
+.doctors-body .view-all{
+    display: block;
+    float: right;
+    margin-right: 20px;
+    width: 100px;
+    line-height: 50px;
+    text-align: center;
+    text-decoration: none;
+    background-color: darkslategray;
+    color: white;
+    margin-top: 50px;
+    border: 2px solid white;
+}
+
+.doctors-body .view-all:hover{
+    background-color: orange;
+}
+
+
+
+
+
+/**********Feedback body**************/
+
+.feedback-body{
+    width: 100%;
+    height: 100%;
+    margin-top: 150px;
+}
+
+
+.feedback-body .feedback-wrap form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.feedback-body .feedback-wrap textarea{
+    border: 2px solid white;
+    margin-bottom: 40px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: large;
+    color: white;
+    padding: 20px;
+}
+
+textarea:focus{
+    outline: 2px solid orange;
+    border: none;
+}
+
+ .feedback-body .feedback-wrap .post-feedback{
+    display: block;
+    width: 120px;
+    line-height: 60px;
+    background-color: darkslategray;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border: 2px solid white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 15px;
+    cursor: pointer;
+ }
+
+ .feedback-body .feedback-wrap .post-feedback:hover{
+    border: 2px solid white;
+    background-color: orange;
+ }
+
+
+
+
+/* glide js */
+
+.glide * {
+    margin: auto;
+}
+
+

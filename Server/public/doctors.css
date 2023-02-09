@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    width: 100%;
+}
+
+.search-bar {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.search {
+    width: 80%;
+    height: 40px;
+    max-width: 300px;
+    padding-left: 10px;
+    border: 2px solid transparent;
+    border-bottom: 2px solid darkslategray;
+    font-family: 'Times New Roman', Times, serif;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.search-btn {
+    width: 100px;
+    height: 40px;
+    background-color: white;
+    border: 2px solid darkslategray;
+    font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.search-btn:hover{
+    border: 2px solid orange;
+}
+
+input:focus {
+    outline: none !important;
+    border-bottom:2px solid orange;
+}
+
+.heading {
+    width: 100%;
+    margin-top: 160px;
+    text-align: center;
+    color: orange;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.doctors-list {
+    width: 100%;
+    margin-top: 40px;
+}
+
+.doctors-list .doctor-tab {
+    margin: 40px 10px;
+    box-shadow: 2px 2px 5px darkslategray;
+
+}
+
+.doctors-list .doctor-tab .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.doctor-tab .doctor-profile {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.doctor-tab .doctor-profile .id {
+    display: none;
+}
+
+.doctor-tab .profile-pic {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    border: 2px solid black;
+}
+
+.doctor-tab .doctor-profile .name {
+    margin-bottom: 20px;
+    color: darkslategray;
+}
+
+.doctor-tab .doctor-profile p {
+    width: 100%;
+    text-align: center;
+}
+
+.doctor-tab .doctor-details {
+    width: 100%;
+    height: 0px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    overflow-y: scroll;
+    background-color: white;
+    color: white;
+    padding: 0px 0px;
+    transition: all .3s ease;
+}
+
+.doctor-tab .doctor-details p {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.doctor-tab .doctor-details h4 {
+    width: 100%;
+    text-align: center;
+    color: orange;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+
+.doctor-tab .doctor-details::-webkit-scrollbar {
+    background-color: whitesmoke;
+    border-radius: 10px;
+}
+
+.doctor-tab .doctor-details::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 10px;
+}
+
+.book-btn, .msg-btn {
+    width: 150px;
+    height: 60px;
+    background-color: white;
+    color: black;
+    margin-bottom: 30px;
+    border-color: darkslategray;
+    font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
+
+}
+
+.book-btn:hover {
+    border-color: orange;
+}

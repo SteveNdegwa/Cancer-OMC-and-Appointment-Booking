@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/doctor-register-professional.css">
+    <title>Professional Details</title>
+</head>
+<body>
+    <form action="/register/doctor/professional-details" method="post">
+
+        <nav class="nav-bar">
+            <h3>Doctor's Professional Details</h3>
+        </nav>
+
+        <% if(doctorProfMsg.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= doctorProfMsg %>
+            </div>
+       <% } %>
+
+        <div class="details-wrap">
+            <h6>Medical Licence No.</h6>
+            <input type="text" class="text" id="licence" name="licence" value="<%= licence %>"  minlength="5" required>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Cancer Speciality</h6>
+            <textarea id="speciality" cols="30" rows="10" class="speciality"  minlength="10" name="speciality" value="<%= speciality %>" required></textarea>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Clinic's Location</h6>
+            <input type="'text'" class="text" id="location" name="location" value="<%= location %>" minlength="10" required>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Clinic's Phone No.</h6>
+            <input type="tel" class="text" id="phone-no" name="phone" value="<%= phone %>" minlength="10" maxlength="10" required>
+        </div>
+
+        <div class="details-wrap">
+            <h6>Clinic's Email Address</h6>
+            <input type="text" class="text" id="email" name="email" value="<%= email %>" minlength="20"  required>
+        </div>
+
+        <div class="buttons">
+            <input type="Submit" class="button" id="submit" value="Submit">
+        </div>
+
+    </form>
+
+    <script src="doctor-register-professional.js"></script>
+    
+</body>
+</html>

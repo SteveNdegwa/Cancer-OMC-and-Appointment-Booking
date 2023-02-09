@@ -1,0 +1,111 @@
+<% details.forEach(function(character) { %>
+
+    <form action="/doctors" method="post">
+
+        <div class="doctors-list">
+
+            <div class="doctor-tab" id="doctor-1">
+
+                <input type="checkbox" class="check" id="check<%= character.user_id %>">
+                <label for="check<%= character.user_id %>" class="check-label"
+                    id="check-label-<%= character.user_id %>"><span class="nav-icon"></span></label>
+
+
+                <style>
+                    .check {
+                        display: none;
+                    }
+
+                    .check-label {
+                        position: absolute;
+                        right: 20px;
+                        margin-top: 20px;
+                        width: 30px;
+                        height: 30px;
+                        background-color: transparent;
+                        cursor: pointer;
+                    }
+
+                    .check-label .nav-icon {
+                        display: block;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        width: 15px;
+                        height: 3px;
+                        background: black;
+                        position: relative;
+                        transition: all .3s ease-out;
+
+                    }
+
+                    .check-label .nav-icon::before {
+                        content: "";
+                        width: 100%;
+                        height: 100%;
+                        background: black;
+                        position: absolute;
+                        top: 0px;
+                        rotate: 90deg;
+                    }
+
+                    .check:checked~.check-label .nav-icon {
+                        rotate: 225deg;
+                    }
+
+                    .check:checked~.container .doctor-details {
+                        height: 250px;
+                        background-color: whitesmoke;
+                        color: black;
+                    }
+
+                    .check:checked~.container .doctor-details::-webkit-scrollbar-thumb {
+                        background: darkgray;
+                    }
+                </style>
+
+                <div class="container">
+
+                    <div class="doctor-profile">
+                        <div class="profile-pic" id="profile-pic"></div>
+
+                        <% if((character.name). startsWith("Dr. ")) { %>
+                              <h2 class=" name" id="name">
+                            <%= character.name %>
+                                </h2>
+                                <% } else{ %>
+                                    <h2 class="name" id="name">Dr. <%= character.name %>
+                                    </h2>
+                                    <% } %>
+
+                                        <p id="speciality-details">
+                                            <%= character.cancer_speciality %>
+                                        </p>
+
+                                        <input type="text" class="id" id="id" name="id"
+                                            value="<%= character.user_id %>">
+                    </div>
+                    <div class="doctor-details">
+                        <h4>Location</h4>
+                        <p id="location-details">
+                            <%= character.clinic_location %>
+                        </p>
+
+                        <h4>Phone No.</h4>
+                        <p id="phone-details">
+                            <%= character.clinic_phone_no %>
+                        </p>
+                        <h4>Email</h4>
+                        <p id="email-details">
+                            <%= character.clinic_email %>
+                        </p>
+
+
+                    </div>
+                   <div class="buttons">
+                    <button type="submit" class="book-btn" id="book-btn">Book Appointment</button>
+                   </div>
+                </div>
+
+            </div>
+    </form>
+    <%; }); %>
