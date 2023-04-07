@@ -8,18 +8,18 @@ dotenv.config();
 const pool = mysql.createPool({
     host: process.env.HOST,
     port: process.env.DB_PORT,
-    database: process.env.DATABASE ,
+    database: process.env.DATABASE,
     user: process.env.USER,
     password: process.env.PASSWORD
 
 });
 
-pool.getConnection(function (err,connection){
-    if(err) throw err;
-    else{
+pool.getConnection(function (err, connection) {
+    if (err) throw err;
+    else {
         console.log("Connection created with Mysql successfully");
 
-        console.log('db ' +connection.state);        
+        console.log('db ' + connection.state);
 
         // var sql = "CREATE TABLE users (user_id INT NOT NULL AUTO_INCREMENT, user_name VARCHAR(255), password VARCHAR(255) , account_type VARCHAR(255), PRIMARY KEY (user_id))";
         // connection.query(sql, function(err, result){
@@ -27,7 +27,7 @@ pool.getConnection(function (err,connection){
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "CREATE TABLE doctor_details (user_id INT NOT NULL, name VARCHAR(100), gender VARCHAR(6) , dob VARCHAR(20), email VARCHAR(40), phone_no VARCHAR(12), licence_no VARCHAR(255), cancer_speciality VARCHAR(1000), clinic_location VARCHAR(255), clinic_phone_no VARCHAR(255), clinic_email VARCHAR(255) ,PRIMARY KEY (user_id))";
+        // var sql = "CREATE TABLE doctor_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255) , dob VARCHAR(255), email VARCHAR(255), phone_no VARCHAR(255), licence_no VARCHAR(255), cancer_speciality VARCHAR(1000), clinic_location VARCHAR(255), clinic_phone_no VARCHAR(255), clinic_email VARCHAR(255) ,PRIMARY KEY (user_id))";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
@@ -38,16 +38,17 @@ pool.getConnection(function (err,connection){
         //     if(err) throw err;
         //     console.log("Table Created");
         // }); 
-        
-        var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date DATE, time VARCHAR(255), PRIMARY KEY (appointment_id))";
-        connection.query(sql, function(err, result){
-            if(err) throw err;
-            console.log("Table Created");
-        }); 
-        
 
-        // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(2, 4, STR_TO_DATE('07-27-2012','%m-%d-%Y'), 11.00)";
+        // var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
         // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+
+        // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(?)";
+        // const values = [2, 4, "27-02-2022", "12.00"];
+        // connection.query(sql,[values], function(err, result){
         //     if(err) throw err;
         //     console.log("Record Inserted");
         // });
@@ -77,11 +78,20 @@ pool.getConnection(function (err,connection){
         //     if(err) throw err;
         //     console.log(result);
         // });
-        
+
         // var sql = "SELECT * FROM appointments";
         // connection.query(sql, function(err, result, fields){
         //     if(err) throw err;
         //     console.log(result);
         // });
+
+
+        // let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        // const date = new Date('2023-02-27');
+        // const day = date.getDay();
+        // // Sunday - Saturday : 0 - 6
+
+        // console.log(weekdays[day]);
     }
 });

@@ -5,118 +5,336 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/@glidejs/glide/dist/css/glide.core.min.css">
+    <link rel="stylesheet" href="/@glidejs/glide/dist/css/glide.theme.min.css">
+    <link rel="stylesheet" href="/appointment-booking.css">
     <title>Document</title>
 </head>
 
 <body>
+    <nav class="nav-bar">
+        <!-- <div class="profile-pic"></div> -->
+        <div class="details-wrap">
+            <h1 class="name">
+                Dr. <%= doctorDetails[0].name %>
+            </h1>
+            <p class="speciality">
+                <%= doctorDetails[0].cancer_speciality %>
+            </p>
+            <p class="location">
+                <%= doctorDetails[0].clinic_location %>
+            </p>
+            <p class="phone">Phone No : <%= doctorDetails[0].clinic_phone_no %>
+            </p>
+            <p class="email">Email : <%= doctorDetails[0].clinic_email %>
+            </p>
+        </div>
+    </nav>
 
-    <form action="">
-        <table id="mytable" border="1">
-            <!--table row-->
-            <tr>
-                <!--the header of the table-->
-                <th>Date</th>
-                <th>8.00AM</th>
-                <th>8.30AM</th>
-                <th>9.00AM</th>
-                <th>9.30AM</th>
-                <th>10.00AM</th>
-                <th>10.30AM</th>
-                <th>11.00AM</th>
-                <th>11.30AM</th>
-                <th>12.00PM</th>
-                <th>12.30PM</th>
-                <th>2.00PM</th>
-                <th>2.30PM</th>
-                <th>3.00PM</th>
-                <th>3.30PM</th>
-            </tr>
+    <form id="table-form" action="/appointment-booking" method="post">
 
-            <!--table row-->
 
-            <% details.forEach(function(character) { %>
-                <tr>
-                    <!--the content of the table-->
-                    <td>
-                        <%= character.date %>
-                    </td>
-                    <td>
-                        <%= character.time1 %>
-                    </td>
-                    <td>
-                        <%= character.time2 %>
-                    </td>
-                    <td>
-                        <%= character.time3 %>
-                    </td>
-                    <td>
-                        <%= character.time4 %>
-                    </td>
-                    <td>
-                        <%= character.time5 %>
-                    </td>
-                    <td>
-                        <%= character.time6 %>
-                    </td>
-                    <td>
-                        <%= character.time7 %>
-                    </td>
-                    <td>
-                        <%= character.time8 %>
-                    </td>
-                    <td>
-                        <%= character.time9 %>
-                    </td>
-                    <td>
-                        <%= character.time10 %>
-                    </td>
-                    <td>
-                        <%= character.time11 %>
-                    </td>
-                    <td>
-                        <%= character.time12 %>
-                    </td>
-                    <td>
-                        <%= character.time13 %>
-                    </td>
-                    <td>
-                        <%= character.time14 %>
-                    </td>
 
-                </tr>
+        <div class="glide">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                    <li class="glide__slide">
+                        <table id="mytable" border="1">
+                            <!--table row-->
+                            <tr>
+                                <!--the header of the table-->
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>8.00AM</th>
+                                <th>8.30AM</th>
+                                <th>9.00AM</th>
+                                <th>9.30AM</th>
+                                <th>10.00AM</th>
+                                <th>10.30AM</th>
+                                <th>11.00AM</th>
+                                <th>11.30AM</th>
+                                <th>12.00PM</th>
+                                <th>12.30PM</th>
+                                <th>2.00PM</th>
+                                <th>2.30PM</th>
+                                <th>3.00PM</th>
+                                <th>3.30PM</th>
+                            </tr>
 
-                <%; }); %>
+                            <!--table row-->
 
-        </table>
+                            <% details1.forEach(function(character) { %>
+                                <tr>
+                                    <!--the content of the table-->
+                                    <td>
+                                        <%= character.date %>
+                                    </td>
+                                    <td>
+                                        <%= character.day %>
+                                    </td>
+                                    <td>
+                                        <%= character.time1 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time2 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time3 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time4 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time5 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time6 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time7 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time8 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time9 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time10 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time11 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time12 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time13 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time14 %>
+                                    </td>
+
+                                </tr>
+
+                                <%; }); %>
+
+                        </table>
+                    </li>
+
+
+                    <li class="glide__slide">
+                        <table id="mytable2" border="1">
+                            <!--table row-->
+                            <tr>
+                                <!--the header of the table-->
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>8.00AM</th>
+                                <th>8.30AM</th>
+                                <th>9.00AM</th>
+                                <th>9.30AM</th>
+                                <th>10.00AM</th>
+                                <th>10.30AM</th>
+                                <th>11.00AM</th>
+                                <th>11.30AM</th>
+                                <th>12.00PM</th>
+                                <th>12.30PM</th>
+                                <th>2.00PM</th>
+                                <th>2.30PM</th>
+                                <th>3.00PM</th>
+                                <th>3.30PM</th>
+                            </tr>
+
+                            <!--table row-->
+
+                            <% details2.forEach(function(character) { %>
+                                <tr>
+                                    <!--the content of the table-->
+                                    <td>
+                                        <%= character.date %>
+                                    </td>
+                                    <td>
+                                        <%= character.day %>
+                                    </td>
+                                    <td>
+                                        <%= character.time1 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time2 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time3 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time4 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time5 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time6 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time7 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time8 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time9 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time10 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time11 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time12 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time13 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time14 %>
+                                    </td>
+
+                                </tr>
+
+                                <%; }); %>
+
+                        </table>
+                    </li>
+
+
+                    <li class="glide__slide">
+                        <table id="mytable3" border="1">
+                            <!--table row-->
+                            <tr>
+                                <!--the header of the table-->
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>8.00AM</th>
+                                <th>8.30AM</th>
+                                <th>9.00AM</th>
+                                <th>9.30AM</th>
+                                <th>10.00AM</th>
+                                <th>10.30AM</th>
+                                <th>11.00AM</th>
+                                <th>11.30AM</th>
+                                <th>12.00PM</th>
+                                <th>12.30PM</th>
+                                <th>2.00PM</th>
+                                <th>2.30PM</th>
+                                <th>3.00PM</th>
+                                <th>3.30PM</th>
+                            </tr>
+
+                            <!--table row-->
+
+                            <% details3.forEach(function(character) { %>
+                                <tr>
+                                    <!--the content of the table-->
+                                    <td>
+                                        <%= character.date %>
+                                    </td>
+                                    <td>
+                                        <%= character.day %>
+                                    </td>
+                                    <td>
+                                        <%= character.time1 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time2 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time3 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time4 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time5 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time6 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time7 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time8 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time9 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time10 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time11 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time12 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time13 %>
+                                    </td>
+                                    <td>
+                                        <%= character.time14 %>
+                                    </td>
+
+                                </tr>
+
+                                <%; }); %>
+
+                        </table>
+                    </li>
+                </ul>
+            </div>
+            <div class="glide__arrows" data-glide-el="controls">
+                <button type="button" class="glide__arrow glide__arrow--left" data-glide-dir="<"><</button>
+                        <button type="button" class="glide__arrow glide__arrow--right" data-glide-dir=">">></button>
+            </div>
+        </div>
+
+
+
+        <div class="selected">
+            <h3 class="selected-header" id="selected-header">Selected Time & Date : </h3>
+            <h3 id="selected-details" class="selected-details"> null</h3>
+            <input type="text" class="text" name="date" id="date">
+            <input type="text" class="text" name="time" id="time">
+
+        </div>
+
+        <h3 id="booking-status" class="booking-status"></h3>
+
+        <div class="buttons">
+            <button type="button" class="button" id="reset">Reset</button>
+            <button class="button" id="book">Book</button>
+        </div>
+
     </form>
 
+
+    <script src="/@glidejs/glide/dist/glide.min.js"></script>
+
+    <script src="/appointment-booking.js"></script>
+
     <script>
-        var table = document.getElementById('mytable'), rIndex, cIndex;
-        for (var i = 0; i < table.rows.length; i++) {
-
-            for (var j = 0; j < table.rows[i].cells.length; j++) {
-
-                table.rows[i].cells[j].onclick = function () {
-                    rIndex = this.parentElement.rowIndex;
-                    cIndex = this.cellIndex + 1;
-
-                    console.log(`Row: ${rIndex} , Cell: ${cIndex}`);
-                    console.log(table.rows[rIndex].cells[0].innerHTML);
-
-                    if (cIndex == 1) {
-                        alert("Please Click On the Time Slots to select Your preferred Time and date and not on the date")
-                        rIndex = null;
-                        cIndex = null;
-                        console.log(`Row: ${rIndex} , Cell: ${cIndex}`);
-                    }
-                    else {
-
-                    }
-                }
 
 
-            }
+        const config = {
+            type: 'slider',
+            perView: 1,
+            // breakpoints:{
+            //    600:{ perView: 1 },
+            //    1200: { perView: 3 }
+            // }
         }
+        new Glide('.glide', config).mount()
 
     </script>
 </body>

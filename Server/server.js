@@ -6,6 +6,9 @@ dotenv.config();
 
 const pool= mysql.createPool({
     connectionLimit: 10,
+    connectTimeout  : 60 * 60 * 1000,
+    acquireTimeout  : 60 * 60 * 1000,
+    timeout         : 60 * 60 * 1000,
     host: process.env.HOST,
     port: process.env.DB_PORT,
     database: process.env.DATABASE ,
@@ -16,26 +19,26 @@ const pool= mysql.createPool({
 
 module.exports = pool;
     
-class DbService {
-    static getDbServiceInstance() {
-        return instance ? instance : new DbService();
-    }
+// class DbService {
+//     static getDbServiceInstance() {
+//         return instance ? instance : new DbService();
+//     }
 
-    async loginAuthorization() {
-        try {
-            const response = await new Promise((resolve, reject) => {
-                const query = "SELECT * FROM login where user_name =? and password =?";
-                connection.query(query, (err, results) => {
-                    if(err) reject(new Error(err.message));
-                    resolve(results);
-                })
-            });
+//     async loginAuthorization() {
+//         try {
+//             const response = await new Promise((resolve, reject) => {
+//                 const query = "SELECT * FROM login where user_name =? and password =?";
+//                 connection.query(query, (err, results) => {
+//                     if(err) reject(new Error(err.message));
+//                     resolve(results);
+//                 })
+//             });
 
-            console.log(response);
-            return response;
-        } catch (error) {
-            console.log(error);
+//             console.log(response);
+//             return response;
+//         } catch (error) {
+//             console.log(error);
             
-        }
-    }
-}
+//         }
+//     }
+// }

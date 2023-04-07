@@ -6,11 +6,17 @@
 //     });
 // }
 
-function topScroll(){
-    let e = document.getElementById('nav-bar');
-    e.scrollIntoView({
-        block: 'start',
-        behavior: "smooth",
-        inline: 'start'
+
+    let top = document.getElementById("top");
+    top.addEventListener("click",()=>{
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     });
-}
+    
+    // e.scrollIntoView({
+    //     block: 'start',
+    //     behavior: "smooth",
+    //     inline: 'start'
+    // });

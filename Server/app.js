@@ -9,6 +9,8 @@ dotenv.config();
 const fs = require('fs');
 const path = require('path');
 
+
+
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
@@ -48,6 +50,9 @@ const register = require('./routes/register');  //to login router
 app.use('/register', register);
 
 
+app.get('/chat', (req,res)=>{
+    res.sendFile(path.resolve('./chat.html'));
+})
 
 
 app.listen(5000, ()=>{
