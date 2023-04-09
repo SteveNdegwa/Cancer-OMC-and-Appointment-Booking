@@ -45,6 +45,12 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
+        var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON, status VARCHAR(255))";
+        connection.query(sql, function(err, result){
+            if(err) throw err;
+            console.log("Table Created");
+        }); 
+
 
         // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(?)";
         // const values = [2, 4, "27-02-2022", "12.00"];
@@ -53,7 +59,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Record Inserted");
         // });
 
-        // var sql = "DROP TABLE appointments";
+        // var sql = "DROP TABLE appointment_slots";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");

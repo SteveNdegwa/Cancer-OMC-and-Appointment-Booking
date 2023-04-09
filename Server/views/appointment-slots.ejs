@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/appointment-slots.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/appointments/customize-appointment-slots" method="post">
+       
+        <div class="select-times">
+            <h1 class="main-h1">Customize Appointments</h1>
+
+            <h2>Choose appointment days</h2>
+
+            <div class="appointment-days" id="appointment-days">
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="sunday" name="sunday">
+                    <label for="sunday" class="day-label">Sunday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="monday" name="monday">
+                    <label for="monday" class="day-label">Monday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="tuesday" name="tuesday">
+                    <label for="tuesday" class="day-label">Tuesday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="wednesday" name="wednesday">
+                    <label for="wednesday" class="day-label">Wednesday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="thursday" name="thursday">
+                    <label for="thursday" class="day-label">Thursday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="friday" name="friday">
+                    <label for="friday" class="day-label">Friday</label>
+                </div>
+                <div class="day-wrap">
+                    <input type="radio" class="day" id="saturday" name="saturday">
+                    <label for="saturday" class="day-label">Saturday</label>
+                </div>
+                <button class="reset-days" id="reset-days">Reset</button>
+            </div>
+
+
+            <div class="select-duration">
+                <h2 class="duration-header">Appointment Length</h2>
+                <div class="duration-wrap">
+                    <input type="number" class="length" id="length" min="10" max=" 90">
+                    <label for="length" id="length-label">Mins</label>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn" id="btn">+</button>
+                <h2>Appointment Slots</h2>
+                <button type="button" class="btn" id="btn-2">-</button>
+            </div>
+            <div class="container" id="container"></div>
+
+            <button type="submit" class="btn2">Submit</button>
+        </div>
+
+    </form>
+    <script src="/appointment-slots.js"></script>
+</body>
+
+</html>

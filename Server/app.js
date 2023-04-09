@@ -40,14 +40,17 @@ app.set('view engine', 'ejs');
 
 //to routes
 
-const home = require('./routes/home');  //to home router
+const home = require('./routes/home');
 app.use('/', home);
 
-const login = require('./routes/login');  //to login router
+const login = require('./routes/login'); 
 app.use('/login', login);
 
-const register = require('./routes/register');  //to login router
+const register = require('./routes/register'); 
 app.use('/register', register);
+
+const appointments = require('./routes/appointments'); 
+app.use('/appointments', appointments);
 
 
 app.get('/chat', (req,res)=>{
