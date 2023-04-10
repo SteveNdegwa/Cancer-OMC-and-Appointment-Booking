@@ -1,5 +1,8 @@
 let count = 1;
 
+document.getElementById("slots").value = count;
+
+
 const btn = document.getElementById('btn');
 
 btn.addEventListener('click', () => {
@@ -88,6 +91,7 @@ btn.addEventListener('click', () => {
             container.appendChild(div);
 
             count++;
+            document.getElementById("slots").value = count;
         } else {
             input2.value = "";
         }
@@ -125,6 +129,7 @@ btn.addEventListener('click', () => {
             container.appendChild(div);
 
             count++;
+            document.getElementById("slots").value = count;
     }
 
 
@@ -136,7 +141,7 @@ const btn2 = document.getElementById('btn-2');
 btn2.addEventListener('click', () => {
 
     if (count > 1) {
-        var elements = document.getElementsByTagName("div");
+        var elements = document.getElementsByClassName("time-div");
         var length = (elements.length) -1;
         var element = elements[length];
         var id = element.id;
@@ -146,6 +151,7 @@ btn2.addEventListener('click', () => {
         div.remove();
 
         count--;
+        document.getElementById("slots").value = count;
 
     }
 })
