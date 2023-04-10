@@ -10,9 +10,10 @@
 </head>
 
 <body>
-    <div class="body-wrap">
+       <div class="body-wrap">
         <nav class="nav-bar">
             <!-- <div class="profile-pic"></div> -->
+
             <div class="details-wrap">
                 <h1 class="name">
                     <%= details[0].name %>
@@ -29,108 +30,71 @@
                 </p>
             </div>
         </nav>
-        <form action="/book-appointment" method="post">
+        <form id="form" action="/appointments/book-appointment" method="post" >
+
+            <input type="text" class="submitType" name="submitType" id="submitType">
+
             <h2>Select Preferred Date</h2>
-            <input type="date" class="date" id="date" name="date" value="">
+            <input type="date" class="date" id="date" name="date" value="<%= chosenDate %>">
             <h2>Select Time</h2>
-            <div class="time-wrap">
-
-                <div class="morning">
-
-                    <input type="checkbox" id="morning-check" class="check" onclick="morning()">
-
-                    <label for="morning-check" class="check-label"><span class="label-icon"></span></label>
-
-                    <label class="label-head" for="morning-check">8.00 AM - 10.00 AM</label>
-
-                    <div class="period">
-
-                        <div class="periods" id="period-1">
-                            <input type="radio" class="morning-radio" id="time-1" name="time1" onclick="timeOne()" <%= time1 %>>
-                            <label for="time-1" class="time-label" id="time-1-label">8.00AM</label>
-                        </div>
-                        <div class="periods" id="period-2">
-                            <input type="radio" class="morning-radio" id="time-2" name="time2" onclick="timeTwo()" <%= time2 %>>
-                            <label for="time-2" class="time-2-label">8.30AM</label>
-                        </div>
-                        <div class="periods" id="period-3">
-                            <input type="radio" class="morning-radio" id="time-3" name="time3" onclick="timeThree()" <%= time3 %> >
-                            <label for="time-3" class="time-3-label">9.00AM</label>
-                        </div>
-                        <div class="periods" id="period-4">
-                            <input type="radio" class="morning-radio" id="time-4" name="time4" onclick="timeFour()" <%= time4 %>>
-                            <label for="time-4" class="time-4-label">9.30AM</label>
-                        </div>
+            <div class="slots-wrap">
+                <% if (appointmentSlots.length) { %>
+                 <% appointmentSlots.forEach(slot=> { %>
+                    <div class="time-wrap">
+                        <input type="radio" class="time" id="<%= slot %>" name="<%= slot %>" onchange="radioChange(this.id)">
+                        <label for="<%= slot %>" class="time-label"><%= slot %></label>
                     </div>
-
-
-                </div>
-
-                <div class="after-morning">
-
-                    <input type="checkbox" id="after-morning-check" class="check" onclick="afterMorning()">
-                    <label for="after-morning-check" class="check-label"><span class="label-icon"></span></label>
-
-                    <label class="label-head" for="after-morning-check">11.00 AM - 1.00 PM</label>
-
-
-                    <div class="period">
-                        <div class="periods" id="period-5">
-                            <input type="radio" class="after-morning-radio" id="time-5" name="time5" onclick="timeFive()" <%= time5 %>>
-                            <label for="time-5" class="time-5-label">11.00AM</label>
-                        </div>
-                        <div class="periods" id="period-6">
-                            <input type="radio" class="after-morning-radio" id="time-6" name="time6" onclick="timeSix()" <%= time6 %>>
-                            <label for="time-6" class="time-6-label">11.30AM</label>
-                        </div>
-                        <div class="periods" id="period-7">
-                            <input type="radio" class="after-morning-radio" id="time-7" name="time7" onclick="timeSeven()" <%= time7 %>>
-                            <label for="time-7" class="time-7-label">12.00PM</label>
-                        </div>
-                        <div class="periods" id="period-8">
-                            <input type="radio" class="after-morning-radio" id="time-8" name="time8" onclick="timeEight()" <%= time8 %>>
-                            <label for="time-8" class="time-8-label">12.30PM</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="afternoon">
-
-                    <input type="checkbox" id="afternoon-check" class="check" onclick="afternoon() ">
-                    <label for="afternoon-check" class="check-label"><span class="label-icon"></span></label>
-
-                    <label class="label-head" for="afternoon-check">2.00 PM - 4.00 PM</label>
-
-                    <div class="period">
-                        <div class="periods" id="period-9">
-                            <input type="radio" class="afternoon-radio" id="time-9" name="time9" onclick="timeNine()" <%= time9 %>>
-                            <label for="time-9" class="time-9-label">2.00PM</label>
-                        </div>
-                        <div class="periods" id="period-10">
-                            <input type="radio" class="afternoon-radio" id="time-10" name="time10" onclick="timeTen()" <%= time10 %>>
-                            <label for="time-10" class="time-10-label">2.30PM</label>
-                        </div>
-                        <div class="periods" id="period-11">
-                            <input type="radio" class="afternoon-radio" id="time-11" name="time11" onclick="timeEleven()" <%= time11 %>>
-                            <label for="time-11" class="time-11-label">3.00PM</label>
-                        </div>
-                        <div class="periods" id="period-12">
-                            <input type="radio" class="afternoon-radio" id="time-12" name="time12" onclick="timeTwelve()" <%= time12 %>>
-                            <label for="time-12" class="time-12-label">3.30PM</label>
-                        </div>
-                    </div>
-
-                </div>
+                 <% }) %>
+                <% }else { %>
+                    <h2 class="empty-header">No appointment slots available</h2>
+                <% }  %>
+                 
+               
             </div>
 
-            <input type="submit" class="submit-btn" value="Book" onclick="checkIfChecked()">
+            <% if (appointmentSlots.length) { %>
+                <div class="buttons">
+                    <input type="button" class="btn" id="reset" value="Reset">
+                    <input type="submit" class="btn" id="book" value="Book">
+                </div>
+            <% } %>
 
         </form>
-    </div>
 
 
-    <script src="/book-appointment.js"></script>
 
+       </div>
+
+       <script>
+         document.getElementById("date").addEventListener("change",()=>{
+            document.getElementById("submitType").value = "date change";
+            document.getElementById("form").submit();
+         })
+
+         document.getElementById("book").addEventListener("click",()=>{
+            document.getElementById("submitType").value = "button submit";
+         })
+
+        
+         function radioChange(id){
+            let length = document.querySelectorAll('.time').length;
+           for(j=0; j<length; j++){
+            document.getElementsByClassName("time")[j].checked = false;
+        }
+        document.getElementById(id).checked = true;
+         }
+        
+
+
+         document.getElementById("reset").addEventListener("click",()=>{
+            let length2 = document.querySelectorAll('.time').length;
+            for(i=0; i<length2; i++){
+                document.getElementsByClassName("time")[i].checked = false;
+            }
+
+         })
+         
+       </script>
 </body>
 
 </html>
