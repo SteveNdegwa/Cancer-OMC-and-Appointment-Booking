@@ -21,14 +21,14 @@ form{
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 10px darkgray;
-    margin: 25px 0px;
+    margin: 15px 0px;
     background-color: darkslategray;
     border-radius: 10px;
 }
 
 .main-h1{
     color: darkslategray;
-    margin: 70px 0px;
+    margin: 60px 0px;
     background-color: white;
     width: 100%;
     line-height: 100px;
@@ -46,7 +46,7 @@ form{
     margin-bottom: 30px;
 }
 
-.appointment-day-wrap{
+.day-wrap{
     width: 100px;
     margin: 5px 0px;
 }
@@ -65,6 +65,7 @@ form{
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
     transition: all .2s ease-out;
+    cursor: pointer;
 }
 
 h2{
@@ -111,7 +112,7 @@ h2{
 .length{
 
     height: 40px;
-    width: 80px;
+    width: 60px;
     margin-right: 10px;
     border: 2px solid white;
     border-radius: 10px;
@@ -179,7 +180,7 @@ h2{
 
 
 
-.btn2{
+.submit-btn{
     width: 120px;
     height: 60px;
     border: 2px outset white;
@@ -189,11 +190,14 @@ h2{
     font-size: 17px;
     margin-bottom: 40px;
     transition: all .2s ease-out;
+    cursor: pointer;
 
 }
 
-.btn2, .reset-days:hover{
+.submit-btn, .reset-days:hover{
     border: 3px outset white;
 }
 
-
+.slots{
+    display: none;
+}
