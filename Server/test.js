@@ -45,7 +45,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON, status VARCHAR(255))";
+        var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON)";
         connection.query(sql, function(err, result){
             if(err) throw err;
             console.log("Table Created");
