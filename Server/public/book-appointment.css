@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    background-color: white;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.body-wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 90%;
+    max-width: 1000px;
+    height: 100%;
+    box-shadow: 0px 3px 10px gray;
+    border-radius: 10px;
+    margin: 30px 0px;
+}
+
+
+.nav-bar {
+    width: 100%;
+    padding-bottom: 20px;
+    margin-bottom: 50px;
+    background-color: darkslategray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 10px 0px 0px;
+}
+
+/* 
+.nav-bar .profile-pic{
+    width: 150px;
+    height: 150px;
+    border: 2px solid white;
+    border-radius: 50%;
+    float: left;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+} */
+
+.nav-bar .details-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: darkslategray;
+}
+
+.nav-bar .details-wrap h1 {
+    margin-top: 20px;
+    color: white;
+    background-color: darkslategray;
+    text-align: center;
+}
+
+.nav-bar .details-wrap p {
+    margin-top: 10px;
+    color: white;
+    background-color: darkslategray;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form h2{
+    color: darkslategray;
+}
+
+.submitType{
+    display: none;
+}
+
+.date{
+    width: 200px;
+    height: 60px;
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+
+.empty-header{
+    color: gray;
+}
+
+.slots-wrap{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 10px;
+    margin-bottom: 60px;
+}
+
+
+.time-wrap{
+    margin-right: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.time{
+    margin-right: 10px;
+}
+
+.buttons{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.btn{
+    width: 100px;
+    height: 50px;
+    margin-bottom: 60px;
+    cursor: pointer;
+    transition: .3s all ease-out;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+}
+
+.btn:hover{
+    background-color: darkslategray;
+    border-color: white;
+    color: white;
+}
