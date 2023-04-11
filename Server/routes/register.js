@@ -179,7 +179,7 @@ router.post('/doctor/professional-details', (req, res) =>{
                 else{
                     console.log("Doctor's professional details inserted");
 
-                    return res.redirect('/');
+                    return res.redirect('/appointments/customize-appointment-slots');
                 }
             })
         })

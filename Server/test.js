@@ -39,17 +39,17 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
-        // connection.query(sql, function(err, result){
-        //     if(err) throw err;
-        //     console.log("Table Created");
-        // }); 
-
-        var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON)";
+        var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
         connection.query(sql, function(err, result){
             if(err) throw err;
             console.log("Table Created");
         }); 
+
+        // var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON)";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
 
         // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(?)";
@@ -59,7 +59,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Record Inserted");
         // });
 
-        // var sql = "DROP TABLE appointment_slots";
+        // var sql = "DROP TABLE appointments";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");

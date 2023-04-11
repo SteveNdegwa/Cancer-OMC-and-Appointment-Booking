@@ -3,6 +3,7 @@
     padding: 0;
     scroll-behavior: smooth;
     background-color: white;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 body {
@@ -64,6 +65,7 @@ body {
     color: white;
     background-color: darkslategray;
     text-align: center;
+    font-size: x-large;
 }
 
 .nav-bar .details-wrap p {
@@ -83,6 +85,7 @@ form{
 
 form h2{
     color: darkslategray;
+    font-size: larger;
 }
 
 .submitType{
@@ -102,6 +105,7 @@ form h2{
 
 .slots-wrap{
     width: 100%;
+    max-width: 900px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -138,6 +142,7 @@ form h2{
     cursor: pointer;
     transition: .3s all ease-out;
     font-family: 'Times New Roman', Times, serif;
+    border: 2px solid black;
     font-size: medium;
 }
 
