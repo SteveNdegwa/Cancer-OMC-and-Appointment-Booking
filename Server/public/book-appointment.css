@@ -131,14 +131,17 @@ form h2{
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
+    margin-bottom: 60px;
 }
 
 .btn{
     width: 100px;
     height: 50px;
-    margin-bottom: 60px;
+    margin: 0px 10px;
+    margin-bottom: 20px;
     cursor: pointer;
     transition: .3s all ease-out;
     font-family: 'Times New Roman', Times, serif;
@@ -151,3 +154,4 @@ form h2{
     border-color: white;
     color: white;
 }
+
