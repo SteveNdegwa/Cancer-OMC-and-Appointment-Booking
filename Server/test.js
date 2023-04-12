@@ -39,11 +39,11 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
-        connection.query(sql, function(err, result){
-            if(err) throw err;
-            console.log("Table Created");
-        }); 
+        // var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
         // var sql = "CREATE TABLE appointment_slots (doctor_id INT, day VARCHAR(255), slots JSON)";
         // connection.query(sql, function(err, result){
@@ -94,10 +94,24 @@ pool.getConnection(function (err, connection) {
 
         // let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-        // const date = new Date('2023-02-27');
-        // const day = date.getDay();
-        // // Sunday - Saturday : 0 - 6
+        // const date = new Date('2023-04-12');
+        // date.setHours("18","40");
+        // console.log(date);
+        // // const day = date.getDay();
+        // // // Sunday - Saturday : 0 - 6
 
+        // const nowDate = new Date();
+        // console.log(nowDate);
+
+        // if(nowDate.getTime() > date.getTime()){
+        //     console.log("The day has already passed");
+        // }else{
+        //     console.log("The day is in the future");
+        // }
         // console.log(weekdays[day]);
+
+        // let time= "08:00";
+        // console.log(time.slice(0,2));
+        // console.log(time.slice(3,5));
     }
 });

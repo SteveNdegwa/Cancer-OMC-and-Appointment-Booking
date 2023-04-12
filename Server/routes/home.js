@@ -109,11 +109,10 @@ router.get('/doctors', (req, res) => {
 
 
 router.post('/doctors', (req, res) => {
-    console.log(req.body);
-    console.log(req.body.id);
 
     req.session.doctorId = req.body.id;
 
+    req.session.bookingType = "new";
     res.redirect('/appointments/book-appointment');
 })
 
