@@ -1,106 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/book-appointment.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      data-minify="1"
+      href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="/book-appointment.css" />
     <title>Book Appointment</title>
-</head>
+  </head>
 
-<body>
-       <div class="body-wrap">
-        <nav class="nav-bar">
-            <!-- <div class="profile-pic"></div> -->
+  <body>
+    <div class="body-wrap">
+      <nav class="nav-bar">
+        <!-- <div class="profile-pic"></div> -->
 
-            <div class="details-wrap">
-                <h1 class="name">
-                    <%= details[0].name %>
-                </h1>
-                <p class="speciality">
-                    <%= details[0].cancer_speciality %>
-                </p>
-                <p class="location">
-                    <%= details[0].clinic_location %>
-                </p>
-                <p class="phone">Phone No : <%= details[0].clinic_phone_no %>
-                </p>
-                <p class="email">Email : <%= details[0].clinic_email %>
-                </p>
-            </div>
-        </nav>
-        <form id="form" action="/appointments/book-appointment" method="post" >
-            <% if(bookingMessage.length > 0 ){ %>
-                <div class="alert alert-danger" role="alert">
-                    <%= bookingMessage %>
-                </div>
-           <% } %>
+        <div class="details-wrap">
+          <h1 class="name"><%= details[0].name %></h1>
+          <p class="speciality"><%= details[0].cancer_speciality %></p>
+          <p class="location"><%= details[0].clinic_location %></p>
+          <p class="phone">Phone No : <%= details[0].clinic_phone_no %></p>
+          <p class="email">Email : <%= details[0].clinic_email %></p>
+        </div>
+      </nav>
+      <form id="form" action="/appointments/book-appointment" method="post">
+        <% if(bookingMessage.length > 0 ){ %>
+        <div class="alert alert-danger" role="alert"><%= bookingMessage %></div>
+        <% } %>
 
-            <input type="text" class="submitType" name="submitType" id="submitType">
+        <input
+          type="text"
+          class="submitType"
+          name="submitType"
+          id="submitType"
+        />
 
-            <h2>Select Preferred Date</h2>
-            <input type="date" class="date" id="date" name="date" value="<%= chosenDate %>">
-            <h2>Select Time</h2>
-            <div class="slots-wrap">
-                <% if (appointmentSlots.length) { %>
-                 <% appointmentSlots.forEach(slot=> { %>
-                    <div class="time-wrap">
-                        <input type="radio" class="time" id="<%= slot %>" name="<%= slot %>" onchange="radioChange(this.id)">
-                        <label for="<%= slot %>" class="time-label"><%= slot %></label>
-                    </div>
-                 <% }) %>
-                <% }else { %>
-                    <h2 class="empty-header">No appointment slots available</h2>
-                <% }  %>
-                 
-               
-            </div>
+        <h2>Select Preferred Date</h2>
+        <input
+          type="date"
+          class="date"
+          id="date"
+          name="date"
+          min="<%= today %>"
+          value="<%= chosenDate %>"
+        />
+        <h2>Select Time</h2>
+        <div class="slots-wrap">
+          <% if (appointmentSlots.length) { %> <%
+          appointmentSlots.forEach(slot=> { %>
+          <div class="time-wrap">
+            <input
+              type="radio"
+              class="time"
+              id="<%= slot %>"
+              name="<%= slot %>"
+              onchange="radioChange(this.id)"
+            />
+            <label for="<%= slot %>" class="time-label"><%= slot %></label>
+          </div>
+          <% }) %> <% }else { %>
+          <h2 class="empty-header">No appointment slots available</h2>
+          <% } %>
+        </div>
 
-            <% if (appointmentSlots.length) { %>
-                <div class="buttons">
-                    <input type="button" class="btn" id="reset" value="Reset">
-                    <input type="submit" class="btn" id="book" value="Book">
-                </div>
-            <% } %>
+        <% if (appointmentSlots.length) { %>
+        <div class="buttons">
+          <input type="button" class="btn" id="reset" value="Reset" />
+          <input type="submit" class="btn" id="book" value="Book" />
+        </div>
+        <% } %>
+      </form>
+    </div>
 
-        </form>
+    <script>
+      document.getElementById("date").addEventListener("change", () => {
+        document.getElementById("submitType").value = "date change";
+        document.getElementById("form").submit();
+      });
 
+      document.getElementById("book").addEventListener("click", () => {
+        document.getElementById("submitType").value = "button submit";
+      });
 
-
-       </div>
-
-       <script>
-         document.getElementById("date").addEventListener("change",()=>{
-            document.getElementById("submitType").value = "date change";
-            document.getElementById("form").submit();
-         })
-
-         document.getElementById("book").addEventListener("click",()=>{
-            document.getElementById("submitType").value = "button submit";
-         })
-
-        
-         function radioChange(id){
-            let length = document.querySelectorAll('.time').length;
-           for(j=0; j<length; j++){
-            document.getElementsByClassName("time")[j].checked = false;
+      function radioChange(id) {
+        let length = document.querySelectorAll(".time").length;
+        for (j = 0; j < length; j++) {
+          document.getElementsByClassName("time")[j].checked = false;
         }
         document.getElementById(id).checked = true;
-         }
-        
+      }
 
-
-         document.getElementById("reset").addEventListener("click",()=>{
-            let length2 = document.querySelectorAll('.time').length;
-            for(i=0; i<length2; i++){
-                document.getElementsByClassName("time")[i].checked = false;
-            }
-
-         })
-         
-       </script>
-</body>
-
+      document.getElementById("reset").addEventListener("click", () => {
+        let length2 = document.querySelectorAll(".time").length;
+        for (i = 0; i < length2; i++) {
+          document.getElementsByClassName("time")[i].checked = false;
+        }
+      });
+    </script>
+  </body>
 </html>
