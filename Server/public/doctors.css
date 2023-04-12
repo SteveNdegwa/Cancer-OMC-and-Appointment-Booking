@@ -3,8 +3,13 @@
     padding: 0;
 }
 
+body{
+    background-color: ghostwhite;
+}
+
 form {
     width: 100%;
+    background-color: ghostwhite;
 }
 
 .search-bar {
@@ -18,6 +23,7 @@ form {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    background-color: ghostwhite;
 }
 
 .search {
@@ -30,6 +36,7 @@ form {
     font-family: 'Times New Roman', Times, serif;
     margin-right: 20px;
     margin-bottom: 20px;
+    background-color: ghostwhite;
 }
 
 .search-btn {
@@ -40,6 +47,7 @@ form {
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
     margin-bottom: 20px;
+    background-color: ghostwhite;
 }
 
 .search-btn:hover{
@@ -57,16 +65,25 @@ input:focus {
     text-align: center;
     color: dimgray;
     font-family: 'Times New Roman', Times, serif;
+    background-color: ghostwhite;
 }
 
 .doctors-list {
     width: 100%;
     margin-top: 40px;
+    background-color: ghostwhite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .doctors-list .doctor-tab {
-    margin: 40px 10px;
-    box-shadow: 2px 2px 5px darkslategray;
+    position: relative;
+    width: 90%;
+    margin: 20px;
+    box-shadow: 1px 2px 5px grey;;
+    background-color: white;
 
 }
 
@@ -75,6 +92,7 @@ input:focus {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: white;
 }
 
 .doctor-tab .doctor-profile {
@@ -84,6 +102,7 @@ input:focus {
     align-items: center;
     flex-direction: column;
     margin-top: 20px;
+    background-color: white;
 }
 
 .doctor-tab .doctor-profile .id {
@@ -96,11 +115,13 @@ input:focus {
     margin-bottom: 20px;
     border-radius: 50%;
     border: 2px solid black;
+    background-color: white;
 }
 
 .doctor-tab .doctor-profile .name {
     margin-bottom: 20px;
     color: darkslategray;
+    background-color: white;
 }
 
 .doctor-tab .doctor-profile p {
@@ -114,7 +135,7 @@ input:focus {
     margin-bottom: 30px;
     margin-top: 20px;
     overflow-y: scroll;
-    background-color: white;
+    background-color: ghostwhite;
     color: white;
     padding: 0px 0px;
     transition: all .3s ease;
