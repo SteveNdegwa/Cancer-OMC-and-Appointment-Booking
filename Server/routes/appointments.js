@@ -6,6 +6,15 @@ const pool = require("../server.js");
 const path = require("path");
 const { log } = require("console");
 
+let nowDate = new Date();
+let month = "";
+if (nowDate.getMonth() + 1 < 10) {
+  month = `0${nowDate.getMonth() + 1}`;
+} else {
+  month = nowDate.getMonth() + 1;
+}
+let today = `${nowDate.getFullYear()}-${month}-${nowDate.getDate()}`;
+
 router.get("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
     res.render("appointment-slots");
@@ -123,6 +132,7 @@ router.get("/book-appointment", (req, res) => {
             details: details,
             appointmentSlots: appointmentSlots,
             chosenDate: chosenDate,
+            today: today,
             bookingMessage: req.flash("bookingMessage"),
           });
         }
@@ -197,6 +207,7 @@ router.post("/book-appointment", (req, res) => {
                 details: details,
                 appointmentSlots: appointmentSlots,
                 chosenDate: chosenDate,
+                today: today,
                 bookingMessage: req.flash("bookingMessage"),
               });
             }
@@ -221,6 +232,7 @@ router.post("/book-appointment", (req, res) => {
         return res.render("book-appointment", {
           details: details,
           appointmentSlots: appointmentSlots,
+          today: today,
           chosenDate: chosenDate,
         });
       } else {
@@ -244,25 +256,64 @@ router.post("/book-appointment", (req, res) => {
                     details: details,
                     appointmentSlots: appointmentSlots,
                     chosenDate: chosenDate,
+                    today: today,
                     bookingMessage: req.flash("bookingMessage"),
                   }); //ALREADY BOOKED
                 } else {
-                  const query2 =
-                    "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
-                  const values2 = [
-                    req.session.doctorId,
-                    req.session.userId,
-                    selectedDate,
-                    selectedTime,
-                  ];
-                  connection.query(query2, [values2], (err, data) => {
-                    if (err) throw err;
-                    else {
-                      console.log("appointment inserted");
-                      console.log(`appointment id is ${data.insertId}`);
-                      res.redirect("/");
+                  const date = new Date(selectedDate);
+
+                  date.setHours(
+                    selectedTime.slice(0, 2),
+                    selectedTime.slice(3, 5)
+                  );
+
+                  if (nowDate.getTime() > date.getTime()) {
+                    req.flash(
+                      "bookingMessage",
+                      "Appointment Slot Has Already Expired"
+                    );
+                    return res.render("book-appointment", {
+                      details: details,
+                      appointmentSlots: appointmentSlots,
+                      chosenDate: chosenDate,
+                      today: today,
+                      bookingMessage: req.flash("bookingMessage"),
+                    }); /// appointment slot passed
+                  } else {
+                    if ((req.session.bookingType = "reschedule")) {
+                      //// making a new booking or rescheduling a booking
+
+                      const query2 =
+                        "UPDATE appointments SET date=? , time = ? WHERE appointment_id=?";
+                      connection.query(query2, [selectedDate, selectedTime, req.session.appointmentId], (err, data) => {
+                        if (err) throw err;
+                        else {
+                          console.log("appointment rescheduled");
+                          res.redirect("/");
+                        }
+                      });
+
+                    } else {
+                      
+                      const query2 =
+                        "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
+                      const values2 = [
+                        req.session.doctorId,
+                        req.session.userId,
+                        selectedDate,
+                        selectedTime,
+                      ];
+                      connection.query(query2, [values2], (err, data) => {
+                        if (err) throw err;
+                        else {
+                          console.log("appointment inserted");
+                          console.log(`appointment id is ${data.insertId}`);
+                          res.redirect("/");
+                        }
+                      });
+
                     }
-                  });
+                  }
                 }
               }
             );
@@ -275,6 +326,80 @@ router.post("/book-appointment", (req, res) => {
   } else {
     res.redirect("/login");
   }
+});
+
+router.get("/my-appointments", (req, res) => {
+  if (req.session.authenticated) {
+    let userId = req.session.userId;
+    const getAllDetails = new Promise((resolve, reject) => {
+      const appointments = [];
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+
+        const query = "SELECT * FROM appointments WHERE patient_id = ?";
+        connection.query(query, [userId], (err, results) => {
+          if (err) throw err;
+          if (results.length) {
+            const getData = new Promise((resolve, reject) => {
+              for (let i = 0; i < results.length; i++) {
+                const query2 =
+                  "SELECT name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details where user_id = ?";
+                connection.query(
+                  query2,
+                  [results[i].doctor_id],
+                  (err, data) => {
+                    if (err) throw err;
+                    data[0].appointment_id = results[i].appointment_id;
+                    data[0].doctor_id = results[i].doctor_id;
+                    data[0].date = results[i].date;
+                    data[0].time = results[i].time;
+
+                    const date = new Date(results[i].date);
+                    let time = results[i].time;
+                    date.setHours(time.slice(0, 2), time.slice(3, 5));
+
+                    const nowDate = new Date();
+
+                    if (nowDate.getTime() > date.getTime()) {
+                      data[0].status = "completed";
+                    } else {
+                      data[0].status = "scheduled";
+                    }
+
+                    appointments.push(data[0]);
+
+                    if (i == results.length - 1) {
+                      resolve(appointments);
+                    }
+                  }
+                );
+              }
+            });
+
+            getData.then((appointments) => {
+              return res.render("my-appointments", {
+                appointments: appointments,
+              });
+            });
+          } else {
+            return res.render("my-appointments", {
+              appointments: appointments,
+            });
+          }
+        });
+        connection.release();
+      });
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.post("/my-appointments", (req, res) => {
+  req.session.doctorId = req.body.doctorId;
+  req.session.appointmentId = req.body.appointmentId;
+  req.session.bookingType = "reschedule";
+  res.redirect("/appointments/book-appointment");
 });
 
 module.exports = router;
