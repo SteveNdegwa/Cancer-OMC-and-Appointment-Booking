@@ -72,6 +72,7 @@ btn.addEventListener('click', () => {
             input.name = id;
             input.value = time;
             input.min = prevTime;
+            input.max = "17:00";
             input.required = true;
 
             const timeh1 = document.createElement('h4');
@@ -110,6 +111,7 @@ btn.addEventListener('click', () => {
             input.name = id;
             input.value = time;
             input.min = prevTime;
+            input.max = "17:00";
             input.required = true;
 
             const timeh1 = document.createElement('h4');
