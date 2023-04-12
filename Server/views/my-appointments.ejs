@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/my-appointments.css">
+    <title>My Appointments</title>
+</head>
+<body>
+
+    
+
+    <div class="records-wrap">
+
+        <h1>Appointments</h1>
+
+        <% if (appointments.length) { %>
+         
+            <% appointments.forEach(appointment => { %>
+            <form action="/appointments/my-appointments" method="post">
+                <div class="records">
+                    <input type="checkbox" class="check" id="<%= appointment.appointment_id %>">
+                    <label for="<%= appointment.appointment_id %>" class="check-label"><span class="nav-icon"></span></label>
+                    <div class="top">
+                        <div class="date-time">
+                            <h3 class="date"><%= appointment.date %></h3>
+                            <h3 class="time"><%= appointment.time %></h3>
+                        </div>
+
+                        <% if (appointment.status == "scheduled") { %>
+                            <div class="status">
+                                <p class="scheduled">Scheduled</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <button type="submit" class="reschedule">Reschedule</button>
+                            </div>
+                        <% } else{ %>
+                            <div class="status">
+                                <p class="completed">Completed</p>
+                            </div>
+                         <% } %>
+    
+                    </div>
+        
+                    <div class="bottom">
+                        <h3 class="details"><%= appointment.name %></h3>
+                        <p class="details"><%= appointment.cancer_speciality %></p>
+                        <p class="details"><%= appointment.clinic_location %></p>
+                        <p class="details"><%= appointment.clinic_email %></p>
+                        <p class="details"><%= appointment.clinic_phone_no %></p>
+        
+                    </div>
+                </div>
+
+                <input type="text" class="ids" name="doctorId" id="<%= appointment.doctor_id %>" value="<%= appointment.doctor_id %>">
+                <input type="text" class="ids" name="appointmentId" id="<%= appointment.appointment_id %>" value="<%= appointment.appointment_id %>">
+
+            </form>
+            <% }) %>
+
+        <% } else{ %>
+            <div class="no-records">
+                <h1>No Appointments</h1>
+            </div>
+        <% } %>
+
+    </div>
+    
+
+    
+</body>
+</html>

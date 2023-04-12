@@ -1,0 +1,213 @@
+*{
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: ghostwhite;
+}
+
+form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: ghostwhite;
+}
+
+
+.no-records{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    color: transparent;
+}
+
+
+
+.records-wrap{
+    width: 90%;
+    max-width: 1000px;
+    height: 100%;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: ghostwhite;
+}
+
+.records-wrap h1{
+    color: dimgray;
+    margin: 30px 0px;
+    background-color: ghostwhite;
+}
+
+.records-wrap .records{
+    width: 98%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    position: relative;
+    box-shadow: 1px 2px 5px grey;
+    margin: 30px 0px;
+    background-color: white;
+}
+
+.records-wrap .records .check{
+    display: none;
+}
+
+.records-wrap .records .check-label{
+    position: absolute;
+    top: 18px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.records-wrap .records .check-label .nav-icon{
+    display: block;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 15px;
+    height: 3px;
+    background: black;
+    position: relative;
+    transition: all .3s ease-out;
+
+}
+
+.records-wrap .records .check-label .nav-icon::before{
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: black;
+    position: absolute;
+    top: 0px;
+    rotate: 90deg;
+}
+
+.records-wrap .records .check:checked ~ .check-label .nav-icon{
+    rotate: 225deg;
+}
+
+.records-wrap .records .check:checked ~ .bottom{
+    height: 200px;
+}
+
+
+.records-wrap .records .top{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+.records-wrap .records .top .date-time{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: white;
+
+}
+
+.records-wrap .records .top .date-time .date{
+    margin-right: 30px;
+}
+
+.records-wrap .records .top .status{
+    line-height: 30px;
+    width: 100px;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: white;
+
+}
+
+.records-wrap .records .top .appointment-actions{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.records-wrap .records .top .appointment-actions .reschedule{
+    width: 100px;
+    height: 30px;
+    border: 2px solid dimgray;
+    color: black;
+    background-color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+    cursor: pointer;
+ 
+}
+
+
+.records-wrap .records .top .reschedule:hover{
+    border-color: green;
+
+}
+
+
+
+.records-wrap .records .top .status .completed{
+    background-color: red;
+}
+
+.records-wrap .records .top .status .scheduled{
+    background-color: green;
+}
+
+
+.records-wrap .records .bottom{
+    width: 100%;
+    height: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease-out;
+    overflow: hidden;
+    background-color: white;
+}
+
+.records-wrap .records .bottom .details{
+    margin-top: 10px;
+    background-color: white;
+}
+
+.records-wrap .records .bottom p{
+    color: dimgray;
+    background-color: white;
+}
+
+
+.ids{
+    display: none;
+}
