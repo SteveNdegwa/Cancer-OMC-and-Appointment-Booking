@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/view-appointments.css" />
+    <title>View Appointments</title>
+  </head>
+  <body>
+    <% if (appointments.length) { %>
+    <h1 class="main-header">Appointments</h1>
+    <% appointments.forEach(appointment => { %>
+    <form action="/appointments/view-appointments" id="form" method="post">
+      <input type="checkbox" class="check" id="check">
+      <label for="check" class="check-label"
+        ><span class="nav-icon"></span
+      ></label>
+
+      <div class="top-details">
+        <h2 class="day-details"><%= appointment.date %></h2>
+        <h2 class="day-details"><%= appointment.time %></h2>
+      </div>
+      <h2 class="name"><%= appointment.name %></h2>
+      <% if (appointment.status == "scheduled") { %>
+       <p class="status" id="scheduled">Scheduled</p>
+      <% }else{ %>
+        <p class="status" id="completed">Completed</p>
+      <% } %>
+      <div class="bottom">
+        <div class="bottom-details">
+          <h4 class="details-header">Gender</h4>
+          <p class="details"><%= appointment.gender %></p>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">D.O.B</h4>
+          <p class="details"><%= appointment.dob %></p>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">Cancer</h4>
+          <p class="details">Type: <%= appointment.cancerType %></p>
+          <p class="details">Stage: <%= appointment.cancerStage %></p>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">LifeStyle Diseases</h4>
+          <% if (appointment.lifestyleDiseases == "") { %>
+          <p class="details">None</p>
+          <% } else{%>
+          <p class="details"><%= appointment.lifestyleDiseases %></p>
+          <% } %>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">Contacts</h4>
+          <p class="details"><%= appointment.phoneNo %></p>
+          <p class="details"><%= appointment.email %></p>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">Location</h4>
+          <p class="details"><%= appointment.location %></p>
+        </div>
+      </div>
+    </form>
+    <% }) %> <% } else{%>
+    <h1 class="no-records">No appointments available</h1>
+    <% }%>
+
+
+    <script>
+        // let allCheck = document.getElementById("all-check");
+        // allCheck.addEventListener("change",()=>{
+        //     document.getElementById("form").submit();
+        // })
+    </script>
+
+  </body>
+</html>
