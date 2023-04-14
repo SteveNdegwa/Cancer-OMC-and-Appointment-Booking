@@ -285,16 +285,18 @@ router.post("/book-appointment", (req, res) => {
 
                       const query2 =
                         "UPDATE appointments SET date=? , time = ? WHERE appointment_id=?";
-                      connection.query(query2, [selectedDate, selectedTime, req.session.appointmentId], (err, data) => {
-                        if (err) throw err;
-                        else {
-                          console.log("appointment rescheduled");
-                          res.redirect("/");
+                      connection.query(
+                        query2,
+                        [selectedDate, selectedTime, req.session.appointmentId],
+                        (err, data) => {
+                          if (err) throw err;
+                          else {
+                            console.log("appointment rescheduled");
+                            res.redirect("/");
+                          }
                         }
-                      });
-
+                      );
                     } else {
-                      
                       const query2 =
                         "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
                       const values2 = [
@@ -311,7 +313,6 @@ router.post("/book-appointment", (req, res) => {
                           res.redirect("/");
                         }
                       });
-
                     }
                   }
                 }
@@ -400,6 +401,55 @@ router.post("/my-appointments", (req, res) => {
   req.session.appointmentId = req.body.appointmentId;
   req.session.bookingType = "reschedule";
   res.redirect("/appointments/book-appointment");
+});
+
+router.get("/view-appointments", (req, res) => {
+  let doctorId = 2;
+
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    else {
+      const getDetails = new Promise((resolve, reject) => {
+
+        let appointments = [];
+        const query = "SELECT * FROM appointments WHERE doctor_id = ?";
+        connection.query(query, [doctorId], (err, result) => {
+          if (err) throw err;
+          if (result.length) {
+            for (let i = 0; i < result.length; i++) {
+              const query2 = "SELECT * FROM patient_details WHERE user_id = ?";
+              connection.query(query2, [result[i].patient_id], (err, data) => {
+                if (err) throw err;
+                result[i].name = data[0].name;
+                result[i].dob = data[0].dob;
+                result[i].gender = data[0].gender;
+                result[i].cancerType = data[0].cancer_type;
+                result[i].cancerStage = data[0].cancer_stage;
+                result[i].lifestyleDiseases = data[0].lifestyle_diseases;
+                result[i].phoneNo = data[0].phone_no;
+                result[i].email = data[0].email;
+                result[i].location = data[0].location;
+                appointments.push(result[i]);
+
+                if (i == result.length - 1) {
+                  resolve(appointments);
+                }
+              });
+            }
+          }
+          else{  //// no appointments
+            return res.render("view-appointments",{appointments:appointments});
+          }
+        });
+      });
+
+      getDetails.then((appointments)=>{
+        console.log(appointments);
+        return res.render("view-appointments",{appointments:appointments});
+      })
+    }
+    connection.release();
+  });
 });
 
 module.exports = router;
