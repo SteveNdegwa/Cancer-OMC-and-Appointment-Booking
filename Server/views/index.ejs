@@ -82,6 +82,7 @@
 
 
      <!-----------------Doctors Page------------------>
+     <% if (doctors.length) { %>
 
     <div class="doctors-body">
 
@@ -90,90 +91,48 @@
         <div class="glide">
             <div class="glide__track" data-glide-el="track">
               <ul class="glide__slides">
-                <li class="glide__slide">
-                    <div class="doctors-tabs" id="doctor-1">
-                        <div class="doctors-profile">
-                            <div class="profile-pic" id="profile-pic-1"></div>
-                        <h2 class="name" id="name-1">Dr. Rabat Mina</h2>
-                        </div>
-                        <div class="doctor-details">
-                            <div class="doctor-speciality">
-                                <h4>Speciality</h4>
-                                <p id="speciality-details-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, voluptatum?</p>
-                            </div>
-                            <div class="doctor-location">
-                                <h4>Location</h4>
-                                <p id="location-details-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, voluptatum?</p>
-                            </div>
-                            <div class="doctor-phone">
-                                <h4>Phone No.</h4>
-                                <p id="phone-details-1">0746676787</p>
-                            </div>
-                            <div class="doctor-email">
-                                <h4>Email</h4>
-                                <p id="email-details-1">Lorem ipsum dolor sit amet consectetur.</p>
-                            </div>
-                        </div>
-                        <a href="" class="book-btn" id="book-btn-1">Book Appointment</a>
-                    </div>
-                </li>
 
+                <% doctors.forEach(doctor => { %>
 
-                <li class="glide__slide">
-                    <div class="doctors-tabs" id="doctor-2">
-                        <div class="doctors-profile">
-                            <div class="profile-pic" id="profile-pic-2"></div>
-                        <h2 class="name" id="name-2">Dr Name</h2>
-                        </div>
-                        <div class="doctor-details">
-                            <div class="doctor-speciality">
-                                <h4>Speciality</h4>
-                                <p id="speciality-details-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, voluptatum?</p>
-                            </div>
-                            <div class="doctor-location">
-                                <h4>Location</h4>
-                                <p id="location-details-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, voluptatum?</p>
-                            </div>
-                            <div class="doctor-phone">
-                                <h4>Phone No.</h4>
-                                <p id="phone-details-2">0746676787</p>
-                            </div>
-                            <div class="doctor-email">
-                                <h4>Email</h4>
-                                <p id="email-details-2">Lorem ipsum dolor sit amet consectetur.</p>
-                            </div>
-                        </div>
-                        <a href="" class="book-btn" id="book-btn-2">Book Appointment</a>
-                    </div>
-                </li>
+                    <li class="glide__slide">
+                        <form action="/" id="form" method="post">
 
+                            <input type="text" class="doctor-id" name="doctor_id" value="<%= doctor.user_id %>">
+                            <input type="text" class="post-type" name="post-type" id="post-type">
 
-                <li class="glide__slide">
-                    <div class="doctors-tabs" id="doctor-3">
-                    <div class="doctors-profile">
-                        <div class="profile-pic" id="profile-pic-3"></div>
-                    <h2 class="name" id="name-3">Dr Name</h2>
-                    </div>
-                    <div class="doctor-details">
-                        <div class="doctor-speciality">
-                            <h4>Speciality</h4>
-                            <p id="speciality-details-3">Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="doctor-location">
-                            <h4>Location</h4>
-                            <p id="location-details-3">Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="doctor-phone">
-                            <h4>Phone No.</h4>
-                            <p id="phone-details-3">0746676787</p>
-                        </div>
-                        <div class="doctor-email">
-                            <h4>Email</h4>
-                            <p id="email-details-3">Lorem ipsum dolor sit amet consectetur.</p>
-                        </div>
-                    </div>
-                    <a href="" class="book-btn" id="book-btn-3">Book Appointment</a>
-                </div></li>
+                            <div class="doctors-tabs" id="doctor-1">
+                                <div class="doctors-profile">
+                                    <div class="profile-pic" id="profile-pic-1"></div>
+                                <h2 class="name" id="name-1"><%= doctor.name %></h2>
+                                </div>
+                                <div class="doctor-details">
+                                    <div class="doctor-speciality">
+                                        <h4>Speciality</h4>
+                                        <p id="speciality-details-1"><%= doctor.cancer_speciality %></p>
+                                    </div>
+                                    <div class="doctor-location">
+                                        <h4>Location</h4>
+                                        <p id="location-details-1"><%= doctor.clinic_location %></p>
+                                    </div>
+                                    <div class="doctor-phone">
+                                        <h4>Phone No.</h4>
+                                        <p id="phone-details-1"><%= doctor.clinic_phone_no %></p>
+                                    </div>
+                                    <div class="doctor-email">
+                                        <h4>Email</h4>
+                                        <p id="email-details-1"><%= doctor.email %></p>
+                                    </div>
+                                </div>
+                                <div class="buttons">
+                                    <button type="submit"class="button" name="consult" id="consult-btn">Consult</button>
+                                    <button type="submit"class="button" name="book" id="book-btn">Book Appointment</button>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+
+                <% }) %>
+
               </ul>
             </div>
             <div class="glide__arrows" data-glide-el="controls">
@@ -181,8 +140,12 @@
                 <button class="glide__arrow glide__arrow--right" data-glide-dir=">">next</button>
               </div>
           </div>
-        <a href="" class="view-all">View All</a>
+          <a href="" class="view-all">View All</a>
     </div>
+</div>
+
+    <% } %>
+        
 
 
 
@@ -222,6 +185,18 @@
             // }
         }
        new Glide('.glide', config).mount()
+
+
+
+       document.getElementById("consult-btn").addEventListener("click",()=>{
+        document.getElementById("form").submit();
+       })
+
+       document.getElementById("book-btn").addEventListener("click",()=>{
+        document.getElementById("form").submit();
+
+       })
+
     </script>
 
     <script src="/script.js"></script>
