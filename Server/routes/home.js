@@ -14,10 +14,20 @@ router.get('/', (req, res) => {
 
     if (req.session.authenticated) {
 
-
         pool.getConnection((err, connection) => {
             if (err) console.log(err);
             else {
+          /// get doctors details
+          const getDoctorsData = new Promise((resolve, reject) => {
+            const query = "SELECT * FROM doctor_details";
+            connection.query(query,(err,results)=>{
+                if(err) throw err;
+                resolve(results);
+            })
+          })
+
+
+                ///// check if professional and medical details registered 
                 if (req.session.accountType == "patient") {
                     const query = "SELECT name, cancer_type FROM patient_details where user_id = ?";
                     connection.query(query, [req.session.userId], (err, results) => {
@@ -34,7 +44,9 @@ router.get('/', (req, res) => {
                                 if (cancerType == "") {
                                     return res.redirect('/register/patient/medical-details')
                                 } else {
-                                    return res.render('index')
+                                    getDoctorsData.then((results)=>{
+                                        return res.render('index',{doctors:results})
+                                    })
                                 }
 
                             } else {
@@ -63,7 +75,9 @@ router.get('/', (req, res) => {
                                     return res.redirect('/register/doctor/professional-details')
                                 }
                                 else {
-                                    return res.render('index')
+                                    getDoctorsData.then((results)=>{
+                                        return res.render('index',{doctors:results})
+                                    })
                                 }
 
 
@@ -85,6 +99,20 @@ router.get('/', (req, res) => {
         return res.redirect('/login');
     }
 
+})
+
+
+router.post("/",(req,res)=>{
+    if(req.body.consult == ""){
+        console.log("consult");    /// consultations
+        res.redirect("/");
+    }
+    
+    else if(req.body.book == ""){
+        req.session.doctorId = req.body.doctor_id;
+        req.session.bookingType = "new";
+        res.redirect('/appointments/book-appointment');
+    }
 })
 
 
