@@ -206,7 +206,7 @@ body{
 
 /**********Doctors body**************/
 
-.doctor-id, .post-type{
+.doctor-id{
     display: none;
 }
 
