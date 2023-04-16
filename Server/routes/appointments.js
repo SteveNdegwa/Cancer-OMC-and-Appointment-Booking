@@ -514,6 +514,20 @@ router.get("/view-all-appointments", (req, res) => {     ////// get all past and
                     result[i].phoneNo = data[0].phone_no;
                     result[i].email = data[0].email;
                     result[i].location = data[0].location;
+
+                    
+                    const date = new Date(result[i].date);
+                    let time = result[i].time;
+                    date.setHours(time.slice(0, 2), time.slice(3, 5));
+
+                    const nowDate = new Date();
+
+                    if (nowDate.getTime() > date.getTime()) {
+                      result[i].status = "completed";
+                    } else {
+                      result[i].status = "scheduled";
+                    }
+
                     appointments.push(result[i]);
 
                     if (i == result.length - 1) {
