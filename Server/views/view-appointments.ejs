@@ -12,8 +12,8 @@
     <h1 class="main-header">Appointments</h1>
     <% appointments.forEach(appointment => { %>
     <form action="/appointments/view-appointments" id="form" method="post">
-      <input type="checkbox" class="check" id="check">
-      <label for="check" class="check-label"
+      <input type="checkbox" class="check" id="check-<%= appointment.appointment_id %>">
+      <label for="check-<%= appointment.appointment_id %>" class="check-label"
         ><span class="nav-icon"></span
       ></label>
 
