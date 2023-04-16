@@ -98,7 +98,6 @@
                         <form action="/" id="form" method="post">
 
                             <input type="text" class="doctor-id" name="doctor_id" value="<%= doctor.user_id %>">
-                            <input type="text" class="post-type" name="post-type" id="post-type">
 
                             <div class="doctors-tabs" id="doctor-1">
                                 <div class="doctors-profile">
@@ -185,18 +184,6 @@
             // }
         }
        new Glide('.glide', config).mount()
-
-
-
-       document.getElementById("consult-btn").addEventListener("click",()=>{
-        document.getElementById("form").submit();
-       })
-
-       document.getElementById("book-btn").addEventListener("click",()=>{
-        document.getElementById("form").submit();
-
-       })
-
     </script>
 
     <script src="/script.js"></script>
