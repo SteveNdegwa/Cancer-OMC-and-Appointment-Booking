@@ -52,6 +52,9 @@ app.use('/register', register);
 const appointments = require('./routes/appointments'); 
 app.use('/appointments', appointments);
 
+const admin = require('./routes/admin'); 
+app.use('/admin', admin);
+
 
 app.get('/chat', (req,res)=>{
     res.sendFile(path.resolve('./chat.html'));
