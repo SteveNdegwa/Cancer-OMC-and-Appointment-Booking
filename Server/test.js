@@ -37,7 +37,7 @@ pool.getConnection(function (err, connection) {
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
-        // }); 
+        // });
 
         // var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
         // connection.query(sql, function(err, result){
@@ -113,5 +113,11 @@ pool.getConnection(function (err, connection) {
         // let time= "08:00";
         // console.log(time.slice(0,2));
         // console.log(time.slice(3,5));
+
+         var sql = "CREATE TABLE payments (transaction_id VARCHAR(255),amount INT NOT NULL, timestamp INT NOT NULL, phone_no INT NOT NULL, PRIMARY KEY (transaction_id))";
+        connection.query(sql, function(err, result){
+            if(err) throw err;
+            console.log("Table Created");
+        }); 
     }
 });
