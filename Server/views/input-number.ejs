@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/input-number.css">
+    <title>Input Number</title>
+</head>
+<body>
+    <form action="/appointments/input-number" method="post">
+
+        <% if(message.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= message %>
+            </div>
+       <% } %>
+
+       <h2>Enter Mpesa number you wish to pay appointment fee from</h2>
+
+        <input type="tel" name="number" class="text" id="number" placeholder="Enter Number" max="10" min="10">
+        <button type="submit" class="btn">Next</button>
+    </form>
+</body>
+</html>
