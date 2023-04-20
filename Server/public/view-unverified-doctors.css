@@ -66,6 +66,24 @@ h4{
     transition: all .3s ease;
 }
 
+.btn-verified{
+    width: 100px;
+    height: 40px;
+    background-color: red;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+    cursor: pointer;
+    border: 2px solid dimgray;
+    margin-top: 30px;
+    transition: all .3s ease;
+}
+
 .btn:hover{
+    border-color: white;
+}
+
+
+.btn-verified:hover{
     border-color: white;
 }

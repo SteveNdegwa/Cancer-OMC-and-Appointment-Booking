@@ -12,7 +12,7 @@
         <h2 class="main-header">Unverified Doctors</h2>
      <% doctors.forEach(doctor => { %>
       <form action="/admin/view-unverified-doctors" method="post">
-        <input type="text" name="doctor-id" id="doctor-id" value="<%= doctor.user_id %>">
+        <input type="text" name="doctor_id" id="doctor-id" value="<%= doctor.user_id %>">
         <h2 class="details"><%= doctor.name %></h2>
         <h3 class="details">Licence No : <%= doctor.licence_no %></h3>
         <h4 class="details"><%= doctor.cancer_speciality %></h4>
