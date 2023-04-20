@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/view-unverified-doctors.css">
+    <title>Verified Doctors</title>
+</head>
+<body>
+    <% if (doctors.length) { %>
+        <h2 class="main-header">Verified Doctors</h2>
+     <% doctors.forEach(doctor => { %>
+      <form action="/admin/view-verified-doctors" method="post">
+        <input type="text" name="doctor_id" id="doctor-id" value="<%= doctor.user_id %>">
+        <h2 class="details"><%= doctor.name %></h2>
+        <h3 class="details">Licence No : <%= doctor.licence_no %></h3>
+        <h4 class="details"><%= doctor.cancer_speciality %></h4>
+        <h4 class="details"><%= doctor.clinic_location %></h4>
+        <h4 class="details"><%= doctor.email %></h4>
+        <h4 class="details"><%= doctor.phone_no %></h4>
+
+        <button type="submit" class="btn-verified" >Unverify</button>
+       
+      </form>
+     <% }) %>
+    <% }else{ %>
+        <h1 class="no-details">No Records Found</h1>
+    <% } %>
+</body>
+</html>
