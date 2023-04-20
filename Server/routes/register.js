@@ -36,7 +36,7 @@ router.get('/doctor', (req,res) => {
 
 router.get('/doctor/professional-details', (req,res) => {
     if(req.session.authenticated){
-        return res.render("doctor-register-professional", {doctorProfMsg: req.flash('doctorProfMsg'), licence: "",speciality: "", location: "", phone: "", email: ""})
+        return res.render("doctor-register-professional", {doctorProfMsg: req.flash('doctorProfMsg'), licence: "",speciality: "", location: "", phone: "", email: "", fee:""})
     }else{
        return  res.redirect('/login'); 
     }
@@ -141,8 +141,8 @@ router.post('/doctor', (req, res)=>{
              }
 
             pool.getConnection((err, connection)=>{
-                const query = "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `email`, `phone_no`) VALUES(?)";
-                const values = [req.session.userId, req.body.name, gender, req.body.dob, req.body.email, req.body.phone];
+                const query = "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `email`, `phone_no`, `verification_status`) VALUES(?)";
+                const values = [req.session.userId, req.body.name, gender, req.body.dob, req.body.email, req.body.phone, "false"];
 
                 connection.query(query,[values],(err,data)=>{
                     if(err) console.log(err);
@@ -171,9 +171,9 @@ router.post('/doctor/professional-details', (req, res) =>{
     if((req.body.email).endsWith('@gmail.com')){
 
         pool.getConnection((err, connection)=>{
-            const query = "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
+            const query = "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ?, booking_fee = ? WHERE user_id = ?";
 
-            connection.query(query, [req.body.licence, req.body.speciality, req.body.location, req.body.phone, req.body.email, req.session.userId], (err, data) =>{
+            connection.query(query, [req.body.licence, req.body.speciality, req.body.location, req.body.phone, req.body.email, req.body.fee, req.session.userId], (err, data) =>{
                 if(err) console.log(err);
 
                 else{
@@ -187,7 +187,7 @@ router.post('/doctor/professional-details', (req, res) =>{
         console.log('Invalid email');
         req.flash('doctorProfMsg', 'Invalid Email');
 
-        return res.render("doctor-register-professional", {doctorProfMsg: req.flash('doctorProfMsg'), licence: req.body.licence, speciality: req.body.speciality, location: req.body.location, phone: req.body.phone, email: ""})
+        return res.render("doctor-register-professional", {doctorProfMsg: req.flash('doctorProfMsg'), licence: req.body.licence, speciality: req.body.speciality, location: req.body.location, phone: req.body.phone, email: "", fee: req.body.fee})
     }
 })
 
