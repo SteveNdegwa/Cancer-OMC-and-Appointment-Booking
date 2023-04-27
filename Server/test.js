@@ -27,6 +27,18 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
+        //   var sql = "CREATE TABLE chat_rooms (room_id VARCHAR(255), patient_id INT NOT NULL, doctor_id INT NOT NULL, PRIMARY KEY (room_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+        //   var sql = "CREATE TABLE chats (chat_id INT NOT NULL AUTO_INCREMENT, room_id VARCHAR(255),  sender_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), message VARCHAR(255), PRIMARY KEY (chat_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
         // var sql = "DROP TABLE doctor_details";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
@@ -98,11 +110,11 @@ pool.getConnection(function (err, connection) {
         //     console.log(result);
         // });
 
-        // const query = "SELECT booking_fee FROM doctor_details where user_id =?";
-        // connection.query(query,[3], (err,result)=>{
-        //   if(err) throw err;
-        //   console.log(result[0].booking_fee);
-        // })
+        const query = "SELECT * FROM chats";
+        connection.query(query,[3], (err,result)=>{
+          if(err) throw err;
+         console.log(result);
+        })
 
 
         // let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
