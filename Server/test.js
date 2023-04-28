@@ -110,10 +110,11 @@ pool.getConnection(function (err, connection) {
         //     console.log(result);
         // });
 
-        const query = "SELECT * FROM chats";
-        connection.query(query,[3], (err,result)=>{
+        const query = "SELECT name FROM patient_details WHERE user_id = ?";
+        connection.query(query,[1], (err,result)=>{
           if(err) throw err;
          console.log(result);
+         console.log(result[0].name);
         })
 
 
