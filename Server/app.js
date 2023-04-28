@@ -84,23 +84,13 @@ app.get("/chats/chat-rooms", (req, res) => {
       connection.query(query, [req.session.userId], (err, results) => {
         if (err) throw err;
         if (results.length) {
-          for (let i = 0; i < results.length; i++) {
-            let query2 = "";
-            if (req.session.accountType == "patient") {
-              query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
-            } else {
-              query2 = "SELECT name FROM patient_details WHERE user_id = ?";
+          results.forEach((result,index)=>{
+            rooms.push(result);
+            if(index == results.length-1){
+              console.log(rooms);
+              resolve(rooms);
             }
-            connection.query(query2, [req.session.userId], (err, result) => {
-              if (err) throw err;
-              results[i].name = result[0].name;
-              rooms.push(results[i]);
-
-              if (i == results.length - 1) {
-                resolve(rooms);
-              }
-            });
-          }
+          })
         } else {
           resolve(rooms);
         }
@@ -109,13 +99,50 @@ app.get("/chats/chat-rooms", (req, res) => {
       connection.release();
     });
   });
+
+
   getChatRooms.then((rooms) => {
-    res.render("chat-rooms", { rooms: rooms });
+    const getNames = new Promise((resolve, reject) => {
+      pool.getConnection((err,connection)=>{
+        if(err) throw err;
+        if(rooms.length){
+          for (let i = 0; i < rooms.length; i++) {
+            let query2 = "";
+            let userId = "";
+            if (req.session.accountType == "patient") {
+              query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
+              userId = rooms[i].doctor_id;
+            } else {
+              query2 = "SELECT name FROM patient_details WHERE user_id = ?";
+              userId = rooms[i].patient_id;
+            }
+            connection.query(query2, [userId], (err, results) => {
+              if (err) throw err;
+              console.log(results);
+              rooms[i].name = results[0].name;
+  
+              if (i == rooms.length - 1) {
+                resolve(rooms);
+              }
+            });
+          }
+        }
+        
+        else{
+          resolve(rooms);
+        }
+      })
+    })
+
+    getNames.then((rooms) =>{
+      console.log(req.session);
+      res.render("chat-rooms", { rooms: rooms })
+    });
   });
 });
 
 app.post("/chats/chat-rooms", (req, res) => {
-  req.session.roomId = req.body.room-id;
+  req.session.roomId = req.body.room_id;
   res.redirect("/chats/chat");
 });
 
@@ -231,14 +258,16 @@ io.on("connection", (socket) => {
           }
         }
 
+       
         const query2 =
           "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
         const values = [room2, userId2, datee, time, msg];
         connection.query(query2, [values], (err, data) => {
           if (err) throw err;
           console.log(data.insertId);
-
+          
           socket.emit("sentChatMessage", msg, time);
+
         });
       });
 
