@@ -13,7 +13,7 @@
         <% rooms.forEach(room => { %>
          <form action="/chats/chat-rooms" method="post">
             <div class="container">
-                <input type="text" name="room-id" id="room-id" class="room-id" value="<%= room.room_id %>">
+                <input type="text" name="room_id" id="room-id" class="room-id" value="<%= room.room_id %>">
                 <h2 class="name"><%= room.name %></h2>
                 <button type="submit" class="btn">Message</button>
             </div>
