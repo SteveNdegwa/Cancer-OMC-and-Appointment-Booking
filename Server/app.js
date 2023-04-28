@@ -67,6 +67,7 @@ const io = socketio(server);
 let room = "";
 let user = "";
 let userId = "";
+let accountType = "";
 
 app.get("/chats/chat-rooms", (req, res) => {
   let rooms = [];
@@ -84,13 +85,13 @@ app.get("/chats/chat-rooms", (req, res) => {
       connection.query(query, [req.session.userId], (err, results) => {
         if (err) throw err;
         if (results.length) {
-          results.forEach((result,index)=>{
+          results.forEach((result, index) => {
             rooms.push(result);
-            if(index == results.length-1){
+            if (index == results.length - 1) {
               console.log(rooms);
               resolve(rooms);
             }
-          })
+          });
         } else {
           resolve(rooms);
         }
@@ -100,12 +101,11 @@ app.get("/chats/chat-rooms", (req, res) => {
     });
   });
 
-
   getChatRooms.then((rooms) => {
     const getNames = new Promise((resolve, reject) => {
-      pool.getConnection((err,connection)=>{
-        if(err) throw err;
-        if(rooms.length){
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+        if (rooms.length) {
           for (let i = 0; i < rooms.length; i++) {
             let query2 = "";
             let userId = "";
@@ -120,23 +120,21 @@ app.get("/chats/chat-rooms", (req, res) => {
               if (err) throw err;
               console.log(results);
               rooms[i].name = results[0].name;
-  
+
               if (i == rooms.length - 1) {
                 resolve(rooms);
               }
             });
           }
-        }
-        
-        else{
+        } else {
           resolve(rooms);
         }
-      })
-    })
+      });
+    });
 
-    getNames.then((rooms) =>{
+    getNames.then((rooms) => {
       console.log(req.session);
-      res.render("chat-rooms", { rooms: rooms })
+      res.render("chat-rooms", { rooms: rooms });
     });
   });
 });
@@ -160,6 +158,7 @@ app.get("/chats/chat", (req, res) => {
       user = result[0].name;
       userId = req.session.userId;
       room = req.session.roomId;
+      accountType = req.session.accountType;
 
       console.log(req.session);
 
@@ -171,11 +170,6 @@ app.get("/chats/chat", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  let room2 = room;
-  let user2 = user;
-
-  let userId2 = userId;
-
   let date = "";
 
   let d = new Date();
@@ -186,42 +180,53 @@ io.on("connection", (socket) => {
     "-" +
     d.getFullYear();
 
-  console.log(`${user2} joined the chart`);
-  socket.emit("message", `${user2} connected on Socket ${socket.id}`);
-  socket.emit("message", `welcome to the chart ${user2}`); // to the client
+  console.log(`${user} joined the chart`);
+  socket.emit("message", `${user} connected on Socket ${socket.id}`);
+  socket.emit("message", `welcome to the chart ${user}`); // to the client
 
-  socket.join(room2);
+  socket.join(room);
 
-  socket.broadcast.to(room2).emit("message", `${user2} joined the chart`); // all clients but user2
+  socket.broadcast.to(room).emit("message", `${user} joined the chart`); // all clients but user
   // io.emit(); //all clients
 
   pool.getConnection((err, connection) => {
     if (err) throw err;
     const query = "SELECT * FROM chats WHERE room_id = ?";
-    connection.query(query, [room2], (err, results) => {
+    connection.query(query, [room], (err, results) => {
       if (err) throw err;
       if (results.length) {
         results.forEach((message) => {
-          if (!(message.date == date)) {
-            date = message.date;
-            if (message.date == date2) {
-              socket.emit("message", "Today");
-            } else {
-              //// get previous day -- yesterday
-              socket.emit("message", message.date);
-            }
-          }
 
-          if (message.sender_id == userId2) {
-            socket.emit("retrieveSentChats", message.message, message.time);
+          let query2 = "";
+          if (accountType == "patient") {
+            query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
           } else {
-            socket.emit(
-              "retrieveReceivedChats",
-              message.message,
-              message.sender_id,
-              message.time
-            );
+            query2 = "SELECT name FROM patient_details WHERE user_id = ?";
           }
+          connection.query(query2, [message.sender_id], (err, result) => {
+            if (err) throw err;
+
+            if (!(message.date == date)) {
+              date = message.date;
+              if (message.date == date2) {
+                socket.emit("message", "Today");
+              } else {
+                //// get previous day -- yesterday
+                socket.emit("message", message.date);
+              }
+            }
+
+            if (message.sender_id == userId) {
+              socket.emit("retrieveSentChats", message.message, message.time);
+            } else {
+              socket.emit(
+                "retrieveReceivedChats",
+                message.message,
+                result[0].name,
+                message.time
+              );
+            }
+          });
         });
       }
     });
@@ -234,40 +239,38 @@ io.on("connection", (socket) => {
       if (err) throw err;
       const query =
         "SELECT * FROM chats WHERE room_id = ? ORDER BY date ASC, time ASC";
-      connection.query(query, [room2], (err, results) => {
+      connection.query(query, [room], (err, results) => {
         if (err) throw err;
         if (results.length) {
           if (!(results[results.length - 1].date == date)) {
             date = datee;
             if (date == date2) {
               socket.emit("message", "Today");
-              socket.broadcast.to(room2).emit("message", "Today");
+              socket.broadcast.to(room).emit("message", "Today");
             } else {
               socket.emit("message", datee);
-              socket.broadcast.to(room2).emit("message", datee);
+              socket.broadcast.to(room).emit("message", datee);
             }
           }
         } else {
           date = datee;
           if (date == date2) {
             socket.emit("message", "Today");
-            socket.broadcast.to(room2).emit("message", "Today");
+            socket.broadcast.to(room).emit("message", "Today");
           } else {
             socket.emit("message", datee);
-            socket.broadcast.to(room2).emit("message", datee);
+            socket.broadcast.to(room).emit("message", datee);
           }
         }
 
-       
         const query2 =
           "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
-        const values = [room2, userId2, datee, time, msg];
+        const values = [room, userId, datee, time, msg];
         connection.query(query2, [values], (err, data) => {
           if (err) throw err;
           console.log(data.insertId);
-          
-          socket.emit("sentChatMessage", msg, time);
 
+          socket.emit("sentChatMessage", msg, time);
         });
       });
 
@@ -276,11 +279,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("receivedChatMessage", (msg, datee, time) => {
-    socket.broadcast.to(room2).emit("receivedChatMessage", msg, user2, time);
+    socket.broadcast.to(room).emit("receivedChatMessage", msg, user, time);
   });
 
   socket.on("disconnect", () => {
-    io.to(room2).emit("message", `${user2} left the chart`);
+    io.to(room).emit("message", `${user} left the chart`);
   });
 });
 
