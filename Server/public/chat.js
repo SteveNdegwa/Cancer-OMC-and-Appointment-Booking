@@ -35,6 +35,9 @@ let displayMessage = (msg) => {
     const messagesContainer = document.getElementById("messages-container");
     messagesContainer.appendChild(div);
 
+    const messageField = document.getElementById('message');
+    messageField.value = "";
+
 }
 
 let displaySentChatMessage = (msg,time) => {
