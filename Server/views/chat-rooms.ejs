@@ -17,6 +17,7 @@
                 <h2 class="name"><%= room.name %></h2>
                 <% if ((room.message).length) { %>
                     <h3 class="last-message"><%= room.sender %> : <%= room.message %></h3>
+                    <h3 class="time-date"><%= room.date %>   |   <%= room.time %></h3>
                 <% } %>
                 <button type="submit" class="btn">Message</button>
             </div>
