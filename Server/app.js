@@ -126,6 +126,8 @@ app.get("/chats/chat-rooms", (req, res) => {
                 if(err) throw err;
                 if(messages.length){
                   rooms[i].message = messages[messages.length-1].message;
+                  rooms[i].date = messages[messages.length-1].date;
+                  rooms[i].time = messages[messages.length-1].time;
                   if((messages[messages.length-1].sender_id) == req.session.userId){
                     rooms[i].sender = "You";
                   }else{
@@ -133,7 +135,6 @@ app.get("/chats/chat-rooms", (req, res) => {
                   }
                 }else{
                   rooms[i].message = "";
-                  rooms[i].sender = "";
                 }
                 if (i == rooms.length - 1) {
                 resolve(rooms);
