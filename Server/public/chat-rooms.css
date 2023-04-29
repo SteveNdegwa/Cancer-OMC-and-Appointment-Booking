@@ -54,6 +54,12 @@ form{
     background-color: white;
 }
 
+.last-message{
+    margin-bottom: 30px;
+    color: dimgray;
+    background-color: white;
+}
+
 .btn{
     width: 100px;
     height: 40px;
