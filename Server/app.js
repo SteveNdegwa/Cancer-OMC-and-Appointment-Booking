@@ -121,9 +121,24 @@ app.get("/chats/chat-rooms", (req, res) => {
               console.log(results);
               rooms[i].name = results[0].name;
 
-              if (i == rooms.length - 1) {
+              const query3 = "SELECT * FROM chats WHERE room_id = ?";
+              connection.query(query3,[rooms[i].room_id],(err,messages)=>{     ////// get last message in the chat room   /// and sender name
+                if(err) throw err;
+                if(messages.length){
+                  rooms[i].message = messages[messages.length-1].message;
+                  if((messages[messages.length-1].sender_id) == req.session.userId){
+                    rooms[i].sender = "You";
+                  }else{
+                    rooms[i].sender = results[0].name;
+                  }
+                }else{
+                  rooms[i].message = "";
+                  rooms[i].sender = "";
+                }
+                if (i == rooms.length - 1) {
                 resolve(rooms);
               }
+              })
             });
           }
         } else {
