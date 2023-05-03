@@ -16,6 +16,8 @@
     <div class="landing-body">
         <nav class="nav-bar" id="nav-bar">
             <h1 class="name">CSS</h1>
+            <input type="checkbox" class="check" id="check">
+            <label for="check" class="check-label"><span class="nav-icon"></span></label>
             <div class="menu">
                 <ul class="menu-bar">
                     <li class="menu-items">
@@ -37,10 +39,7 @@
                                 <a href="" class="doctors">Doctors</a>
                             </li>
                             <li class="sub-menu-items">
-                                <a href="" class="sub-query">Query</a>
-                            </li>
-                            <li class="sub-menu-items">
-                                <a href="" class="users">Users</a>
+                                <a href="" class="sub-query">Feedback</a>
                             </li>
                             <li class="sub-menu-items">
                                 <a href="" class="contact-us">Contact Us</a>
@@ -65,6 +64,7 @@
      <!-----------------About Us Page------------------>
 
     <div class="about-body">
+        <h1>About Us</h1>
         <div class="about-wrap">
             <div class="about-img">
                 <video autoplay loop muted >
@@ -72,13 +72,7 @@
                 </video>
             </div>
             <div class="about-text">
-
-                <div class="about-text-wrap">
-                
-                    <h1>About Us</h1>
-
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat quaerat voluptas expedita? Molestias, quis officia libero laudantium est iure suscipit aliquid eum, repellendus impedit quibusdam assumenda in harum exercitationem id corporis tenetur nam. Dolorum enim omnis veritatis in quidem rerum tenetur laudantium ipsam tempora. Ex deleniti repellendus, delectus beatae iste aspernatur dolor mollitia libero veritatis molestias eum alias quaerat ipsum dolore saepe soluta? Voluptates soluta laudantium maxime dicta totam minus aliquam distinctio, iste consequatur numquam officia tempore facilis ipsa consequuntur alias quas, eveniet aliquid quo accusamus. Rerum minima voluptate beatae eligendi consectetur fugiat nam! Quis nesciunt fugit perferendis assumenda corporis!</p>
-                </div>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat quaerat voluptas expedita? Molestias, quis officia libero laudantium est iure suscipit aliquid eum, repellendus impedit quibusdam assumenda in harum exercitationem id corporis tenetur nam. Dolorum enim omnis veritatis in quidem rerum tenetur laudantium ipsam tempora. Ex deleniti repellendus, delectus beatae iste aspernatur dolor mollitia libero veritatis molestias eum alias quaerat ipsum dolore saepe soluta? Voluptates soluta laudantium maxime dicta totam minus aliquam distinctio, iste consequatur numquam officia tempore facilis ipsa consequuntur alias quas, eveniet aliquid quo accusamus. Rerum minima voluptate beatae eligendi consectetur fugiat nam! Quis nesciunt fugit perferendis assumenda corporis!</p>
             </div>
         </div>
     </div>
@@ -159,6 +153,7 @@
 
 
     <div class="feedback-body">
+        <h1>Feedback</h1>
         <div class="feedback-wrap">
             <form action="">
                 <textarea name="" class="feedback-area" id="feedback-area" cols="60" rows="15" placeholder="Enter Your feedback" required></textarea>
@@ -180,11 +175,13 @@
     <script>
         const config = {
             type: 'carousel',
-            perView: 3,
-            // breakpoints:{
-            //    600:{ perView: 1 },
-            //    1200: { perView: 3 }
-            // }
+            // perView: 1,
+            breakpoints:{
+               800:{ perView: 1 },
+               1000:{ perView: 2 },
+               1800: { perView: 3 },
+               2500: { perView: 4}
+            }
         }
        new Glide('.glide', config).mount()
     </script>
