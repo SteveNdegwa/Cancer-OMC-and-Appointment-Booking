@@ -32,7 +32,7 @@ body{
 .check-label{
     float: right;
     margin-right: 20px;
-    margin-top: 20px;
+    margin-top: 15px;
     width: 30px;
     height: 30px;
     background-color: transparent;
@@ -107,7 +107,7 @@ body{
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border: 2px solid black;
+        border: 2px solid orange;
     }
 
     .menu-bar li{
@@ -162,11 +162,15 @@ body{
     .menu-items a:hover{
         border-color: black;
     }
+
+    .sub-menu a:hover{
+        border-color: orange;
+    }
     
     .sub-menu{
         display: none;
         width: 120px;
-        border: 1px solid black;
+        border: 1px solid orange;
     }
     
     #pages-item:hover >.sub-menu{
@@ -203,17 +207,20 @@ body{
 
 .landing-body .landing-info .appointment-btn{
     display: block;
-    width: 150px;
+    width: auto;
+    padding: 0px 10px;
     color: black;
     line-height: 60px;
     text-align: center;
     text-decoration: none;
     margin-top: 30px;
-    border: 1px solid black;
+    border: 2px solid black;
     font-family: 'Times New Roman', Times, serif;
+    transition: all .3s ease;
 }
 .landing-body .landing-info .appointment-btn:hover{
-    border-color: orange;
+    border: 2px solid white;
+    background-color: orange;
 }
 
 .top{
@@ -439,7 +446,7 @@ body{
         color: black;
         border: 1px solid black;
         cursor: pointer;
-    
+        transition: all .3s ease;
     }
     
     
@@ -463,9 +470,11 @@ body{
         color: black;
         margin-top: 50px;
         border: 2px solid black;
+        transition: all .3s ease;
     }
     
     .doctors-body .view-all:hover{
+        border: 2px solid white;
         background-color: orange;
     }
     
@@ -531,6 +540,7 @@ textarea:focus{
     font-family: 'Times New Roman', Times, serif;
     font-size: 15px;
     cursor: pointer;
+    transition: all .3s ease;
  }
 
  .feedback-body .feedback-wrap .post-feedback:hover{
