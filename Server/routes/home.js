@@ -41,7 +41,11 @@ router.get("/", (req, res) => {
                   return res.redirect("/register/patient/medical-details");
                 } else {
                   getDoctorsData.then((results) => {
-                    return res.render("index", { doctors: results });
+                    if(req.session.accountType == "patient"){
+                      return res.render("index", { doctors: results });
+                    }else{
+                      return res.render("index2");
+                    }
                   });
                 }
               } else {
@@ -66,7 +70,11 @@ router.get("/", (req, res) => {
                   return res.redirect("/register/doctor/professional-details");
                 } else {
                   getDoctorsData.then((results) => {
-                    return res.render("index", { doctors: results });
+                    if(req.session.accountType == "patient"){
+                      return res.render("index", { doctors: results });
+                    }else{
+                      return res.render("index2");
+                    }
                   });
                 }
               } else {
