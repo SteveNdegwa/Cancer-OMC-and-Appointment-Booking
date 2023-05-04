@@ -285,6 +285,7 @@ io.on("connection", (socket) => {
         connection.query(query2, [values], (err, data) => {
           if (err) throw err;
           console.log(data.insertId);
+          console.log(userId);
 
           socket.emit("sentChatMessage", msg, time);
         });
