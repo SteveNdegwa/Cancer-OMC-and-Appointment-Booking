@@ -13,9 +13,9 @@
 
     <div class="records-wrap">
 
-        <h1>Appointments</h1>
-
         <% if (appointments.length) { %>
+
+            <h1>Appointments</h1>
          
             <% appointments.forEach(appointment => { %>
             <form action="/appointments/my-appointments" method="post">
