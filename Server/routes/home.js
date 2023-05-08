@@ -88,7 +88,7 @@ router.get("/", (req, res) => {
       connection.release();
     });
   } else {
-    return res.redirect("/login");
+    return res.render("login-index");
   }
 });
 
