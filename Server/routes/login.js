@@ -55,6 +55,11 @@ router.get("/create-account", (req, res) => {
 });
 
 router.post("/create-account", (req, res) => {
+  const verifyEmail = new Promise((resolve, reject) => {
+    /// verify email
+    resolve(emailValidator.validate(req.body.email));
+  });
+  verifyEmail.then((data) => {
     if (data.valid) {
       // valid email
 
