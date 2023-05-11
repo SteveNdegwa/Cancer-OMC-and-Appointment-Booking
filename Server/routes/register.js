@@ -57,7 +57,6 @@ router.get("/doctor/professional-details", (req, res) => {
       location: "",
       phone: "",
       email: "",
-      fee: "",
     });
   } else {
     return res.redirect("/login");
@@ -205,7 +204,7 @@ router.post("/doctor/professional-details", (req, res) => {
     if (data.valid) {
       pool.getConnection((err, connection) => {
         const query =
-          "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ?, booking_fee = ? WHERE user_id = ?";
+          "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
 
         connection.query(
           query,
@@ -215,7 +214,6 @@ router.post("/doctor/professional-details", (req, res) => {
             req.body.location,
             req.body.phone,
             req.body.email,
-            req.body.fee,
             req.session.userId,
           ],
           (err, data) => {
@@ -239,7 +237,6 @@ router.post("/doctor/professional-details", (req, res) => {
         location: req.body.location,
         phone: req.body.phone,
         email: "",
-        fee: req.body.fee,
       });
     }
   });
