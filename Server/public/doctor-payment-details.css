@@ -1,0 +1,98 @@
+*{
+    padding:0;
+    margin:0;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+body{
+    width:100%;
+}
+
+form{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 800px;
+    padding: 40px 0px;
+    box-shadow: 1px 2px 5px gray;
+}
+
+.header{
+    color: darkslategray;
+    background-color: transparent;
+    margin-bottom: 50px;
+    font-weight: lighter;
+}
+
+.text{
+    width: 90%;
+    max-width: 550px;
+    background-color: transparent;
+    font-size: large;
+    margin-bottom: 40px;
+    border: none;
+    border-bottom: 1px solid darkslategray;
+    padding: 5px 10px;
+}
+
+#consultation_fee{
+    height: auto;
+    max-height: 0px;
+    padding: 0;
+    border-color: transparent;
+    transition: all .3s ease;
+}
+
+input:focus{
+    outline: none;
+}
+
+.check-wrap{
+    width: 90%;
+    max-width: 550px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.check-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.check{
+    margin-right: 10px;
+}
+
+.check-label{
+    color: darkslategray;
+}
+
+.btn{
+    margin-top: 10px;
+    width: 120px;
+    height: 50px;
+    border: 2px solid darkslategray;
+    background-color: transparent;
+    color: darkslategray;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.btn:hover{
+    border-color:white;
+    background-color: darkslategray;
+    color: white;
+}

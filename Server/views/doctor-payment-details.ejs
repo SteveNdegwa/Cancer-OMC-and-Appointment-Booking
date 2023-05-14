@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/doctor-payment-details.css">
+    <title>Payment Details</title>
+</head>
+<body>
+   <form action="/register/doctor/payment-details" method="post">
+    <h1 class="header">Payments Details</h1>
+    <input type="tel" class="text" id="business_no" name="business_no" placeholder="Enter The Paybill No." required>
+    <input type="tel" class="text" id="appointment_fee" name="appointment_fee" placeholder="Enter The Appointment Fee" maxlength="4" required>
+    <div class="check-wrap">
+        <div class="check-div">
+            <input type="checkbox" name="free_check" id="free_check" class="check" checked>
+            <label for="free_check" class="check-label">Free Consultations</label>
+        </div>
+        <div class="check-div">
+            <input type="checkbox" name="paid_check" id="paid_check" class="check">
+            <label for="paid_check" class="check-label">Paid Consultations</label>
+        </div>
+    </div>
+    <input type="tel" class="text" id="consultation_fee" name="consultation_fee" placeholder="Enter The Consultation Fee" maxlength="4">
+    <button type="submit" class="btn">Next</button>
+   </form> 
+
+
+   <script>
+    let free_check = document.getElementById("free_check");
+    let paid_check = document.getElementById("paid_check");
+    let consultation_fee = document.getElementById("consultation_fee");
+
+    free_check.addEventListener("change",()=>{
+        if(free_check.checked){
+            paid_check.checked = false;
+            consultation_fee.style.maxHeight = "0px";
+            consultation_fee.style.borderColor = "transparent";
+            consultation_fee.style.padding = "0";
+        }else{
+            paid_check.checked = true;
+            consultation_fee.style.maxHeight= "100px";
+            consultation_fee.style.borderColor = "darkslategray";
+            consultation_fee.style.padding = "5px 10px";
+        }
+    })
+    paid_check.addEventListener("change",()=>{
+        if(paid_check.checked){
+            free_check.checked = false;
+            consultation_fee.style.maxHeight= "100px";
+            consultation_fee.style.borderColor = "darkslategray";
+            consultation_fee.style.padding = "5px 10px";
+        }else{
+            free_check.checked = true;
+            consultation_fee.style.maxHeight = "0px";
+            consultation_fee.style.padding = "0";
+            consultation_fee.style.borderColor = "transparent";
+        }
+    })
+   </script>
+</body>
+</html>
