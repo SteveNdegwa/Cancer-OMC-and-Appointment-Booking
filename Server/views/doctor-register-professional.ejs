@@ -12,7 +12,7 @@
     <form action="/register/doctor/professional-details" method="post">
 
         <nav class="nav-bar">
-            <h3>Doctor's Professional Details</h3>
+            <h4>Doctor's Professional Details</h4>
         </nav>
 
         <% if(doctorProfMsg.length > 0 ){ %>
@@ -28,7 +28,7 @@
 
         <div class="details-wrap">
             <h6>Cancer Speciality</h6>
-            <textarea id="speciality" cols="30" rows="10" class="speciality"  minlength="10" name="speciality" value="<%= speciality %>" required></textarea>
+            <textarea id="speciality" class="speciality"  minlength="10" name="speciality" value="<%= speciality %>" required></textarea>
         </div>
 
         <div class="details-wrap">
