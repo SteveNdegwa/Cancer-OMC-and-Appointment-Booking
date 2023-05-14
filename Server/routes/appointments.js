@@ -40,7 +40,8 @@ function access(req, res, next) {
 
 router.get("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
-    res.render("appointment-slots");
+    req.flash("appointmentSlotsMessage", "");
+    res.render("appointment-slots",{message: req.flash("appointmentSlotsMessage")})
   } else {
     res.redirect("/login");
   }
@@ -81,51 +82,56 @@ router.post("/customize-appointment-slots", (req, res) => {
 
     let timeJson = JSON.stringify(time);
 
-    pool.getConnection((err, connection) => {
-      if (err) console.log(err);
-      else {
-        const save = new Promise((resolve, reject) => {
-          days.forEach((day) => {
-            const query =
-              "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
-            connection.query(
-              query,
-              [req.session.userId, day],
-              (err, result) => {
-                if (err) console.log(err);
-
-                if (result.length) {
-                  const query =
-                    "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
-                  connection.query(
-                    query,
-                    [timeJson, req.session.userId, day],
-                    (err, data) => {
+    if(days.length > 0){
+      pool.getConnection((err, connection) => {
+        if (err) console.log(err);
+        else {
+          const save = new Promise((resolve, reject) => {
+            days.forEach((day) => {
+              const query =
+                "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
+              connection.query(
+                query,
+                [req.session.userId, day],
+                (err, result) => {
+                  if (err) console.log(err);
+  
+                  if (result.length) {
+                    const query =
+                      "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
+                    connection.query(
+                      query,
+                      [timeJson, req.session.userId, day],
+                      (err, data) => {
+                        if (err) console.log(err);
+                        else {
+                          console.log(`${day} updated successfully`);
+                        }
+                      }
+                    );
+                  } else {
+                    const query =
+                      "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
+                    const values = [req.session.userId, day, timeJson];
+                    connection.query(query, [values], (err, data) => {
                       if (err) console.log(err);
                       else {
-                        console.log(`${day} updated successfully`);
+                        console.log(`${day} inserted successfully`);
                       }
-                    }
-                  );
-                } else {
-                  const query =
-                    "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
-                  const values = [req.session.userId, day, timeJson];
-                  connection.query(query, [values], (err, data) => {
-                    if (err) console.log(err);
-                    else {
-                      console.log(`${day} inserted successfully`);
-                    }
-                  });
+                    });
+                  }
                 }
-              }
-            );
+              );
+            });
           });
-        });
-      }
-      return res.redirect("/");
-      connection.release();
-    });
+        }
+        connection.release();
+        return res.redirect("/");
+      });
+    }else{
+      req.flash("appointmentSlotsMessage", "No Days Selected");
+      res.render("appointment-slots",{message: req.flash("appointmentSlotsMessage")})
+    }
   } else {
     return res.redirect("/login");
   }
