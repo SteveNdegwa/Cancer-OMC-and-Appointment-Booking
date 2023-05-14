@@ -21,13 +21,32 @@ pool.getConnection(function (err, connection) {
 
         console.log('db ' + connection.state);
 
+        //   var sql = "CREATE TABLE otp (user_id INT, otp VARCHAR(255), expiry_time VARCHAR(255))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+        //   var sql = "CREATE TABLE consultation_sessions (room_id VARCHAR(255), expiry_time VARCHAR(255),  PRIMARY KEY (room_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+
         // var sql = "CREATE TABLE users (user_id INT NOT NULL AUTO_INCREMENT, user_name VARCHAR(255), email VARCHAR(255), password VARCHAR(255) , account_type VARCHAR(255), PRIMARY KEY (user_id))";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
         // }); 
 
-        //   var sql = "CREATE TABLE chat_rooms (room_id VARCHAR(255), patient_id INT NOT NULL, doctor_id INT NOT NULL, PRIMARY KEY (room_id))";
+        //  var sql = "CREATE TABLE doctor_payment_details (doctor_id INT, business_no VARCHAR(255), consultation_type VARCHAR(255), appointment_fee INT, consultation_fee INT, PRIMARY KEY (doctor_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+        //   var sql = "CREATE TABLE chat_rooms (room_id VARCHAR(255), patient_id INT NOT NULL, doctor_id INT NOT NULL, summary TEXT, PRIMARY KEY (room_id))";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
@@ -39,24 +58,24 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "DROP TABLE patient_details";
+        // var sql = "DROP TABLE chat_rooms";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");
         // });
 
 
-        var sql = "CREATE TABLE doctor_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255) , dob VARCHAR(255), phone_no VARCHAR(255), licence_no VARCHAR(255), cancer_speciality VARCHAR(1000), clinic_location VARCHAR(255), clinic_phone_no VARCHAR(255), clinic_email VARCHAR(255), booking_fee INT , verification_status VARCHAR(255) ,PRIMARY KEY (user_id))";
-        connection.query(sql, function(err, result){
-            if(err) throw err;
-            console.log("Table Created");
-        }); 
+        // var sql = "CREATE TABLE doctor_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255) , dob VARCHAR(255), phone_no VARCHAR(255), licence_no VARCHAR(255), cancer_speciality VARCHAR(1000), clinic_location VARCHAR(255), clinic_phone_no VARCHAR(255), clinic_email VARCHAR(255), verification_status VARCHAR(255) ,PRIMARY KEY (user_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
-        var sql = "CREATE TABLE patient_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255), dob VARCHAR(255), phone_no VARCHAR(255), location VARCHAR(255), cancer_type VARCHAR(255), cancer_stage VARCHAR(255), lifestyle_diseases VARCHAR(255), PRIMARY KEY (user_id))";
-        connection.query(sql, function(err, result){
-            if(err) throw err;
-            console.log("Table Created");
-        });
+        // var sql = "CREATE TABLE patient_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255), dob VARCHAR(255), phone_no VARCHAR(255), location VARCHAR(255), cancer_type VARCHAR(255), cancer_stage VARCHAR(255), lifestyle_diseases VARCHAR(255), PRIMARY KEY (user_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // });
 
         // var sql = "CREATE TABLE appointments (appointment_id INT NOT NULL AUTO_INCREMENT, patient_id INT NOT NULL, doctor_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), PRIMARY KEY (appointment_id))";
         // connection.query(sql, function(err, result){
@@ -140,7 +159,13 @@ pool.getConnection(function (err, connection) {
         // console.log(time.slice(0,2));
         // console.log(time.slice(3,5));
 
-        //  var sql = "CREATE TABLE stk_push (checkout_id VARCHAR(255), status VARCHAR(255), phone_no VARCHAR(255), amount INT NOT NULL, timestamp VARCHAR(255), appointment_id INT, doctor_id INT NOT NULL, patient_id INT NOT NULL, appointment_date VARCHAR(255), appointment_time VARCHAR(255), PRIMARY KEY (checkout_id))";
+        //  var sql = "CREATE TABLE appointments_stk_push (checkout_id VARCHAR(255), status VARCHAR(255), phone_no VARCHAR(255), amount INT NOT NULL, timestamp VARCHAR(255), appointment_id INT, doctor_id INT NOT NULL, patient_id INT NOT NULL, appointment_date VARCHAR(255), appointment_time VARCHAR(255), PRIMARY KEY (checkout_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
+
+        // var sql = "CREATE TABLE consultations_stk_push (checkout_id VARCHAR(255), status VARCHAR(255), phone_no VARCHAR(255), amount INT NOT NULL, timestamp VARCHAR(255), doctor_id INT NOT NULL, patient_id INT NOT NULL, consultation_expiry_time VARCHAR(255), PRIMARY KEY (checkout_id))";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
