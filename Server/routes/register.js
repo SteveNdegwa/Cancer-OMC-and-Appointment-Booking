@@ -36,20 +36,20 @@ router.get("/patient/medical-details", (req, res) => {
 });
 
 router.get("/doctor", (req, res) => {
-  // if (req.session.authenticated) {
+  if (req.session.authenticated) {
     return res.render("doctor-register", {
       doctorMsg: req.flash("doctorMsg"),
       name: "",
       dob: "",
       phone: "",
     });
-  // } else {
-  //   return res.redirect("/login");
-  // }
+  } else {
+    return res.redirect("/login");
+  }
 });
 
 router.get("/doctor/professional-details", (req, res) => {
-  // if (req.session.authenticated) {
+  if (req.session.authenticated) {
     return res.render("doctor-register-professional", {
       doctorProfMsg: req.flash("doctorProfMsg"),
       licence: "",
@@ -58,9 +58,9 @@ router.get("/doctor/professional-details", (req, res) => {
       phone: "",
       email: "",
     });
-  // } else {
-  //   return res.redirect("/login");
-  // }
+  } else {
+    return res.redirect("/login");
+  }
 });
 
 
