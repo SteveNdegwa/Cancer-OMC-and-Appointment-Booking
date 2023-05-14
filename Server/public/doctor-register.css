@@ -3,38 +3,38 @@
     padding: 0;
     scroll-behavior: smooth;
     background-color: white;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 body{
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 30px 0px;
 }
 
 /* form */
 
 form{
     width: 95%;
-    max-width: 500px;
+    max-width: 700px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 15px darkslategray;
-    margin: 20px 0px;
+    box-shadow: 1px 2px 5px gray;
 }
 
 form .nav-bar{
     width: 100%;
     height: 100px;
-    background-color: darkslategray;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 }
 
-form .nav-bar h3{
-    background-color: darkslategray;
-    color: white;
+form .nav-bar h4{
+    color: darkslategray;
+    font-weight: lighter;
     width: 100%;
     text-align: center;
     margin-top: 30px;
@@ -77,16 +77,17 @@ input:focus{
 
 form .details-wrap .type{
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-around;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 form .details-wrap .type .gender-type{
     margin-right: 10px;
 }
 
-form .details-wrap .type .gender-label{
-    margin-right: 80px;
+.gender-wrap{
+    margin: 10px;
 }
 
 
@@ -97,6 +98,8 @@ form .details-wrap .dob{
     height: 40px;
     font-size: larger;
     padding-left: 10px;
+    border: none;
+    border-bottom: 2px solid dimgray;
 }
 
 /* buttons */
@@ -104,17 +107,25 @@ form .details-wrap .dob{
 form .buttons-wrap{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 40px;
+    margin-top: 20px;
 }
 
 form .buttons-wrap .buttons{
     width: 120px;
     height: 60px;
-    background-color: darkslategray;
+    background-color: white;
     font-family: 'Times New Roman', Times, serif;
     font-size: 15px;
-    border-color: white;
-    color: white;
+    border:2px solid darkslategray;
+    color: darkslategray;
     cursor: pointer;
+    transition: all .3s ease;
+}
+
+form .buttons-wrap .buttons:hover{
+    background-color: darkslategray;
+    color: white;
+    border-color: white;
 }
