@@ -4,14 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/doctor-payment-details.css">
     <title>Payment Details</title>
 </head>
 <body>
    <form action="/register/doctor/payment-details" method="post">
     <h1 class="header">Payments Details</h1>
-    <input type="tel" class="text" id="business_no" name="business_no" placeholder="Enter The Paybill No." required>
-    <input type="tel" class="text" id="appointment_fee" name="appointment_fee" placeholder="Enter The Appointment Fee" maxlength="4" required>
+
+    <% if(message.length > 0 ){ %>
+        <div class="alert alert-danger" role="alert">
+            <%= message %>
+        </div>
+   <% } %>
+
+    <input type="tel" class="text" id="business_no" name="business_no" placeholder="Enter The Paybill No." value="<%= businessNo %>" required>
+    <input type="tel" class="text" id="appointment_fee" name="appointment_fee" placeholder="Enter The Appointment Fee" maxlength="4" value="<%= appointmentFee %>" required>
     <div class="check-wrap">
         <div class="check-div">
             <input type="checkbox" name="free_check" id="free_check" class="check" checked>
