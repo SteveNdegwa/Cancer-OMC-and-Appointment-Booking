@@ -14,10 +14,12 @@
     <form action="">
         <div class="messages-container" id="messages-container">
         </div>
-        <div class="message-div">
-            <textarea name="" id="message" class="text" cols="40" rows="5"></textarea>
-            <button type="button" class="btn" id="message-btn">Message</button>
-        </div>
+        <% if (sendMessageDisplay) { %>
+            <div class="message-div">
+                <textarea name="" id="message" class="text" cols="40" rows="5"></textarea>
+                <button type="button" class="btn" id="message-btn">Message</button>
+            </div>
+        <% } %>
     </form>
 
     <script>
