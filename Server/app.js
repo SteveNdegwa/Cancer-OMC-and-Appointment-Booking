@@ -67,8 +67,8 @@ let room = "";
 let user = "";
 let userId = "";
 let accountType = "";
-
-
+let expiry = "";
+let type = "";
 
 let token = "";
 
@@ -90,13 +90,13 @@ function access(req, res, next) {
 }
 
 app.get("/chats/pay-consultation-fee", (req, res) => {
-  if(req.session.authenticated){
-  req.flash("consultMsg", "");
-  res.render("pay-consultation-fee.ejs", {
-    message: consultMsg,
-    consultationFee: req.session.consultationFee,
-  });
-  }else{
+  if (req.session.authenticated) {
+    req.flash("consultMsg", "");
+    res.render("pay-consultation-fee.ejs", {
+      message: consultMsg,
+      consultationFee: req.session.consultationFee,
+    });
+  } else {
     res.redirect("/login");
   }
 });
@@ -269,43 +269,53 @@ app.post("/chats/consultation-stk-push", (req, res) => {
 
         const saveSessions = new Promise((resolve, reject) => {
           pool.getConnection((err, connection) => {
-            if(err) throw err;
-  
-            const query = "SELECT * FROM consultation_sessions where room_id = ?";
-            connection.query(query,[req.session.roomId],(err,results)=>{
-              if(err) {throw err;}
-              else{
-                if(results.length){
-                  const query2 = "UPDATE consultation_sessions SET expiry_time = ? where room_id = ?";
-                  connection.query(query2,[expiryTime, req.session.roomId],(err,data)=>{
-                    if(err){throw err;}
-                    else{
-                      console.log("consultation session updated successfully");
+            if (err) throw err;
+
+            const query =
+              "SELECT * FROM consultation_sessions where room_id = ?";
+            connection.query(query, [req.session.roomId], (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                if (results.length) {
+                  const query2 =
+                    "UPDATE consultation_sessions SET expiry_time = ? where room_id = ?";
+                  connection.query(
+                    query2,
+                    [expiryTime, req.session.roomId],
+                    (err, data) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        console.log(
+                          "consultation session updated successfully"
+                        );
+                      }
                     }
-                  })
-                }else{
-                  const query2 = "INSERT INTO consultation_sessions(`room_id`, `expiry_time`) VALUES(?)";
-                  const values = [
-                    req.session.roomId,
-                    expiryTime
-                  ]
-                  connection.query(query2,[values],(err,data)=>{
-                    if(err){throw err;}
-                    else{
+                  );
+                } else {
+                  const query2 =
+                    "INSERT INTO consultation_sessions(`room_id`, `expiry_time`) VALUES(?)";
+                  const values = [req.session.roomId, expiryTime];
+                  connection.query(query2, [values], (err, data) => {
+                    if (err) {
+                      throw err;
+                    } else {
                       console.log("consultation session inserted successfully");
                     }
-                  })
+                  });
                 }
               }
-            })
+            });
             connection.release();
           });
-        })
+        });
 
-        saveSessions.then(()=>{
+        saveSessions.then(() => {
           pool.getConnection((err, connection) => {
             if (err) throw err;
-            const query = "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
+            const query =
+              "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
             connection.query(
               query,
               [
@@ -313,20 +323,22 @@ app.post("/chats/consultation-stk-push", (req, res) => {
                 req.session.paymentDetails.CheckoutRequestID,
               ],
               (err, result) => {
-                if (err) {throw err}
-                else{
+                if (err) {
+                  throw err;
+                } else {
                   return res.redirect("/chats/chat");
                 }
               }
             );
           });
-        })
+        });
       } else {
         /// if payment not successful
 
         pool.getConnection((err, connection) => {
           if (err) throw err;
-          const query = "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
+          const query =
+            "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
           connection.query(
             query,
             [
@@ -346,8 +358,6 @@ app.post("/chats/consultation-stk-push", (req, res) => {
       }
     });
 });
-
-
 
 app.get("/chats/chat-rooms", (req, res) => {
   let rooms = [];
@@ -459,10 +469,17 @@ app.get("/chats/chat", (req, res) => {
       userId = req.session.userId;
       room = req.session.roomId;
       accountType = req.session.accountType;
+      expiry = req.session.expiryTime;
+      type = req.session.consultationType;
 
       console.log(req.session);
 
-      res.render("chat");
+      if(req.session.viewMode){
+        return res.render("chat",{sendMessageDisplay:false});
+      }
+      else{
+        return res.render("chat",{sendMessageDisplay:true});
+      }
     });
 
     connection.release();
@@ -489,51 +506,8 @@ io.on("connection", (socket) => {
   socket.broadcast.to(room).emit("message", `${user} joined the chart`); // all clients but user
   // io.emit(); //all clients
 
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    const query = "SELECT * FROM chats WHERE room_id = ?";
-    connection.query(query, [room], (err, results) => {
-      if (err) throw err;
-      if (results.length) {
-        results.forEach((message) => {
-          let query2 = "";
-          if (accountType == "patient") {
-            query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
-          } else {
-            query2 = "SELECT name FROM patient_details WHERE user_id = ?";
-          }
-          connection.query(query2, [message.sender_id], (err, result) => {
-            if (err) throw err;
-
-            if (!(message.date == date)) {
-              date = message.date;
-              if (message.date == date2) {
-                socket.emit("message", "Today");
-              } else {
-                //// get previous day -- yesterday
-                socket.emit("message", message.date);
-              }
-            }
-
-            if (message.sender_id == userId) {
-              socket.emit("retrieveSentChats", message.message, message.time);
-            } else {
-              socket.emit(
-                "retrieveReceivedChats",
-                message.message,
-                result[0].name,
-                message.time
-              );
-            }
-          });
-        });
-      }
-    });
-
-    connection.release();
-  });
-
-  socket.on("sentChatMessage", (msg, datee, time) => {
+  let lastDate = "";
+  const getLastDate = new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) throw err;
       const query =
@@ -541,41 +515,91 @@ io.on("connection", (socket) => {
       connection.query(query, [room], (err, results) => {
         if (err) throw err;
         if (results.length) {
-          if (!(results[results.length - 1].date == date)) {
-            date = datee;
-            if (date == date2) {
-              socket.emit("message", "Today");
-              socket.broadcast.to(room).emit("message", "Today");
-            } else {
-              socket.emit("message", datee);
-              socket.broadcast.to(room).emit("message", datee);
-            }
-          }
-        } else {
-          date = datee;
-          if (date == date2) {
-            socket.emit("message", "Today");
-            socket.broadcast.to(room).emit("message", "Today");
-          } else {
-            socket.emit("message", datee);
-            socket.broadcast.to(room).emit("message", datee);
-          }
+          lastDate = results[results.length - 1].date;
+          resolve(lastDate);
         }
+      });
 
-        const query2 =
+      connection.release();
+    });
+  });
+
+  getLastDate.then((lastDate) => {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+      const query = "SELECT * FROM chats WHERE room_id = ?";
+      connection.query(query, [room], (err, results) => {
+        if (err) throw err;
+        if (results.length) {
+          results.forEach((message) => {
+            let query2 = "";
+            if (accountType == "patient") {
+              query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
+            } else {
+              query2 = "SELECT name FROM patient_details WHERE user_id = ?";
+            }
+            connection.query(query2, [message.sender_id], (err, result) => {
+              if (err) throw err;
+
+              if (!(message.date == date)) {
+                date = message.date;
+                if (message.date == date2) {
+                  socket.emit("message", "Today");
+                } else {
+                  //// get previous day -- yesterday
+                  socket.emit("message", message.date);
+                }
+              }
+
+              if (message.sender_id == userId) {
+                socket.emit("retrieveSentChats", message.message, message.time);
+              } else {
+                socket.emit(
+                  "retrieveReceivedChats",
+                  message.message,
+                  result[0].name,
+                  message.time
+                );
+              }
+            });
+          });
+        }
+      });
+
+      connection.release();
+    });
+  });
+
+  socket.on("sentChatMessage", (msg, datee, time) => {
+    const now = new Date();
+    if (now.getTime() < expiry) {
+      if (lastDate == datee) {
+      } else {
+        socket.emit("message", "Today");
+        socket.broadcast.to(room).emit("message", "Today");
+      }
+      lastDate = datee;
+
+      pool.getConnection((err, connection) => {
+        const query =
           "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
         const values = [room, userId, datee, time, msg];
-        connection.query(query2, [values], (err, data) => {
+        connection.query(query, [values], (err, data) => {
           if (err) throw err;
           console.log(data.insertId);
           console.log(userId);
 
           socket.emit("sentChatMessage", msg, time);
         });
-      });
 
-      connection.release();
-    });
+        connection.release();
+      });
+    } else {
+      socket.emit(
+        "message",
+        "Session has expired. Pay the consultation fee to continue the consultation"
+      );
+    }
   });
 
   socket.on("receivedChatMessage", (msg, datee, time) => {
