@@ -63,13 +63,20 @@ router.get("/doctor/professional-details", (req, res) => {
   }
 });
 
+router.get("/doctor/payment-details", (req, res) => {
+  if (req.session.authenticated) {
+    req.flash("paymentDetailsMessage", "");
+    res.render("doctor-payment-details", {
+      message: req.flash("PaymentDetailsMessage"),
+      businessNo: "",
+      appointmentFee: "",
+    });
+  } else {
+    return res.redirect("/login");
+  }
+});
 
-router.get("/doctor/payment-details",(req,res)=>{
-  res.render("doctor-payment-details");
-})
-
-
-//     posts
+/////////////////////     posts
 
 router.post("/patient", (req, res) => {
   console.log(req.session.userId);
@@ -84,25 +91,58 @@ router.post("/patient", (req, res) => {
       gender = "female";
     }
 
-    pool.getConnection((err, connection) => {
-      const query =
-        "INSERT INTO patient_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `location`) VALUES(?)";
-      const values = [
-        req.session.userId,
-        req.body.name,
-        gender,
-        req.body.dob,
-        req.body.phone,
-        req.body.location,
-      ];
-      connection.query(query, [values], (err, data) => {
-        if (err) return console.log(err);
-        else {
-          console.log("patient personal data inserted");
+    let male = "";
+    let female = "";
 
-          res.redirect("/register/patient/medical-details");
+    pool.getConnection((err, connection) => {
+      if (err) {
+        if (gender == "male") {
+          male = "checked";
+        } else {
+          female = "checked";
         }
-      });
+        req.flash("patientMsg", "Error Accessing The Database");
+        return res.render("patient-register", {
+          patientMsg: req.flash("patientMsg"),
+          name: req.body.name,
+          dob: req.body.dob,
+          phone: req.body.phone,
+          location: req.body.location,
+          male: male,
+          female: female,
+        });
+      } else {
+        const query =
+          "INSERT INTO patient_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `location`) VALUES(?)";
+        const values = [
+          req.session.userId,
+          req.body.name,
+          gender,
+          req.body.dob,
+          req.body.phone,
+          req.body.location,
+        ];
+        connection.query(query, [values], (err, data) => {
+          if (err) {
+            req.flash("patientMsg", "Error Saving The Details");
+            return res.render("patient-register", {
+              patientMsg: req.flash("patientMsg"),
+              name: req.body.name,
+              dob: req.body.dob,
+              phone: req.body.phone,
+              location: req.body.location,
+              male: male,
+              female: female,
+            });
+          } else {
+            console.log("patient personal data inserted");
+
+            return res.redirect("/register/patient/medical-details");
+          }
+        });
+      }
+
+      connection.release();
     });
   } else {
     console.log("Choose the gender");
@@ -113,6 +153,8 @@ router.post("/patient", (req, res) => {
       dob: req.body.dob,
       phone: req.body.phone,
       location: req.body.location,
+      male: "",
+      female: "",
     });
   }
 });
@@ -121,9 +163,6 @@ router.post("/patient/medical-details", (req, res) => {
   if (req.body.cancer == "select") {
     console.log("Please choose cancer type");
     req.flash("PatientMedicalMsg", "Please Choose The Cancer Type");
-
-    console.log(req.body);
-
     return res.render("patient-register-medical", {
       patientMedicalMsg: req.flash("patientMedicalMsg"),
       stage: req.body.stage,
@@ -131,28 +170,43 @@ router.post("/patient/medical-details", (req, res) => {
     });
   } else {
     pool.getConnection((err, connection) => {
-      if (err) console.log(err);
+      if (err) {
+        req.flash("PatientMedicalMsg", "Error Connecting To Database");
+        return res.render("patient-register-medical", {
+          patientMedicalMsg: req.flash("patientMedicalMsg"),
+          stage: req.body.stage,
+          lifestyleDiseases: req.body.lifestyle,
+        });
+      } else {
+        const query =
+          "UPDATE patient_details SET cancer_type = ?, cancer_stage = ?, lifestyle_diseases = ? WHERE user_id = ?";
 
-      const query =
-        "UPDATE patient_details SET cancer_type = ?, cancer_stage = ?, lifestyle_diseases = ? WHERE user_id = ?";
+        connection.query(
+          query,
+          [
+            req.body.cancer,
+            req.body.stage,
+            req.body.lifestyle,
+            req.session.userId,
+          ],
+          (err, data) => {
+            if (err) {
+              req.flash("PatientMedicalMsg", "Error Saving The Details");
+              return res.render("patient-register-medical", {
+                patientMedicalMsg: req.flash("patientMedicalMsg"),
+                stage: req.body.stage,
+                lifestyleDiseases: req.body.lifestyle,
+              });
+            } else {
+              console.log("Patient Medical details Inserted");
 
-      connection.query(
-        query,
-        [
-          req.body.cancer,
-          req.body.stage,
-          req.body.lifestyle,
-          req.session.userId,
-        ],
-        (err, data) => {
-          if (err) console.log(err);
-          else {
-            console.log("Patient Medical details Inserted");
-
-            res.redirect("/");
+              return res.redirect("/");
+            }
           }
-        }
-      );
+        );
+      }
+
+      connection.release();
     });
   }
 });
@@ -168,26 +222,58 @@ router.post("/doctor", (req, res) => {
       gender = "female";
     }
 
+    let male = "";
+    let female = "";
+
+    if (gender == "male") {
+      male = "checked";
+    } else {
+      female = "checked";
+    }
+
     pool.getConnection((err, connection) => {
-      const query =
-        "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `verification_status`) VALUES(?)";
-      const values = [
-        req.session.userId,
-        req.body.name,
-        gender,
-        req.body.dob,
-        req.body.phone,
-        "false",
-      ];
+      if (err) {
+        req.flash("doctorMsg", "Error Connecting To The Database");
+        return res.render("doctor-register", {
+          doctorMsg: req.flash("doctorMsg"),
+          name: req.body.name,
+          dob: req.body.dob,
+          phone: req.body.phone,
+          male: male,
+          female: female,
+        });
+      } else {
+        const query =
+          "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `verification_status`) VALUES(?)";
+        const values = [
+          req.session.userId,
+          req.body.name,
+          gender,
+          req.body.dob,
+          req.body.phone,
+          "false",
+        ];
 
-      connection.query(query, [values], (err, data) => {
-        if (err) console.log(err);
-        else {
-          console.log("Doctor personal details inserted");
+        connection.query(query, [values], (err, data) => {
+          if (err) {
+            req.flash("doctorMsg", "Error Saving The Details");
+            return res.render("doctor-register", {
+              doctorMsg: req.flash("doctorMsg"),
+              name: req.body.name,
+              dob: req.body.dob,
+              phone: req.body.phone,
+              male: male,
+              female: female,
+            });
+          } else {
+            console.log("Doctor personal details inserted");
 
-          res.redirect("/register/doctor/professional-details");
-        }
-      });
+            res.redirect("/register/doctor/professional-details");
+          }
+        });
+      }
+
+      connection.release();
     });
   } else {
     console.log("Please select your gender");
@@ -197,6 +283,8 @@ router.post("/doctor", (req, res) => {
       name: req.body.name,
       dob: req.body.dob,
       phone: req.body.phone,
+      male: "",
+      female: "",
     });
   }
 });
@@ -209,33 +297,55 @@ router.post("/doctor/professional-details", (req, res) => {
   verifyEmail.then((data) => {
     if (data.valid) {
       pool.getConnection((err, connection) => {
-        const query =
-          "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
+        if (err) {
+          req.flash("doctorProfMsg", "Error Accessing The Database");
+          return res.render("doctor-register-professional", {
+            doctorProfMsg: req.flash("doctorProfMsg"),
+            licence: req.body.licence,
+            speciality: req.body.speciality,
+            location: req.body.location,
+            phone: req.body.phone,
+            email: req.body.email,
+          });
+        } else {
+          const query =
+            "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
 
-        connection.query(
-          query,
-          [
-            req.body.licence,
-            req.body.speciality,
-            req.body.location,
-            req.body.phone,
-            req.body.email,
-            req.session.userId,
-          ],
-          (err, data) => {
-            if (err) console.log(err);
-            else {
-              console.log("Doctor's professional details inserted");
+          connection.query(
+            query,
+            [
+              req.body.licence,
+              req.body.speciality,
+              req.body.location,
+              req.body.phone,
+              req.body.email,
+              req.session.userId,
+            ],
+            (err, data) => {
+              if (err) {
+                req.flash("doctorProfMsg", "Error Saving The Details");
+                return res.render("doctor-register-professional", {
+                  doctorProfMsg: req.flash("doctorProfMsg"),
+                  licence: req.body.licence,
+                  speciality: req.body.speciality,
+                  location: req.body.location,
+                  phone: req.body.phone,
+                  email: req.body.email,
+                });
+              } else {
+                console.log("Doctor's professional details inserted");
 
-              return res.redirect("/register/doctor/payment-details");
+                return res.redirect("/register/doctor/payment-details");
+              }
             }
-          }
-        );
+          );
+        }
+
+        connection.release();
       });
     } else {
       console.log("Invalid email");
       req.flash("doctorProfMsg", "Invalid Email");
-
       return res.render("doctor-register-professional", {
         doctorProfMsg: req.flash("doctorProfMsg"),
         licence: req.body.licence,
@@ -248,12 +358,75 @@ router.post("/doctor/professional-details", (req, res) => {
   });
 });
 
-router.post("/doctor/payment-details",(req,res)=>{
+router.post("/doctor/payment-details", (req, res) => {
   console.log(req.body);
-  var reqExp = /[a-zA-Z]/;
-  if(reqExp.test(req.body.business_no)){
-    console.log("Letters Found");
+  var reqExp = /[a-zA-Z]/; /// check also symbols
+  if (
+    reqExp.test(req.body.business_no) ||
+    reqExp.test(req.body.appointment_fee) ||
+    reqExp.test(req.body.consultation_fee)
+  ) {
+    /// letters found
+    req.flash("paymentDetailsMessage", "Invalid Details");
+    return res.render("doctor-payment-details", {
+      message: req.flash("paymentDetailsMessage"),
+    });
+  } else {
+    let consultationType = "";
+    let consultationFee = "";
+    if (req.body.paid_check == "on") {
+      consultationType = "paid";
+      consultationFee = req.body.consultation_fee;
+    } else {
+      consultationType = "free";
+      consultationFee = 0;
+    }
+
+    if (consultationType == "paid" && req.body.consultation_fee == "") {
+      req.flash("paymentDetailsMessage", "Please Enter The Consultation Fee");
+      return res.render("doctor-payment-details", {
+        message: req.flash("paymentDetailsMessage"),
+        businessNo: req.body.business_no,
+        appointmentFee: req.body.appointment_fee,
+      });
+    } else {
+      pool.getConnection((err, connection) => {
+        if (err) {
+          req.flash("paymentDetailsMessage", "Error Accessing The Database");
+          return res.render("doctor-payment-details", {
+            message: req.flash("paymentDetailsMessage"),
+            businessNo: "",
+            appointmentFee: "",
+          });
+        } else {
+          const query =
+            "INSERT INTO doctor_payment_details(`doctor_id`, `business_no`, `consultation_type`, `appointment_fee`, `consultation_fee`) VALUES(?)";
+          const values = [
+            req.session.userId,
+            req.body.business_no,
+            consultationType,
+            req.body.appointment_fee,
+            consultationFee,
+          ];
+          connection.query(query, [values], (err, data) => {
+            if (err) {
+              req.flash("paymentDetailsMessage", "Error Saving The Details");
+              return res.render("doctor-payment-details", {
+                message: req.flash("paymentDetailsMessage"),
+                businessNo: "",
+                appointmentFee: "",
+              });
+            } else {
+              console.log("payment details saved successfully");
+              return res.redirect("/appointments/customize-appointment-slots");
+            }
+          });
+        }
+
+        connection.release();
+      });
+    }
   }
-})
+});
 
 module.exports = router;
