@@ -175,6 +175,7 @@ router.post("/", (req, res) => {
           //// to paid consultation
 
           req.session.consultationType = "paid";
+          req.session.viewMode = false;
 
           const checkSessionStatus = new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
