@@ -15,6 +15,12 @@
         <div class="select-times">
             <h2 class="main-h2">Customize Appointments</h2>
 
+            <% if(message.length > 0 ){ %>
+                <div class="alert alert-danger" role="alert">
+                    <%= message %>
+                </div>
+           <% } %>
+
             <div class="appointment-days" id="appointment-days">
                 <div class="day-wrap">
                     <input type="radio" class="day" id="sunday" name="sunday">
@@ -47,7 +53,7 @@
             </div>
 
             <button type="reset" class="reset-days" id="reset-days">Reset</button>
-            
+
             <div class="select-duration">
                 <h3 class="duration-header">Length</h3>
                 <div class="duration-wrap">
