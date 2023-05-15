@@ -97,6 +97,8 @@ router.post("/", (req, res) => {
     /// consultations
     console.log("consult");
 
+    req.session.consultation.doctorId = req.body.doctor_id;
+
     const getRoomId = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
         if (err) throw err;
@@ -155,6 +157,7 @@ router.post("/", (req, res) => {
                   freeConsultation = true;
                 } else {
                   /// paid
+                  req.session.consultation.businessNo = result[0].business_no;
                   req.session.consultationFee = result[0].consultation_fee;
                   freeConsultation = false;
                 }
