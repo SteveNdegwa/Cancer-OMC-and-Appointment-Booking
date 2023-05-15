@@ -146,7 +146,7 @@ router.post("/", (req, res) => {
           } else {
             let freeConsultation;
             const query =
-              "SELECT consultation_type FROM doctor_payment_details WHERE doctor_id = ?";
+              "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
             connection.query(query, [req.body.doctor_id], (err, result) => {
               if (err) {
                 throw err;
@@ -155,6 +155,7 @@ router.post("/", (req, res) => {
                   freeConsultation = true;
                 } else {
                   /// paid
+                  req.session.consultationFee = result[0].consultation_fee;
                   freeConsultation = false;
                 }
               }
