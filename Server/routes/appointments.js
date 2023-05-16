@@ -473,7 +473,7 @@ router.post("/input-number", access, (req, res) => {
 
         if (err) throw err;
         const query2 =
-          "INSERT INTO stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
+          "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
         const values2 = [
           response.body.CheckoutRequestID,
           mobileNo,
@@ -574,7 +574,7 @@ router.post("/stk-push", (req, res) => {
 
           saveAppointment.then((appointmentId) => {
             const query3 =
-              "UPDATE stk_push SET status = ? ,appointment_id = ? WHERE checkout_id = ?";
+              "UPDATE appointments_stk_push SET status = ? ,appointment_id = ? WHERE checkout_id = ?";
             connection.query(
               query3,
               [
@@ -596,7 +596,7 @@ router.post("/stk-push", (req, res) => {
 
         pool.getConnection((err, connection) => {
           if (err) throw err;
-          const query = "UPDATE stk_push SET status = ? WHERE checkout_id = ?";
+          const query = "UPDATE appointments_stk_push SET status = ? WHERE checkout_id = ?";
           connection.query(
             query,
             [
