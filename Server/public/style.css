@@ -294,7 +294,7 @@ body{
 
 
 /**********Doctors body**************/
-.doctor-id{
+.doctor-id, .name{
     display: none;
 }
 
