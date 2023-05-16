@@ -188,7 +188,7 @@ app.post("/chats/consultation-input-number", access, (req, res) => {
         if (err) throw err;
 
         const now = new Date();
-        expiryTime = now.getTime()+1440 * 60000;  //// 1440 minutes
+        expiryTime = now.getTime() + 1440 * 60000; //// 1440 minutes
 
         const query2 =
           "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
@@ -553,7 +553,12 @@ app.post("/chats/chat-rooms", (req, res) => {
             return res.redirect("/chats/chat");
           } else {
             /// session expired
-            return res.redirect("/chats/pay-consultation-fee");
+            if (req.session.accountType == patient) {
+              return res.redirect("/chats/pay-consultation-fee");
+            } else {
+              req.session.viewMode = true;
+              return res.redirect("/chats/chat");
+            }
           }
         });
       }
@@ -579,12 +584,11 @@ app.get("/chats/chat", (req, res) => {
       expiry = req.session.expiryTime;
       type = req.session.consultationType;
 
-
       let exp = "";
-      if(type == "paid"){
-        if(sendMessageDisplay){   /// get date
-       
-        }else{
+      if (type == "paid") {
+        if (sendMessageDisplay) {
+          /// get date
+        } else {
           exp = "expired";
         }
       }
@@ -592,9 +596,15 @@ app.get("/chats/chat", (req, res) => {
       console.log(req.session);
 
       if (req.session.viewMode) {
-        return res.render("chat", { sendMessageDisplay: false, name: req.session.consultation.name });
+        return res.render("chat", {
+          sendMessageDisplay: false,
+          name: req.session.consultation.name,
+        });
       } else {
-        return res.render("chat", { sendMessageDisplay: true, name: req.session.consultation.name });
+        return res.render("chat", {
+          sendMessageDisplay: true,
+          name: req.session.consultation.name,
+        });
       }
     });
 
