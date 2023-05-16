@@ -98,6 +98,7 @@ router.post("/", (req, res) => {
     console.log("consult");
 
     req.session.consultation.doctorId = req.body.doctor_id;
+    req.session.consultation.name = req.body.name;
 
     const getRoomId = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
@@ -187,7 +188,7 @@ router.post("/", (req, res) => {
               } else {
                 const query =
                   "SELECT expiry_time FROM consultation_sessions where room_id = ?";
-                connection.query((err, result) => {
+                connection.query(query,[roomId],(err, result) => {
                   if (err) {
                     throw err;
                   } else {
