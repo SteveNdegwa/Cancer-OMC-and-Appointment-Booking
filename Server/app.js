@@ -188,7 +188,7 @@ app.post("/chats/consultation-input-number", access, (req, res) => {
         if (err) throw err;
 
         const now = new Date();
-        expiryTime = now.getTime(); //// + 24Hrs;
+        expiryTime = now.getTime()+1440 * 60000;  //// 1440 minutes
 
         const query2 =
           "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
@@ -451,7 +451,114 @@ app.get("/chats/chat-rooms", (req, res) => {
 
 app.post("/chats/chat-rooms", (req, res) => {
   req.session.roomId = req.body.room_id;
-  res.redirect("/chats/chat");
+  req.session.consultation.name = req.body.name;
+
+  const getDoctorId = new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM chat_rooms WHERE room_id=?";
+        connection.query(query, [req.body.room_id], (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            req.session.consultation.doctorId = results[0].doctor_id;
+            resolve(results[0].doctor_id);
+          }
+        });
+      }
+    });
+  });
+
+  getDoctorId.then((doctorId) => {
+    const checkConsultationType = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          let freeConsultation;
+          const query =
+            "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
+          connection.query(query, [doctorId], (err, result) => {
+            if (err) {
+              throw err;
+            } else {
+              if (result[0].consultation_type == "free") {
+                freeConsultation = true;
+              } else {
+                /// paid
+                req.session.consultation.businessNo = result[0].business_no;
+                req.session.consultationFee = result[0].consultation_fee;
+                freeConsultation = false;
+              }
+            }
+          });
+        }
+
+        connection.release();
+      });
+    });
+
+    checkConsultationType.then((freeConsultation) => {
+      if (freeConsultation) {
+        ///// to free consultation
+        req.session.consultationType = "free";
+        return res.redirect("/chats/chat");
+      } else {
+        //// to paid consultation
+
+        req.session.consultationType = "paid";
+        req.session.viewMode = false;
+
+        const checkSessionStatus = new Promise((resolve, reject) => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT expiry_time FROM consultation_sessions where room_id = ?";
+              connection.query(query, [req.body.room_id], (err, result) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (result.length) {
+                    let expiryTime = result[0].expiry_time;
+
+                    const now = new Date();
+                    if (now.getTime() > expiryTime) {
+                      let sessionActive = false;
+                      resolve(sessionActive);
+                    } else {
+                      let sessionActive = true;
+                      req.session.expiryTime = expiryTime;
+                      resolve(sessionActive);
+                    }
+                  } else {
+                    /// no payment made --- redirect to payment page
+                    let sessionActive = false;
+                    resolve(sessionActive);
+                  }
+                }
+              });
+            }
+
+            connection.release();
+          });
+        });
+
+        checkSessionStatus.then((sessionActive) => {
+          if (sessionActive) {
+            //// session still active
+            return res.redirect("/chats/chat");
+          } else {
+            /// session expired
+            return res.redirect("/chats/pay-consultation-fee");
+          }
+        });
+      }
+    });
+  });
 });
 
 app.get("/chats/chat", (req, res) => {
@@ -472,13 +579,22 @@ app.get("/chats/chat", (req, res) => {
       expiry = req.session.expiryTime;
       type = req.session.consultationType;
 
+
+      let exp = "";
+      if(type == "paid"){
+        if(sendMessageDisplay){   /// get date
+       
+        }else{
+          exp = "expired";
+        }
+      }
+
       console.log(req.session);
 
-      if(req.session.viewMode){
-        return res.render("chat",{sendMessageDisplay:false});
-      }
-      else{
-        return res.render("chat",{sendMessageDisplay:true});
+      if (req.session.viewMode) {
+        return res.render("chat", { sendMessageDisplay: false, name: req.session.consultation.name });
+      } else {
+        return res.render("chat", { sendMessageDisplay: true, name: req.session.consultation.name });
       }
     });
 
@@ -571,8 +687,37 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sentChatMessage", (msg, datee, time) => {
-    const now = new Date();
-    if (now.getTime() < expiry) {
+    if (type == "paid") {
+      const now = new Date();
+      if (now.getTime() < expiry) {
+        if (lastDate == datee) {
+        } else {
+          socket.emit("message", "Today");
+          socket.broadcast.to(room).emit("message", "Today");
+        }
+        lastDate = datee;
+
+        pool.getConnection((err, connection) => {
+          const query =
+            "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
+          const values = [room, userId, datee, time, msg];
+          connection.query(query, [values], (err, data) => {
+            if (err) throw err;
+            console.log(data.insertId);
+            console.log(userId);
+
+            socket.emit("sentChatMessage", msg, time);
+          });
+
+          connection.release();
+        });
+      } else {
+        socket.emit(
+          "message",
+          "Session has expired. Pay the consultation fee to continue the consultation"
+        );
+      }
+    } else {
       if (lastDate == datee) {
       } else {
         socket.emit("message", "Today");
@@ -587,18 +732,15 @@ io.on("connection", (socket) => {
         connection.query(query, [values], (err, data) => {
           if (err) throw err;
           console.log(data.insertId);
-          console.log(userId);
+          console.log(`User Id: ${userId}`);
+
+          console.log(req.session);
 
           socket.emit("sentChatMessage", msg, time);
         });
 
         connection.release();
       });
-    } else {
-      socket.emit(
-        "message",
-        "Session has expired. Pay the consultation fee to continue the consultation"
-      );
     }
   });
 
