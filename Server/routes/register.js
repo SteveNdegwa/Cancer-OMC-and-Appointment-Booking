@@ -17,6 +17,8 @@ router.get("/patient", (req, res) => {
       dob: "",
       phone: "",
       location: "",
+      male: "",
+      female: "",
     });
   } else {
     return res.redirect("/login");
@@ -42,6 +44,8 @@ router.get("/doctor", (req, res) => {
       name: "",
       dob: "",
       phone: "",
+      male: "",
+      female: "",
     });
   } else {
     return res.redirect("/login");
