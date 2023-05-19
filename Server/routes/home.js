@@ -6,6 +6,7 @@ const pool = require("../server.js");
 const path = require("path");
 const { time } = require("console");
 const { resolve } = require("path");
+const { connect } = require("http2");
 
 router.use(express.static(path.resolve("./node_modules")));
 
@@ -31,21 +32,11 @@ router.get("/", (req, res) => {
             if (err) console.log(err);
             else {
               if (results.length) {
-                var string = JSON.stringify(results);
-                var json = JSON.parse(string);
-
-                var name = json[0].name;
-                var cancerType = json[0].cancer_type;
-
-                if (cancerType == "") {
+                if (results[0].cancer_type == null) {
                   return res.redirect("/register/patient/medical-details");
                 } else {
                   getDoctorsData.then((results) => {
-                    if (req.session.accountType == "patient") {
-                      return res.render("index", { doctors: results });
-                    } else {
-                      return res.render("index2");
-                    }
+                    return res.render("index", { doctors: results });
                   });
                 }
               } else {
@@ -60,21 +51,11 @@ router.get("/", (req, res) => {
             if (err) console.log(err);
             else {
               if (results.length) {
-                var string = JSON.stringify(results);
-                var json = JSON.parse(string);
-
-                var name = json[0].name;
-                var cancerSpeciality = json[0].cancer_speciality;
-
-                if (cancerSpeciality == "") {
+                if (results[0].cancer_speciality == null) {
                   return res.redirect("/register/doctor/professional-details");
                 } else {
                   getDoctorsData.then((results) => {
-                    if (req.session.accountType == "patient") {
-                      return res.render("index", { doctors: results });
-                    } else {
-                      return res.render("index2");
-                    }
+                    return res.render("index2");
                   });
                 }
               } else {
@@ -98,11 +79,11 @@ router.post("/", (req, res) => {
     console.log("consult");
 
     req.session.consultation = {
-      doctorId : req.body.doctor_id,
-      name :req.body.name,
-      businessNo:"",
-      CheckoutRequestID:"",
-    }
+      doctorId: req.body.doctor_id,
+      name: req.body.name,
+      businessNo: "",
+      CheckoutRequestID: "",
+    };
 
     const getRoomId = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
@@ -195,7 +176,7 @@ router.post("/", (req, res) => {
               } else {
                 const query =
                   "SELECT expiry_time FROM consultation_sessions where room_id = ?";
-                connection.query(query,[roomId],(err, result) => {
+                connection.query(query, [roomId], (err, result) => {
                   if (err) {
                     throw err;
                   } else {
@@ -299,9 +280,48 @@ router.post("/search-doctors", (req, res) => {
   });
 });
 
-
-router.get("/my-profile",(req,res)=>{
-  res.render("my-profile")
-})
+router.get("/my-profile", (req, res) => {
+  if (req.session.authenticated) {
+    if (req.session.accountType == "patient") {
+      //patient
+      const getDetails = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query = "SELECT * FROM patient_details  WHERE user_id= ?";
+            connection.query(query, [req.session.userId], (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                let details = results[0];
+                resolve(details);
+              }
+            });
+          }
+          connection.release();
+        });
+      });
+      getDetails.then((details) => {
+        let male = "",
+          female = "";
+        if (details.gender == "male") {
+          male = "checked";
+        } else {
+          female = "checked";
+        }
+        res.render("my-profile-patient", {
+          details: details,
+          male: male,
+          female: female,
+        });
+      });
+    } else {
+      /// doctor
+    }
+  } else {
+    res.redirect("/login");
+  }
+});
 
 module.exports = router;
