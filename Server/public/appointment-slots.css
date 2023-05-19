@@ -14,6 +14,7 @@ body{
     padding: 30px 0px; 
 }
 
+
 form{
     width: 90%;
     max-width: 900px;
@@ -22,6 +23,10 @@ form{
     justify-content: center;
     align-items: center;
     box-shadow: 1px 2px 5px gray;
+}
+
+h6{
+    font-weight: lighter;
 }
 
 .main-h2{
@@ -157,6 +162,8 @@ input:focus{
 
 
 .time-div{
+    width: 90%;
+    max-width: 320px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -170,7 +177,7 @@ input:focus{
 }
 
 .time-select{
-    margin: 0px 20px;
+    margin: 0px 10px;
     border: 1px solid darkslategray;
     border-radius: 5px;
     height: 60px;
