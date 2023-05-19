@@ -97,8 +97,12 @@ router.post("/", (req, res) => {
     /// consultations
     console.log("consult");
 
-    req.session.consultation.doctorId = req.body.doctor_id;
-    req.session.consultation.name = req.body.name;
+    req.session.consultation = {
+      doctorId : req.body.doctor_id,
+      name :req.body.name,
+      businessNo:"",
+      CheckoutRequestID:"",
+    }
 
     const getRoomId = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
@@ -154,13 +158,16 @@ router.post("/", (req, res) => {
               if (err) {
                 throw err;
               } else {
+                console.log(result[0].consultation_type);
                 if (result[0].consultation_type == "free") {
                   freeConsultation = true;
+                  resolve(freeConsultation);
                 } else {
                   /// paid
                   req.session.consultation.businessNo = result[0].business_no;
                   req.session.consultationFee = result[0].consultation_fee;
                   freeConsultation = false;
+                  resolve(freeConsultation);
                 }
               }
             });
@@ -171,7 +178,7 @@ router.post("/", (req, res) => {
       });
 
       checkConsultationType.then((freeConsultation) => {
-        if (freeConsultation) {
+        if (freeConsultation == true) {
           ///// to free consultation
           req.session.consultationType = "free";
           return res.redirect("/chats/chat");
@@ -228,38 +235,6 @@ router.post("/", (req, res) => {
           });
         }
       });
-    });
-
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-      const query =
-        "SELECT * FROM chat_rooms WHERE patient_id =? AND doctor_id =?";
-      connection.query(
-        query,
-        [req.session.userId, req.body.doctor_id],
-        (err, results) => {
-          if (err) throw err;
-          if (results.length) {
-            req.session.roomId = results[0].room_id;
-            return res.redirect("/chats/chat");
-          } else {
-            const query2 =
-              "INSERT INTO chat_rooms(`room_id`, `patient_id`, `doctor_id`) VALUES(?)";
-            const values = [
-              `room-${req.session.userId}-${req.body.doctor_id}`,
-              req.session.userId,
-              req.body.doctor_id,
-            ];
-            connection.query(query2, [values], (err, data) => {
-              if (err) throw err;
-              console.log("room created successfully ");
-
-              req.session.roomId = `room-${req.session.userId}-${req.body.doctor_id}`;
-              return res.redirect("/chats/chat");
-            });
-          }
-        }
-      );
     });
   } else if (req.body.book == "") {
     /// bookings
@@ -323,5 +298,10 @@ router.post("/search-doctors", (req, res) => {
     connection.release();
   });
 });
+
+
+router.get("/my-profile",(req,res)=>{
+  res.render("my-profile")
+})
 
 module.exports = router;
