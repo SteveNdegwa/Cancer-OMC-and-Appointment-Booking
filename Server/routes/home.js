@@ -281,6 +281,7 @@ router.post("/search-doctors", (req, res) => {
 });
 
 router.get("/my-profile", (req, res) => {
+  req.flash("myProfileMsg", "");
   if (req.session.authenticated) {
     if (req.session.accountType == "patient") {
       //patient
@@ -314,6 +315,7 @@ router.get("/my-profile", (req, res) => {
           details: details,
           male: male,
           female: female,
+          message: req.flash("myProfileMsg"),
         });
       });
     } else {
@@ -321,6 +323,102 @@ router.get("/my-profile", (req, res) => {
     }
   } else {
     res.redirect("/login");
+  }
+});
+
+router.post("my-profile", (req, res) => {
+  if (req.session.accountType == patient) {
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query = "SELECT * FROM patient_details  WHERE user_id= ?";
+          connection.query(query, [req.session.userId], (err, results) => {
+            if (err) {
+              throw err;
+            } else {
+              let details = results[0];
+              resolve(details);
+            }
+          });
+        }
+        connection.release();
+      });
+    });
+    getDetails.then((details) => {
+      let male = "",
+        female = "";
+      if (details.gender == "male") {
+        male = "checked";
+      } else {
+        female = "checked";
+      }
+
+      var reqExp = /[a-zA-Z]/; /// check also symbols
+
+      if (reqExp.test(req.body.phone)) {
+        //letters in phone
+        req.flash("myProfileMsg", "Invalid Phone No.");
+        return res.render("my-profile-patient", {
+          details: details,
+          male: male,
+          female: female,
+          message: req.flash("myProfileMsg"),
+        });
+      } else {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            req.flash("myProfileMsg", "Error Connecting To The Database");
+            return res.render("my-profile-patient", {
+              details: details,
+              male: male,
+              female: female,
+              message: req.flash("myProfileMsg"),
+            });
+          } else {
+            let gender = "";
+            if (req.body.male == "on") {
+              gender = "male";
+            } else {
+              gender = "female";
+            }
+            const query =
+              "UPDATE patient_details SET name = ?, gender = ?, dob = ?, phone_no =?, location = ?, cancer_type = ?, cancer_stage = ?, lifestyle_diseases = ? WHERE user_id = ?";
+
+            connection.query(
+              query,
+              [
+                req.body.name,
+                gender,
+                req.body.dob,
+                req.body.phone,
+                req.body.location,
+                req.body.cancer_type,
+                req.body.cancer_stage,
+                req.body.lifestyle_diseases,
+                req.session.userId,
+              ],
+              (err, data) => {
+                if (err) {
+                  req.flash("myProfileMsg", "Error Saving The Details");
+                  return res.render("my-profile-patient", {
+                    details: details,
+                    male: male,
+                    female: female,
+                    message: req.flash("myProfileMsg"),
+                  });
+                } else {
+                  console.log("Patient details updated");
+
+                  return res.redirect("/my-profile");
+                }
+              }
+            );
+          }
+        });
+      }
+    });
   }
 });
 
