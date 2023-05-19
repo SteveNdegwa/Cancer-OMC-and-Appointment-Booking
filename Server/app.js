@@ -14,21 +14,27 @@ const http = require("http");
 
 const pool = require("./server.js");
 
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
-const store = new session.MemoryStore();
+
+const session = require("express-session")({
+  secret: "secretStringForSession",
+  // cookie: { maxAge: 60000 },
+  resave: true,
+  saveUninitialized: true,
+  // store: new session.MemoryStore(),
+});
+
+var sharedsession = require("express-socket.io-session");
 
 app.use(cookieParser("secretStringForCookies"));
-app.use(
-  session({
-    secret: "secretStringForSession",
-    // cookie: { maxAge: 60000 },
-    resave: true,
-    saveUninitialized: false,
-    store: store,
-  })
-);
+app.use(session);
+const server = http.createServer(app);
+
+const socketio = require("socket.io");
+const io = socketio(server);
+io.use(sharedsession(session));
+
 app.use(flash());
 
 app.use(cors()); //send data between front and backend
@@ -58,17 +64,6 @@ app.use("/admin", admin);
 
 //// chats
 
-const server = http.createServer(app);
-
-const socketio = require("socket.io");
-const io = socketio(server);
-
-let room = "";
-let user = "";
-let userId = "";
-let accountType = "";
-let expiry = "";
-let type = "";
 
 let token = "";
 
@@ -93,7 +88,7 @@ app.get("/chats/pay-consultation-fee", (req, res) => {
   if (req.session.authenticated) {
     req.flash("consultMsg", "");
     res.render("pay-consultation-fee.ejs", {
-      message: consultMsg,
+      message: req.flash("consultMsg"),
       consultationFee: req.session.consultationFee,
     });
   } else {
@@ -175,7 +170,7 @@ app.post("/chats/consultation-input-number", access, (req, res) => {
             "Sorry. There is a problem generating the STK Push"
           );
           return res.render("pay-consultation-fee.ejs", {
-            message: consultMsg,
+            message: req.flash("consultMsg"),
             consultationFee: req.session.consultationFee,
           });
         }
@@ -287,8 +282,10 @@ app.post("/chats/consultation-stk-push", (req, res) => {
                       if (err) {
                         throw err;
                       } else {
-                        console.log(
-                          "consultation session updated successfully"
+                        resolve(
+                          console.log(
+                            "consultation session updated successfully"
+                          )
                         );
                       }
                     }
@@ -301,7 +298,11 @@ app.post("/chats/consultation-stk-push", (req, res) => {
                     if (err) {
                       throw err;
                     } else {
-                      console.log("consultation session inserted successfully");
+                      resolve(
+                        console.log(
+                          "consultation session inserted successfully"
+                        )
+                      );
                     }
                   });
                 }
@@ -320,7 +321,7 @@ app.post("/chats/consultation-stk-push", (req, res) => {
               query,
               [
                 response.body.ResultDesc,
-                req.session.paymentDetails.CheckoutRequestID,
+                req.session.consultation.CheckoutRequestID,
               ],
               (err, result) => {
                 if (err) {
@@ -330,6 +331,8 @@ app.post("/chats/consultation-stk-push", (req, res) => {
                 }
               }
             );
+
+            connection.release();
           });
         });
       } else {
@@ -343,7 +346,7 @@ app.post("/chats/consultation-stk-push", (req, res) => {
             query,
             [
               response.body.ResultDesc,
-              req.session.paymentDetails.CheckoutRequestID,
+              req.session.consultation.CheckoutRequestID,
             ],
             (err, result) => {
               if (err) throw err;
@@ -398,15 +401,15 @@ app.get("/chats/chat-rooms", (req, res) => {
         if (rooms.length) {
           for (let i = 0; i < rooms.length; i++) {
             let query2 = "";
-            let userId = "";
+            let userId2 = "";
             if (req.session.accountType == "patient") {
               query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
-              userId = rooms[i].doctor_id;
+              userId2 = rooms[i].doctor_id;
             } else {
               query2 = "SELECT name FROM patient_details WHERE user_id = ?";
-              userId = rooms[i].patient_id;
+              userId2 = rooms[i].patient_id;
             }
-            connection.query(query2, [userId], (err, results) => {
+            connection.query(query2, [userId2], (err, results) => {
               if (err) throw err;
               console.log(results);
               rooms[i].name = results[0].name;
@@ -450,8 +453,15 @@ app.get("/chats/chat-rooms", (req, res) => {
 });
 
 app.post("/chats/chat-rooms", (req, res) => {
+  req.session.consultation = {
+    doctorId: "",
+    name: req.body.name,
+    businessNo: "",
+    CheckoutRequestID: "",
+    userName:"",
+  };
+
   req.session.roomId = req.body.room_id;
-  req.session.consultation.name = req.body.name;
 
   const getDoctorId = new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
@@ -486,11 +496,13 @@ app.post("/chats/chat-rooms", (req, res) => {
             } else {
               if (result[0].consultation_type == "free") {
                 freeConsultation = true;
+                resolve(freeConsultation);
               } else {
                 /// paid
                 req.session.consultation.businessNo = result[0].business_no;
                 req.session.consultationFee = result[0].consultation_fee;
                 freeConsultation = false;
+                resolve(freeConsultation);
               }
             }
           });
@@ -501,7 +513,7 @@ app.post("/chats/chat-rooms", (req, res) => {
     });
 
     checkConsultationType.then((freeConsultation) => {
-      if (freeConsultation) {
+      if (freeConsultation == true) {
         ///// to free consultation
         req.session.consultationType = "free";
         return res.redirect("/chats/chat");
@@ -548,7 +560,7 @@ app.post("/chats/chat-rooms", (req, res) => {
         });
 
         checkSessionStatus.then((sessionActive) => {
-          if (sessionActive) {
+          if (sessionActive == true) {
             //// session still active
             return res.redirect("/chats/chat");
           } else {
@@ -577,15 +589,12 @@ app.get("/chats/chat", (req, res) => {
     }
     connection.query(query, [req.session.userId], (err, result) => {
       if (err) throw err;
-      user = result[0].name;
-      userId = req.session.userId;
-      room = req.session.roomId;
-      accountType = req.session.accountType;
-      expiry = req.session.expiryTime;
-      type = req.session.consultationType;
+
+      req.session.consultation.userName = result[0].name;
+      let sendMessageDisplay = "";
 
       let exp = "";
-      if (type == "paid") {
+      if (req.session.consultationType == "paid") {
         if (sendMessageDisplay) {
           /// get date
         } else {
@@ -612,7 +621,12 @@ app.get("/chats/chat", (req, res) => {
   });
 });
 
+
 io.on("connection", (socket) => {
+  console.log("Handshake session");
+  console.log(socket.handshake.session);
+  console.log(socket.handshake.session.userId);
+
   let date = "";
 
   let d = new Date();
@@ -623,13 +637,21 @@ io.on("connection", (socket) => {
     "-" +
     d.getFullYear();
 
-  console.log(`${user} joined the chart`);
-  socket.emit("message", `${user} connected on Socket ${socket.id}`);
-  socket.emit("message", `welcome to the chart ${user}`); // to the client
+  console.log(`${socket.handshake.session.consultation.userName} joined the chart`);
+  socket.emit(
+    "message",
+    `${socket.handshake.session.consultation.userName} connected on Socket ${socket.id}`
+  );
+  socket.emit(
+    "message",
+    `welcome to the chart ${socket.handshake.session.consultation.userName}`
+  ); // to the client
 
-  socket.join(room);
+  socket.join(socket.handshake.session.roomId);
 
-  socket.broadcast.to(room).emit("message", `${user} joined the chart`); // all clients but user
+  socket.broadcast
+    .to(socket.handshake.session.roomId)
+    .emit("message", `${socket.handshake.session.consultation.userName} joined the chart`); // all clients but user
   // io.emit(); //all clients
 
   let lastDate = "";
@@ -638,7 +660,7 @@ io.on("connection", (socket) => {
       if (err) throw err;
       const query =
         "SELECT * FROM chats WHERE room_id = ? ORDER BY date ASC, time ASC";
-      connection.query(query, [room], (err, results) => {
+      connection.query(query, [socket.handshake.session.roomId], (err, results) => {
         if (err) throw err;
         if (results.length) {
           lastDate = results[results.length - 1].date;
@@ -654,12 +676,12 @@ io.on("connection", (socket) => {
     pool.getConnection((err, connection) => {
       if (err) throw err;
       const query = "SELECT * FROM chats WHERE room_id = ?";
-      connection.query(query, [room], (err, results) => {
+      connection.query(query, [socket.handshake.session.roomId], (err, results) => {
         if (err) throw err;
         if (results.length) {
           results.forEach((message) => {
             let query2 = "";
-            if (accountType == "patient") {
+            if (socket.handshake.session.accountType == "patient") {
               query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
             } else {
               query2 = "SELECT name FROM patient_details WHERE user_id = ?";
@@ -677,7 +699,7 @@ io.on("connection", (socket) => {
                 }
               }
 
-              if (message.sender_id == userId) {
+              if (message.sender_id == socket.handshake.session.userId) {
                 socket.emit("retrieveSentChats", message.message, message.time);
               } else {
                 socket.emit(
@@ -697,24 +719,32 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sentChatMessage", (msg, datee, time) => {
-    if (type == "paid") {
+    if (socket.handshake.session.consultationType == "paid") {
       const now = new Date();
-      if (now.getTime() < expiry) {
+      if (now.getTime() < socket.handshake.session.expiryTime) {
         if (lastDate == datee) {
         } else {
           socket.emit("message", "Today");
-          socket.broadcast.to(room).emit("message", "Today");
+          socket.broadcast.to(socket.handshake.session.roomId).emit("message", "Today");
         }
         lastDate = datee;
 
         pool.getConnection((err, connection) => {
           const query =
             "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
-          const values = [room, userId, datee, time, msg];
+          const values = [
+            socket.handshake.session.roomId,
+            socket.handshake.session.userId,
+            datee,
+            time,
+            msg,
+          ];
           connection.query(query, [values], (err, data) => {
             if (err) throw err;
-            console.log(data.insertId);
-            console.log(userId);
+
+            console.log(
+              `chat id : ${data.insertId}  User Id: ${socket.handshake.session.userId}`
+            );
 
             socket.emit("sentChatMessage", msg, time);
           });
@@ -731,20 +761,27 @@ io.on("connection", (socket) => {
       if (lastDate == datee) {
       } else {
         socket.emit("message", "Today");
-        socket.broadcast.to(room).emit("message", "Today");
+        socket.broadcast.to(socket.handshake.session.roomId).emit("message", "Today");
       }
       lastDate = datee;
 
       pool.getConnection((err, connection) => {
         const query =
           "INSERT INTO chats(`room_id`,`sender_id`, `date`, `time`, `message`) VALUES(?)";
-        const values = [room, userId, datee, time, msg];
+        const values = [
+          socket.handshake.session.roomId,
+          socket.handshake.session.userId,
+          datee,
+          time,
+          msg,
+        ];
         connection.query(query, [values], (err, data) => {
           if (err) throw err;
-          console.log(data.insertId);
-          console.log(`User Id: ${userId}`);
+          console.log(
+            `chat id : ${data.insertId}  User Id: ${socket.handshake.session.userId}`
+          );
 
-          console.log(req.session);
+          console.log(socket.handshake.session);
 
           socket.emit("sentChatMessage", msg, time);
         });
@@ -755,11 +792,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("receivedChatMessage", (msg, datee, time) => {
-    socket.broadcast.to(room).emit("receivedChatMessage", msg, user, time);
+    socket.broadcast
+      .to(socket.handshake.session.roomId)
+      .emit(
+        "receivedChatMessage",
+        msg,
+        socket.handshake.session.consultation.userName,
+        time
+      );
   });
 
   socket.on("disconnect", () => {
-    io.to(room).emit("message", `${user} left the chart`);
+    io.to(socket.handshake.session.roomId).emit(
+      "message",
+      `${socket.handshake.session.consultation.userName} left the chart`
+    );
   });
 });
 

@@ -75,7 +75,7 @@ btn.addEventListener('click', () => {
             input.max = "17:00";
             input.required = true;
 
-            const timeh1 = document.createElement('h4');
+            const timeh1 = document.createElement('h6');
             timeh1.className = "time-h4";
             timeh1.id = id + "-h4";
             timeh1.innerHTML = "Appointment Slot " + count;
@@ -114,7 +114,7 @@ btn.addEventListener('click', () => {
             input.max = "17:00";
             input.required = true;
 
-            const timeh1 = document.createElement('h4');
+            const timeh1 = document.createElement('h6');
             timeh1.className = "time-h4";
             timeh1.id = id + "-h4";
             timeh1.innerHTML = "Appointment Slot " + count;
