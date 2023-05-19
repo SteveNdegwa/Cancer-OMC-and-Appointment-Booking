@@ -147,6 +147,16 @@ let chosenDate = "";
 
 router.get("/book-appointment", (req, res) => {
   if (req.session.authenticated) {
+
+    req.session.appointmentDetails = {
+      doctorId: "",
+      patientId: "",
+      date: "",
+      time: "",
+      amount:""
+    };
+
+
     const getDoctorDetails = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
         const query =
