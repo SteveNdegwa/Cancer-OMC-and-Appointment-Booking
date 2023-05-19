@@ -1,0 +1,144 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Times New Roman', Times, serif;
+    color: darkslategray
+}
+
+body{
+    width: 100%;
+    padding: 30px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form{
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 2px 5px gray;
+}
+
+.edit{
+    margin-top: 30px;
+    align-self: flex-end;
+    margin-right: 30px;
+}
+
+.check{
+    margin-right: 5px;
+}
+
+
+.navbar{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.name-text{
+    font-weight: bolder;
+    font-size: xx-large;
+    width: 90%;
+    text-align: center;
+    pointer-events: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: darkslategray;
+    word-wrap: break-word;
+    padding-bottom: 10px;
+}
+
+.personal-details, .medical-details{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0px;
+}
+
+h2{
+    padding-bottom: 30px;
+}
+
+.details-wrap{
+    width: 90%;
+    margin: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.gender-div{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.gender-wrap{
+    margin: 10px;
+}
+
+.gender ,.gender-label{
+    pointer-events: none;
+}
+
+.text{
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: large;
+    pointer-events: none;
+    margin-top: 20px;
+    color: black;
+    padding-bottom: 10px;
+}
+
+#lifestyle_diseases{
+    border: 2px solid transparent;
+    padding:20px 0px;
+}
+
+input:focus{
+    outline: none !important;
+    border-color: goldenrod;
+}
+
+textarea:focus{
+    outline: 2px solid goldenrod;
+    border: 2px solid goldenrod;
+}
+
+
+
+.btn{
+    background-color: white;
+    color: darkslategray;
+    border: 2px solid darkslategray;
+    width: 120px;
+    height: 60px;
+    font-size: medium;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 50px;
+    visibility: hidden;
+    transition: all .3s ease;
+}
+
+.btn:hover{
+    background-color: darkslategray;
+    color: white;
+    border-color: white;
+}

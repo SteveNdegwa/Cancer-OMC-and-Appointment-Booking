@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/my-profile.css" />
+    <title>My Profile</title>
+  </head>
+  <body>
+    <form action="/my-profile" method="post">
+        <div class="edit">
+            <input type="checkbox" name="check" id="check" class="check">
+            <label for="check">Edit Mode</label>
+        </div>
+      <div class="navbar">
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="name-text"
+          value="<%= details.name %>"
+          placeholder="N/A"
+          required
+        />
+      </div>
+      <div class="personal-details">
+        <h2>Personal Details</h2>
+        <div class="details-wrap">
+          <h3>Gender</h3>
+          <div class="gender-div">
+            <div class="gender-wrap">
+                <input type="radio" class="gender" name="male" id="male" <%= male %>/>
+                <label for="male" class="gender-label">Male</label>
+              </div>
+              <div class="gender-wrap">
+                <input type="radio" class="gender" name="female" id="female"  <%= female %>/>
+                <label for="female" class="gender-label">Female</label>
+              </div>
+          </div>
+        </div>
+        <div class="details-wrap">
+          <h3>D.O.B</h3>
+          <input type="date" value="<%= details.dob %>" name="dob" id="dob" class="text" placeholder="N/A" required/>
+        </div>
+        <div class="details-wrap">
+          <h3>Phone No.</h3>
+          <input type="tel" value="<%= details.phone_no %>" class="text" id="phone" name="phone" max="10" min="10" placeholder="N/A" required />
+        </div>
+        <div class="details-wrap">
+          <h3>Location</h3>
+          <input
+            type="text"
+            value="<%= details.location %>"
+            class="text"
+            id="location"
+            name="location"
+            placeholder="N/A"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="medical-details">
+        <h2>Medical Details</h2>
+        <div class="details-wrap">
+          <h3>Cancer Type</h3>
+          <input
+            type="text"
+            value="<%= details.cancer_type %>"
+            class="text"
+            id="cancer_type"
+            name="cancer_type"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h3>Cancer Stage</h3>
+          <input
+            type="text"
+            value="<%= details.cancer_stage %>"
+            class="text"
+            id="cancer_stage"
+            name="cancer_stage"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h3>Lifestyle Diseases</h3>
+          <textarea
+            name="lifestyle_diseases"
+            id="lifestyle_diseases"
+            value="<%= details.lifestyle_diseases %>"
+            class="text"
+            placeholder="N/A"
+          ></textarea>
+        </div>
+      </div>
+
+      <button type="submit" id="btn" class="btn">Update</button>
+    </form>
+
+    <script>
+        let checkbox = document.getElementById("check");
+        checkbox.addEventListener("change",()=>{
+            let btn = document.getElementById("btn");
+            let name = document.getElementById("name");
+            let textElements = document.querySelectorAll(".text");
+            let gender = document.querySelectorAll(".gender");
+            let genderLabel = document.querySelectorAll(".gender-label");
+
+            if(checkbox.checked){
+                btn.style.visibility = "visible";
+                name.style.pointerEvents = "all";
+                name.style.borderBottom= "2px solid dimgray"
+                textElements.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                    element.style.borderColor = "dimgray";
+                })
+                gender.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                })
+                genderLabel.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                })
+            }else{
+                btn.style.visibility = "hidden";
+                name.style.pointerEvents = "none";
+                name.style.borderBottom = "2px solid transparent"
+                textElements.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                    element.style.borderColor = "transparent";
+                })
+                gender.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                })
+                genderLabel.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                })
+            }
+        })
+
+        let male = document.getElementById("male");
+        let female = document.getElementById("female");
+
+        male.addEventListener("change",()=>{
+            if(male.checked){
+                female.checked = false;
+            }else{
+                female.checked = true;
+            }
+        })
+        female.addEventListener("change",()=>{
+            if(female.checked){
+                male.checked = false;
+            }else{
+                male.checked = true;
+            }
+        })
+    </script>
+  </body>
+</html>
