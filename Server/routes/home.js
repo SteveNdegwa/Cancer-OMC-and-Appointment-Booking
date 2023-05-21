@@ -326,8 +326,9 @@ router.get("/my-profile", (req, res) => {
   }
 });
 
-router.post("my-profile", (req, res) => {
-  if (req.session.accountType == patient) {
+router.post("/my-profile", (req, res) => {
+  if (req.session.accountType == "patient") {
+    console.log(req.body);
     const getDetails = new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
         if (err) {
