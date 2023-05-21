@@ -10,6 +10,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
     <link rel="manifest" href="/icons/site.webmanifest">
 
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/my-profile.css" />
     <title>My Profile</title>
   </head>
@@ -19,6 +20,12 @@
             <input type="checkbox" name="check" id="check" class="check">
             <label for="check">Edit Mode</label>
         </div>
+        
+        <% if(message.length > 0 ){ %>
+          <div class="alert alert-danger" role="alert">
+              <%= message %>
+          </div>
+     <% } %>
       <div class="navbar">
         <input
           type="text"
@@ -30,10 +37,12 @@
           required
         />
       </div>
+
+
       <div class="personal-details">
-        <h2>Personal Details</h2>
+        <h4>Personal Details</h4>
         <div class="details-wrap">
-          <h3>Gender</h3>
+          <h5>Gender</h5>
           <div class="gender-div">
             <div class="gender-wrap">
                 <input type="radio" class="gender" name="male" id="male" <%= male %>/>
@@ -46,15 +55,15 @@
           </div>
         </div>
         <div class="details-wrap">
-          <h3>D.O.B</h3>
+          <h5>D.O.B</h5>
           <input type="date" value="<%= details.dob %>" name="dob" id="dob" class="text" placeholder="N/A" required/>
         </div>
         <div class="details-wrap">
-          <h3>Phone No.</h3>
+          <h5>Phone No.</h5>
           <input type="tel" value="<%= details.phone_no %>" class="text" id="phone" name="phone" max="10" min="10" placeholder="N/A" required />
         </div>
         <div class="details-wrap">
-          <h3>Location</h3>
+          <h5>Location</h5>
           <input
             type="text"
             value="<%= details.location %>"
@@ -68,9 +77,9 @@
       </div>
 
       <div class="medical-details">
-        <h2>Medical Details</h2>
+        <h4>Medical Details</h4>
         <div class="details-wrap">
-          <h3>Cancer Type</h3>
+          <h5>Cancer Type</h5>
           <input
             type="text"
             value="<%= details.cancer_type %>"
@@ -82,7 +91,7 @@
           />
         </div>
         <div class="details-wrap">
-          <h3>Cancer Stage</h3>
+          <h5>Cancer Stage</h5>
           <input
             type="text"
             value="<%= details.cancer_stage %>"
@@ -94,14 +103,13 @@
           />
         </div>
         <div class="details-wrap">
-          <h3>Lifestyle Diseases</h3>
+          <h5>Lifestyle Diseases</h5>
           <textarea
             name="lifestyle_diseases"
             id="lifestyle_diseases"
-            value="<%= details.lifestyle_diseases %>"
             class="text"
             placeholder="N/A"
-          ></textarea>
+          ><%= details.lifestyle_diseases %></textarea>
         </div>
       </div>
 
