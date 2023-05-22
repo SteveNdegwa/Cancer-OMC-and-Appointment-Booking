@@ -35,6 +35,7 @@ function access(req, res, next) {
       if (response.error) throw new Error(response.error);
       console.log(response.raw_body);
       token = JSON.parse(response.raw_body).access_token;
+      console.log(token);
       next();
     });
 }
