@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/my-profile.css" />
+    <title>View Doctor's Profile</title>
+  </head>
+  <body>
+    <form action="/my-profile" method="post">
+      <div class="navbar">
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="name-text"
+          value="<%= details.name %>"
+          placeholder="N/A"
+          required
+        />
+      </div>
+
+      <div class="medical-details">
+        <div class="details-wrap">
+            <h5>Cancer Speciality</h5>
+            <textarea
+              name="cancer_speciality"
+              id="cancer_speciality"
+              class="text"
+              placeholder="N/A"
+            ><%= details.cancer_speciality %></textarea>
+          </div>
+        <div class="details-wrap">
+          <h5>Clinic Location</h5>
+          <input
+            type="text"
+            value="<%= details.clinic_location %>"
+            class="text"
+            id="clinic_location"
+            name="clinic_location"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+            <h5>Clinic's Phone No.</h5>
+            <input
+              type="text"
+              value="<%= details.clinic_phone_no %>"
+              class="text"
+              id="clinic_phone_no"
+              name="clinic_phone_no"
+              placeholder="N/A"
+              required
+            />
+          </div>
+          <div class="details-wrap">
+            <h5>Clinic's Email</h5>
+            <input
+              type="email"
+              value="<%= details.clinic_email %>"
+              class="text"
+              id="clinic_email"
+              name="clinic_email"
+              placeholder="N/A"
+              required
+            />
+          </div>
+      </div>
+    </form>
+  </body>
+</html>

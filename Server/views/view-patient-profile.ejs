@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/my-profile.css" />
+    <title>View Patient's Profile</title>
+  </head>
+  <body>
+    <form action="/my-profile" method="post">
+      <div class="navbar">
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="name-text"
+          value="<%= details.name %>"
+          placeholder="N/A"
+          required
+        />
+      </div>
+
+
+      <div class="personal-details">
+        <h4>Personal Details</h4>
+        <div class="details-wrap">
+            <h5>Gender</h5>
+            <input type="text" value="<%= details.gender %>" name="gender" id="gender" class="text" placeholder="N/A" required/>
+          </div>
+        <div class="details-wrap">
+          <h5>D.O.B</h5>
+          <input type="text" value="<%= details.dob %>" name="dob" id="dob" class="text" placeholder="N/A" required/>
+        </div>
+        <div class="details-wrap">
+          <h5>Phone No.</h5>
+          <input type="tel" value="<%= details.phone_no %>" class="text" id="phone" name="phone" max="10" min="10" placeholder="N/A" required />
+        </div>
+        <div class="details-wrap">
+          <h5>Location</h5>
+          <input
+            type="text"
+            value="<%= details.location %>"
+            class="text"
+            id="location"
+            name="location"
+            placeholder="N/A"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="medical-details">
+        <h4>Medical Details</h4>
+        <div class="details-wrap">
+          <h5>Cancer Type</h5>
+          <input
+            type="text"
+            value="<%= details.cancer_type %>"
+            class="text"
+            id="cancer_type"
+            name="cancer_type"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h5>Cancer Stage</h5>
+          <input
+            type="text"
+            value="<%= details.cancer_stage %>"
+            class="text"
+            id="cancer_stage"
+            name="cancer_stage"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h5>Lifestyle Diseases</h5>
+          <textarea
+            name="lifestyle_diseases"
+            id="lifestyle_diseases"
+            class="text"
+            placeholder="N/A"
+          ><%= details.lifestyle_diseases %></textarea>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
