@@ -32,6 +32,8 @@
     
                 <div class="doctor-tab" id="doctor-1">
     
+                    <input type="text" name="doctor_id" id="doctor-id" value="<%= character.user_id %>">
+                    <input type="text" name="name" id="doctor-id" value="<%= character.name %>">
                     <input type="checkbox" class="check" id="check<%= character.user_id %>">
                     <label for="check<%= character.user_id %>" class="check-label" id="check-label-<%= character.user_id %>"><span class="nav-icon"></span></label>
     
@@ -45,7 +47,7 @@
                                 <%= character.name %>
                                     </h2>
                                     <% } else{ %>
-                                        <h2 class="name" id="name">Dr. <%= character.name %>
+                                        <h2 class="name" id="name"><%= character.name %>
                                         </h2>
                                         <% } %>
     
@@ -74,7 +76,8 @@
     
                         </div>
                        <div class="buttons">
-                        <button type="submit" class="book-btn" id="book-btn">Book Appointment</button>
+                        <button type="submit" class="book-btn" name="btnConsult" >Consult</button>
+                        <button type="submit" class="book-btn" name="btnBook">Book Appointment</button>
                        </div>
                     </div>
     

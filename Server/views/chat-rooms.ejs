@@ -26,7 +26,10 @@
                     <h3 class="last-message"><%= room.sender %> : <%= room.message %></h3>
                     <h3 class="time-date"><%= room.date %>   |   <%= room.time %></h3>
                 <% } %>
-                <button type="submit" class="btn">Message</button>
+                <div class="buttons">
+                    <button type="submit" name="message" class="btn">Message</button>
+                    <button type="submit" name="profile" class="btn">View Profile</button>
+                </div>
             </div>
          </form>
         <% }) %>

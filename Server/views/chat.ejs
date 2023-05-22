@@ -17,9 +17,12 @@
 
 <body>
 
-    <form action="">
-        <div class="nav-bar">
-            <h2 class="name"><%= name %></h2>
+    <form action="/chats/chat" method="post">
+        <div class="navbar">
+            <a class="name" href="/chats/view-profile" target="_blank" ><%= name %></a>
+            <% if (consultationType == "paid") { %>
+                <h3 class="expiry">Session Expiry Time : <%= exp %></h3>
+            <% } %>
         </div>
         <div class="messages-container" id="messages-container">
         </div>
@@ -28,6 +31,11 @@
                 <textarea name="" id="message" class="text" cols="40" rows="5"></textarea>
                 <button type="button" class="btn" id="message-btn">Message</button>
             </div>
+        <% } %>
+        <% if (consultationType == "paid") { %>
+            <% if (accountType == "doctor") { %>
+                <button type="submit" class="btn" id="renew-btn">Renew Session</button>
+            <% } %>
         <% } %>
     </form>
 
