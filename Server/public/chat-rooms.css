@@ -66,18 +66,30 @@ form{
     background-color: white;
 }
 
+.buttons{
+    background-color: white;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
 .btn{
-    width: 100px;
-    height: 40px;
+    width: 130px;
+    height: 50px;
     font-family: 'Times New Roman', Times, serif;
     font-size: medium;
-    background-color: darkslategray;
-    color: white;
+    background-color: white;
+    color: darkslategray;
     border: 2px solid darkslategray;
     transition: all .3s ease;
     cursor: pointer;
 }
 
 .btn:hover{
+    background-color: darkslategray;
+    color: white;
     border-color: white;
 }

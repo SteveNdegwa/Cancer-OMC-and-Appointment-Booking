@@ -1,6 +1,8 @@
 *{
     padding: 0;
     margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    box-sizing: border-box;
 }
 
 body{
@@ -10,39 +12,93 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 30px 0px;
 }
 
 form{
     width: 95%;
+    max-width: 700px;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-shadow: 1px 2px 5px gray;
+}
+
+.navbar{
+    width: 100%;
+    padding: 30px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: darkslategray;
+    color: white;
+
+}
+
+.navbar a{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: x-large;
+    font-weight: bolder;
+    text-decoration: none;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.navbar a:hover{
+    text-decoration: underline;
 }
 
 .messages-container{
     height: 400px;
     width: 100%;
-    max-width: 420px;
-    border: 2px solid dimgray;
-    margin: 30px 0px;
-    padding: 40px;
+    box-sizing: border-box;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    border: 2px solid dimgray;
 }
 
 .message-div, .room-div{
     margin: 10px 0px;
 }
 
-.btn{
-    width: 100px;
-    height: 40px;
+.message-div{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
 }
 
+.btn{
+    width: 120px;
+    height: 40px;
+    border: 2px solid darkslategray;
+    color: darkslategray;
+    transition: all .3s ease;
+}
+
+.btn:hover{
+    color: white;
+    border-color: white;
+    background-color: darkslategray;
+}
+
+#renew-btn{
+    width: 120px;
+    margin: 30px 0px;
+}
+
+
+
 .message-div{
+    width: 100%;
+    padding: 20px 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

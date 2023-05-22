@@ -12,6 +12,10 @@ form {
     background-color: ghostwhite;
 }
 
+#doctor-id{
+    display: none;
+}
+
 .search-bar {
     position: absolute;
     top: 40px;
@@ -217,18 +221,30 @@ input:focus {
     border-radius: 10px;
 }
 
-.book-btn, .msg-btn {
+.buttons{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.book-btn{
     width: 150px;
     height: 60px;
     background-color: white;
-    color: black;
-    margin-bottom: 30px;
+    color: darkslategray;
     border-color: darkslategray;
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
-
+    transition: all .3s ease;
 }
 
 .book-btn:hover {
-    border-color: orange;
+    border-color: white;
+    color: white;
+    background-color: darkslategray;
 }
