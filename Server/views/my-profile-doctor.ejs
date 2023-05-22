@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/my-profile.css" />
+    <title>My Profile</title>
+  </head>
+  <body>
+    <form action="/my-profile" method="post">
+        <div class="edit">
+            <input type="checkbox" name="check" id="check" class="check">
+            <label for="check">Edit Mode</label>
+        </div>
+        
+        <% if(message.length > 0 ){ %>
+          <div class="alert alert-danger" role="alert">
+              <%= message %>
+          </div>
+     <% } %>
+      <div class="navbar">
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="name-text"
+          value="<%= details.name %>"
+          placeholder="N/A"
+          required
+        />
+      </div>
+
+
+      <div class="personal-details">
+        <h4>Personal Details</h4>
+        <div class="details-wrap">
+          <h5>Gender</h5>
+          <div class="gender-div">
+            <div class="gender-wrap">
+                <input type="radio" class="gender" name="male" id="male" <%= male %>/>
+                <label for="male" class="gender-label">Male</label>
+              </div>
+              <div class="gender-wrap">
+                <input type="radio" class="gender" name="female" id="female"  <%= female %>/>
+                <label for="female" class="gender-label">Female</label>
+              </div>
+          </div>
+        </div>
+        <div class="details-wrap">
+          <h5>D.O.B</h5>
+          <input type="date" value="<%= details.dob %>" name="dob" id="dob" class="text" placeholder="N/A" required/>
+        </div>
+        <div class="details-wrap">
+          <h5>Phone No.</h5>
+          <input type="tel" value="<%= details.phone_no %>" class="text" id="phone" name="phone" max="10" min="10" placeholder="N/A" required />
+        </div>
+      </div>
+
+      <div class="medical-details">
+        <h4>Professional Details</h4>
+        <div class="details-wrap">
+          <h5>Licence No.</h5>
+          <input
+            type="text"
+            value="<%= details.licence_no %>"
+            class="text"
+            id="licence_no"
+            name="licence_no"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+            <h5>Cancer Speciality</h5>
+            <textarea
+              name="cancer_speciality"
+              id="cancer_speciality"
+              class="text"
+              placeholder="N/A"
+            ><%= details.cancer_speciality %></textarea>
+          </div>
+        <div class="details-wrap">
+          <h5>Clinic Location</h5>
+          <input
+            type="text"
+            value="<%= details.clinic_location %>"
+            class="text"
+            id="clinic_location"
+            name="clinic_location"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+            <h5>Clinic's Phone No.</h5>
+            <input
+              type="text"
+              value="<%= details.clinic_phone_no %>"
+              class="text"
+              id="clinic_phone_no"
+              name="clinic_phone_no"
+              placeholder="N/A"
+              required
+            />
+          </div>
+          <div class="details-wrap">
+            <h5>Clinic's Email</h5>
+            <input
+              type="email"
+              value="<%= details.clinic_email %>"
+              class="text"
+              id="clinic_email"
+              name="clinic_email"
+              placeholder="N/A"
+              required
+            />
+          </div>
+      </div>
+
+      <button type="submit" id="btn" class="btn">Update</button>
+    </form>
+
+    <script>
+        let checkbox = document.getElementById("check");
+        checkbox.addEventListener("change",()=>{
+            let btn = document.getElementById("btn");
+            let name = document.getElementById("name");
+            let textElements = document.querySelectorAll(".text");
+            let gender = document.querySelectorAll(".gender");
+            let genderLabel = document.querySelectorAll(".gender-label");
+
+            if(checkbox.checked){
+                btn.style.visibility = "visible";
+                name.style.pointerEvents = "all";
+                name.style.borderBottom= "2px solid dimgray"
+                textElements.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                    element.style.borderColor = "dimgray";
+                })
+                gender.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                })
+                genderLabel.forEach(element=>{
+                    element.style.pointerEvents = "all";
+                })
+            }else{
+                btn.style.visibility = "hidden";
+                name.style.pointerEvents = "none";
+                name.style.borderBottom = "2px solid transparent"
+                textElements.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                    element.style.borderColor = "transparent";
+                })
+                gender.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                })
+                genderLabel.forEach(element=>{
+                    element.style.pointerEvents = "none";
+                })
+            }
+        })
+
+        let male = document.getElementById("male");
+        let female = document.getElementById("female");
+
+        male.addEventListener("change",()=>{
+            if(male.checked){
+                female.checked = false;
+            }else{
+                female.checked = true;
+            }
+        })
+        female.addEventListener("change",()=>{
+            if(female.checked){
+                male.checked = false;
+            }else{
+                male.checked = true;
+            }
+        })
+    </script>
+  </body>
+</html>
