@@ -5,6 +5,10 @@ const pool = require("../server.js");
 
 const path = require("path");
 
+router.get("/",(req,res)=>{
+    res.render("admin");
+})
+
 
 router.get("/view-unverified-doctors",(req,res)=>{
     pool.getConnection((err,connection)=>{
