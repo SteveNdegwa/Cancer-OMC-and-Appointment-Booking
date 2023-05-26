@@ -27,30 +27,45 @@ ul{
     background-color: darkslategray;
     border: none;
     border-right: 2px solid dimgray;
+    position: relative;
 }
 
 
 .menu:hover{
-    width: 300px;
+    width: 250px;
+}
+
+.menu:hover > .menu-items .item{
+    display: block;
+    flex: 1;
+    line-height:80px;
 }
 
 .menu-items{
-    width:100%
+    width:100%;
 }
 
-.menu-items:hover >a{
+
+.item-wrap{
+    width: 100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: darkslategray;
+    border: 2px solid transparent;
+}
+
+.item-wrap:hover{
     border-color: white;
 }
 
 .item{
     text-decoration: none;
-    display: block;
-    width: 100%;
-    line-height:100px;
     background-color: darkslategray;
-    border: 1px solid transparent;
     color: white;
     text-align: center;
+    display: none;
 }
 
 #selected{
@@ -61,15 +76,19 @@ ul{
     border-color: white;
 }
 
-.sub-menu{
+.sub-menu-1, .sub-menu-2{
     display: none;
 }
 
-#doctor-menu:hover >.sub-menu{
+#doctor-menu:hover >.sub-menu-1{
     display: block;
 }
 
-#doctor-menu{
+#payment-menu:hover >.sub-menu-2{
+    display: block;
+}
+
+#doctor-menu, #payment-menu{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -77,15 +96,25 @@ ul{
     background-color: ghostwhite;
 }
 
+#my-profile{
+    position: absolute;
+    bottom: 20px;
+}
+
 .sub-item{
     text-decoration: none;
     display: block;
-    width: 250px;
-    line-height:100px;
+    width: 180px;
+    line-height:80px;
     background-color: darkslategray;
     border: 1px solid transparent;
     color: white;
     text-align: center;
+}
+
+
+#icon{
+    background-color: darkslategray;
 }
 
 .container{
