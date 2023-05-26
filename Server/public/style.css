@@ -19,10 +19,11 @@ body{
 }
 
 
-.name{
+.nav-bar img{
   float: left;
-  margin-left: 20px;
-  margin-top: 15px;
+  margin-left: 15px;
+  width: 180px;
+  height: 100px;
 }
 
 .check{
@@ -31,8 +32,8 @@ body{
 
 .check-label{
     float: right;
-    margin-right: 20px;
-    margin-top: 15px;
+    margin-right: 30px;
+    margin-top: 30px;
     width: 30px;
     height: 30px;
     background-color: transparent;
@@ -139,6 +140,7 @@ body{
     .menu{
         float: right;
         margin-right: 30px;
+        margin-top: 15px;
     }
     
     .menu-bar{
