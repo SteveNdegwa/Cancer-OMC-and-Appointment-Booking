@@ -24,17 +24,25 @@
     />
     <link rel="manifest" href="/icons/site.webmanifest" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" href="/view-unverified-doctors.css" />
     <title>Unverified Doctors</title>
   </head>
   <body>
     <ul class="menu">
       <li class="menu-items">
-        <a href="" class="item" id="">Overview</a>
+        <div class="item-wrap">
+          <i class="fa-sharp fa-solid fa-house fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item" id="">Overview</a>
+        </div>
       </li>
       <li class="menu-items" id="doctor-menu">
-        <a href="" class="item" id="selected">Doctors</a>
-        <ul class="sub-menu">
+        <div class="item-wrap" id="selected">
+          <i class="fa-solid fa-user-doctor fa-2x" id="icon" style="color: #ffff; background-color: slategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item" id="selected">Doctors</a>
+        </div>
+        <ul class="sub-menu-1">
           <li class="sub-menu-items">
             <a href="/admin/view-unverified-doctors" class="sub-item" id="selected">Unverified</a>
           </li>
@@ -43,11 +51,25 @@
           </li>
         </ul>
       </li>
-      <li class="menu-items">
-        <a href="" class="item">Patients</a>
+      <li class="menu-items" id="payment-menu">
+        <div class="item-wrap">
+          <i class="fa-solid fa-credit-card fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item">Payments</a>
+        </div>
+        <ul class="sub-menu-2">
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Consultations</a>
+          </li>
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Appointments</a>
+          </li>
+        </ul>
       </li>
-      <li class="menu-items">
-        <a href="" class="item">Profile</a>
+      <li class="menu-items"  id="my-profile">
+        <div class="item-wrap">
+          
+          <a href="" class="fa-sharp fa-solid fa-user fa-2x"  id="" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px; cursor: pointer;"></a>
+        </div>
       </li>
     </ul>
     <div class="container">
