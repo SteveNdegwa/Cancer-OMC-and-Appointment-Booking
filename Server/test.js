@@ -46,7 +46,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        //   var sql = "CREATE TABLE chat_rooms (room_id VARCHAR(255), patient_id INT NOT NULL, doctor_id INT NOT NULL, summary TEXT, PRIMARY KEY (room_id))";
+        //   var sql = "CREATE TABLE chat_rooms (room_id VARCHAR(255), patient_id INT NOT NULL, doctor_id INT NOT NULL, summary TEXT, status VARCHAR(255), last_active VARCHAR(255), PRIMARY KEY (room_id))";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table Created");
@@ -58,7 +58,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "DROP TABLE chat_rooms";
+        // var sql = "DROP TABLE chats";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");
@@ -135,6 +135,14 @@ pool.getConnection(function (err, connection) {
         //  console.log(result);
         //  console.log(result[0].name);
         // })
+
+        // const query = "SELECT COUNT (*) AS count FROM users";
+        // connection.query(query, (err,result)=>{
+        //   if(err) throw err;
+        //  console.log(result);
+        // })
+
+
 
 
         // let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
