@@ -23,13 +23,20 @@
             </div>
        <% } %>
 
-       <h2>Enter Mpesa number you wish to pay appointment fee from</h2>
-
+       <h2>Enter Mpesa number you wish to pay appointment fee from.</h2>
         <input type="tel" name="number" class="text" id="number" placeholder="Enter Number" max="10" min="10">
-        <button type="submit" class="btn">Next</button>
+        <button type="submit" class="btn" id="btn">Next</button>
     </form>
 
     <script>
+        let btn = document.getElementById("btn");
+        btn.addEventListener("click",()=>{
+            btn.disabled = true;
+            alert(`An STK Push will be sent to your phone to complete the payment.
+            Make sure you have stable internet connection.  
+            Please do not close this page`)
+            document.getElementById("form").submit();
+        })
     </script>
 </body>
 </html>
