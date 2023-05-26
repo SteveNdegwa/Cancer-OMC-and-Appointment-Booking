@@ -173,42 +173,218 @@ app.post("/chats/consultation-input-number", access, (req, res) => {
             message: req.flash("consultMsg"),
             consultationFee: req.session.consultationFee,
           });
-        }
-        console.log(response.body);
-        console.log(response.body.CheckoutRequestID);
+        } else {
+          const saveStkPush = new Promise((resolve, reject) => {
+            console.log(response.body);
+            console.log(response.body.CheckoutRequestID);
 
-        req.session.consultation.CheckoutRequestID =
-          response.body.CheckoutRequestID;
+            req.session.consultation.CheckoutRequestID =
+              response.body.CheckoutRequestID;
 
-        if (err) throw err;
+            if (err) throw err;
 
-        const now = new Date();
-        expiryTime = now.getTime() + 1440 * 60000; //// 1440 minutes
+            const now = new Date();
+            expiryTime = now.getTime() + 1440 * 60000; //// 1440 minutes
 
-        console.log(expiryTime);
+            console.log(expiryTime);
 
-        expiryDate = new Date(expiryTime);
+            expiryDate = new Date(expiryTime);
 
-        const query2 =
-          "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
-        const values2 = [
-          response.body.CheckoutRequestID,
-          mobileNo,
-          amount,
-          timestamp,
-          req.session.consultation.doctorId,
-          req.session.userId,
-          expiryDate,
-        ];
-        connection.query(query2, [values2], (err, data) => {
-          if (err) throw err;
-          console.log("consultation STK data inserted successfully");
+            const query2 =
+              "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
+            const values2 = [
+              response.body.CheckoutRequestID,
+              mobileNo,
+              amount,
+              timestamp,
+              req.session.consultation.doctorId,
+              req.session.userId,
+              expiryDate,
+            ];
+            connection.query(query2, [values2], (err, data) => {
+              if (err) throw err;
+              console.log("consultation STK data inserted successfully");
 
-          req.flash("consultationStkStatusMessage", "");
-          res.render("consultation-stk-push", {
-            message: req.flash("consultationStkStatusMessage"),
+              // req.flash("consultationStkStatusMessage", "");
+              // res.render("consultation-stk-push", {
+              //   message: req.flash("consultationStkStatusMessage"),
+              // });
+
+              resolve();
+            });
           });
-        });
+
+          saveStkPush.then(() => {
+            const checkStkPush = () => {
+              const date = new Date();
+              const timestamp =
+                date.getFullYear() +
+                ("0" + (date.getMonth() + 1)).slice(-2) +
+                ("0" + date.getDate()).slice(-2) +
+                ("0" + date.getHours()).slice(-2) +
+                ("0" + date.getMinutes()).slice(-2) +
+                ("0" + date.getSeconds()).slice(-2);
+
+              const shortcode = process.env.SHORT_CODE; ////// or req.session.consultation.businessNo
+              const passkey = process.env.PASS_KEY;
+
+              const password = new Buffer.from(
+                shortcode + passkey + timestamp
+              ).toString("base64");
+
+              let request = unirest(
+                "POST",
+                "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+              )
+                .headers({
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + token,
+                })
+                .send(
+                  JSON.stringify({
+                    BusinessShortCode: shortcode,
+                    Password: password,
+                    Timestamp: timestamp,
+                    CheckoutRequestID:
+                      req.session.consultation.CheckoutRequestID,
+                  })
+                )
+                .end((response) => {
+                  if (response.error) {
+                    // req.flash(
+                    //   "consultationStkStatusMessage",
+                    //   "Please complete the payment before proceeding"
+                    // );
+                    // return res.render("consultation-stk-push", {
+                    //   message: req.flash("consultationStkStatusMessage"),
+                    // });
+                  }
+                  else{
+                    clearInterval(interval);
+                    console.log(response.body.ResultDesc);
+
+                  if (
+                    response.body.ResultDesc ==
+                    "The service request is processed successfully."
+                  ) {
+                    /// if payment successful
+
+                    const saveSessions = new Promise((resolve, reject) => {
+                      pool.getConnection((err, connection) => {
+                        if (err) throw err;
+
+                        const query =
+                          "SELECT * FROM consultation_sessions where room_id = ?";
+                        connection.query(
+                          query,
+                          [req.session.roomId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results.length) {
+                                const query2 =
+                                  "UPDATE consultation_sessions SET expiry_time = ? where room_id = ?";
+                                connection.query(
+                                  query2,
+                                  [expiryDate, req.session.roomId],
+                                  (err, data) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      resolve(
+                                        console.log(
+                                          "consultation session updated successfully"
+                                        )
+                                      );
+                                    }
+                                  }
+                                );
+                              } else {
+                                const query2 =
+                                  "INSERT INTO consultation_sessions(`room_id`, `expiry_time`) VALUES(?)";
+                                const values = [req.session.roomId, expiryDate];
+                                connection.query(
+                                  query2,
+                                  [values],
+                                  (err, data) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      resolve(
+                                        console.log(
+                                          "consultation session inserted successfully"
+                                        )
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          }
+                        );
+                        connection.release();
+                      });
+                    });
+
+                    saveSessions.then(() => {
+                      pool.getConnection((err, connection) => {
+                        if (err) throw err;
+                        const query =
+                          "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
+                        connection.query(
+                          query,
+                          [
+                            response.body.ResultDesc,
+                            req.session.consultation.CheckoutRequestID,
+                          ],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              req.session.expiryTime = expiryDate;
+                              req.session.viewMode = false;
+                              return res.redirect("/chats/chat");
+                            }
+                          }
+                        );
+
+                        connection.release();
+                      });
+                    });
+                  } else {
+                    /// if payment not successful
+
+                    pool.getConnection((err, connection) => {
+                      if (err) throw err;
+                      const query =
+                        "UPDATE consultations_stk_push SET status = ? WHERE checkout_id = ?";
+                      connection.query(
+                        query,
+                        [
+                          response.body.ResultDesc,
+                          req.session.consultation.CheckoutRequestID,
+                        ],
+                        (err, result) => {
+                          if (err) throw err;
+
+                          req.flash(
+                            "consultationPaymentMessage",
+                            response.body.ResultDesc
+                          );
+                          return res.render("consultation-input-number", {
+                            message: req.flash("consultationPaymentMessage"),
+                          });
+                        }
+                      );
+                    });
+                  }
+                  }
+                });
+            };
+            let interval = setInterval(checkStkPush, 5000);
+          });
+        }
       });
 
     connection.release();
@@ -376,25 +552,31 @@ app.get("/chats/chat-rooms", (req, res) => {
       if (err) throw err;
       let query = "";
       if (req.session.accountType == "patient") {
-        query = "SELECT * FROM chat_rooms WHERE patient_id = ? AND status = ? ORDER BY last_active DESC";
+        query =
+          "SELECT * FROM chat_rooms WHERE patient_id = ? AND status = ? ORDER BY last_active DESC";
       } else {
-        query = "SELECT * FROM chat_rooms WHERE doctor_id = ? AND status = ? ORDER BY last_active DESC";
+        query =
+          "SELECT * FROM chat_rooms WHERE doctor_id = ? AND status = ? ORDER BY last_active DESC";
       }
 
-      connection.query(query, [req.session.userId, "active"], (err, results) => {
-        if (err) throw err;
-        if (results.length) {
-          results.forEach((result, index) => {
-            rooms.push(result);
-            if (index == results.length - 1) {
-              console.log(rooms);
-              resolve(rooms);
-            }
-          });
-        } else {
-          resolve(rooms);
+      connection.query(
+        query,
+        [req.session.userId, "active"],
+        (err, results) => {
+          if (err) throw err;
+          if (results.length) {
+            results.forEach((result, index) => {
+              rooms.push(result);
+              if (index == results.length - 1) {
+                console.log(rooms);
+                resolve(rooms);
+              }
+            });
+          } else {
+            resolve(rooms);
+          }
         }
-      });
+      );
 
       connection.release();
     });
@@ -947,30 +1129,36 @@ io.on("connection", (socket) => {
 
               socket.emit("sentChatMessage", msg, time);
 
-              resolve(console.log("Chat message saved. Id: "+data.insertId));
+              resolve(console.log("Chat message saved. Id: " + data.insertId));
             });
 
             connection.release();
           });
         });
 
-        saveMessage.then(()=>{
-          pool.getConnection((err,connection)=>{
-            if(err){throw err;}
-            else{
+        saveMessage.then(() => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
               let status = "active";
               const now = new Date();
-              const query = "UPDATE chat_rooms SET status = ?, last_active = ? WHERE room_id = ?";
-              connection.query(query,[status,now,socket.handshake.session.roomId],(err,data)=>{
-                if(err){throw err;}
-                else{
-                  console.log("Chat room updated suceesfully");
+              const query =
+                "UPDATE chat_rooms SET status = ?, last_active = ? WHERE room_id = ?";
+              connection.query(
+                query,
+                [status, now, socket.handshake.session.roomId],
+                (err, data) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    console.log("Chat room updated suceesfully");
+                  }
                 }
-              })
-
-          }
-          })
-        })
+              );
+            }
+          });
+        });
       } else {
         socket.emit(
           "message",
@@ -1007,30 +1195,36 @@ io.on("connection", (socket) => {
 
             socket.emit("sentChatMessage", msg, time);
 
-            resolve(console.log("Chat message saved. Id: "+data.insertId));
+            resolve(console.log("Chat message saved. Id: " + data.insertId));
           });
 
           connection.release();
         });
       });
 
-      saveMessage.then(()=>{
-        pool.getConnection((err,connection)=>{
-          if(err){throw err;}
-          else{
+      saveMessage.then(() => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
             let status = "active";
             const now = new Date();
-            const query = "UPDATE chat_rooms SET status = ?, last_active = ? WHERE room_id = ?";
-            connection.query(query,[status,now,socket.handshake.session.roomId],(err,data)=>{
-              if(err){throw err;}
-              else{
-                console.log("Chat room updated suceesfully");
+            const query =
+              "UPDATE chat_rooms SET status = ?, last_active = ? WHERE room_id = ?";
+            connection.query(
+              query,
+              [status, now, socket.handshake.session.roomId],
+              (err, data) => {
+                if (err) {
+                  throw err;
+                } else {
+                  console.log("Chat room updated suceesfully");
+                }
               }
-            })
-
-        }
-        })
-      })
+            );
+          }
+        });
+      });
     }
   });
 

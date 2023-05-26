@@ -463,44 +463,177 @@ router.post("/input-number", access, async (req, res) => {
       console.log(response);
       console.log(response.data);
 
-      pool.getConnection((err, connection) => {
-        if (err) {
-          throw err;
-        } else {
-          console.log(response.data.CheckoutRequestID);
+      const saveStkPush = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            console.log(response.data.CheckoutRequestID);
 
-          req.session.paymentDetails = {
-            mobileNo: mobileNo,
-            CheckoutRequestID: response.data.CheckoutRequestID,
-          };
+            req.session.paymentDetails = {
+              mobileNo: mobileNo,
+              CheckoutRequestID: response.data.CheckoutRequestID,
+            };
 
-          console.log(req.session.paymentDetails);
+            console.log(req.session.paymentDetails);
 
-          if (err) throw err;
-          const query2 =
-            "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
-          const values2 = [
-            response.data.CheckoutRequestID,
-            mobileNo,
-            amount,
-            timestamp,
-            req.session.appointmentDetails.doctorId,
-            req.session.appointmentDetails.patientId,
-            req.session.appointmentDetails.date,
-            req.session.appointmentDetails.time,
-          ];
-          connection.query(query2, [values2], (err, data) => {
             if (err) throw err;
-            console.log("STK data inserted successfully");
+            const query2 =
+              "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
+            const values2 = [
+              response.data.CheckoutRequestID,
+              mobileNo,
+              amount,
+              timestamp,
+              req.session.appointmentDetails.doctorId,
+              req.session.appointmentDetails.patientId,
+              req.session.appointmentDetails.date,
+              req.session.appointmentDetails.time,
+            ];
+            connection.query(query2, [values2], (err, data) => {
+              if (err) throw err;
+              console.log("STK data inserted successfully");
 
-            req.flash("stkStatusMessage", "");
-            return res.render("stk-push", {
-              message: req.flash("stkStatusMessage"),
+              // req.flash("stkStatusMessage", "");
+              resolve();
+              // return res.render("stk-push", {
+              //   message: req.flash("stkStatusMessage"),
+              // })
             });
-          });
-        }
+          }
 
-        connection.release();
+          connection.release();
+        });
+      });
+
+      saveStkPush.then(() => {
+        const checkStkPush = () => {
+          const date = new Date();
+          const timestamp =
+            date.getFullYear() +
+            ("0" + (date.getMonth() + 1)).slice(-2) +
+            ("0" + date.getDate()).slice(-2) +
+            ("0" + date.getHours()).slice(-2) +
+            ("0" + date.getMinutes()).slice(-2) +
+            ("0" + date.getSeconds()).slice(-2);
+
+          const shortcode = process.env.SHORT_CODE;
+          const passkey = process.env.PASS_KEY;
+
+          const password = new Buffer.from(
+            shortcode + passkey + timestamp
+          ).toString("base64");
+
+          let request = unirest(
+            "POST",
+            "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+          )
+            .headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            })
+            .send(
+              JSON.stringify({
+                BusinessShortCode: shortcode,
+                Password: password,
+                Timestamp: timestamp,
+                CheckoutRequestID: req.session.paymentDetails.CheckoutRequestID,
+              })
+            )
+            .end((response) => {
+              if (response.error) {
+                // req.flash(
+                //   "stkStatusMessage",
+                //   "Please complete the payment before proceeding"
+                // );
+                // return res.render("stk-push", {
+                //   message: req.flash("stkStatusMessage"),
+                // });
+              }
+              else{
+                clearInterval(interval);
+                console.log(response.body.ResultDesc);
+
+              if (
+                response.body.ResultDesc ==
+                "The service request is processed successfully."
+              ) {
+                /// if payment successful
+
+                pool.getConnection((err, connection) => {
+                  if (err) throw err;
+                  const query2 =
+                    "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
+                  const values2 = [
+                    req.session.appointmentDetails.doctorId,
+                    req.session.appointmentDetails.patientId,
+                    req.session.appointmentDetails.date,
+                    req.session.appointmentDetails.time,
+                  ];
+
+                  const saveAppointment = new Promise((resolve, reject) => {
+                    connection.query(query2, [values2], (err, data) => {
+                      if (err) throw err;
+                      else {
+                        console.log("appointment inserted");
+                        console.log(`appointment id is ${data.insertId}`);
+
+                        let appointmentId = data.insertId;
+                        resolve(appointmentId);
+                      }
+                    });
+                  });
+
+                  saveAppointment.then((appointmentId) => {
+                    const query3 =
+                      "UPDATE appointments_stk_push SET status = ? ,appointment_id = ? WHERE checkout_id = ?";
+                    connection.query(
+                      query3,
+                      [
+                        response.body.ResultDesc,
+                        appointmentId,
+                        req.session.paymentDetails.CheckoutRequestID,
+                      ],
+                      (err, result) => {
+                        if (err) throw err;
+                        return res.redirect("/appointments/my-appointments");
+                      }
+                    );
+                  });
+
+                  connection.release();
+                });
+              } else {
+                /// if payment not successful
+
+                pool.getConnection((err, connection) => {
+                  if (err) throw err;
+                  const query =
+                    "UPDATE appointments_stk_push SET status = ? WHERE checkout_id = ?";
+                  connection.query(
+                    query,
+                    [
+                      response.body.ResultDesc,
+                      req.session.paymentDetails.CheckoutRequestID,
+                    ],
+                    (err, result) => {
+                      if (err) throw err;
+
+                      req.flash(
+                        "paymentStatusMessage",
+                        response.body.ResultDesc
+                      );
+                      return res.render("input-number", {
+                        message: req.flash("paymentStatusMessage"),
+                      });
+                    }
+                  );
+                });
+              }
+              }
+            });
+        };
+        let interval = setInterval(checkStkPush, 5000);
       });
     })
     .catch((err) => {
