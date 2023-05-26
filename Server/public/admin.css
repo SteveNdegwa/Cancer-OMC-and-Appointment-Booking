@@ -1,0 +1,40 @@
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    box-sizing: border-box;
+}
+
+.menu{
+    width: 30px;
+    transition: all .5s ease;
+    height: 100vh;
+    background-color: darkslategray;
+}
+
+
+.menu:hover{
+    width: 300px;
+}
+
+.menu-items{
+    width:100%
+}
+
+.menu-items:hover >a{
+    border-color: white;
+}
+.item{
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    line-height:100px;
+    background-color: darkslategray;
+    border: 1px solid transparent;
+    color: white;
+    text-align: center;
+}
+
+#selected{
+    background-color: slategray;
+}
