@@ -4,10 +4,9 @@ const router = express.Router();
 const pool = require("../server.js");
 
 const unirest = require("unirest");
+const axios = require("axios");
 
 const path = require("path");
-const { log } = require("console");
-const e = require("connect-flash");
 
 let nowDate = new Date();
 let month = "";
@@ -204,11 +203,14 @@ router.get("/book-appointment", (req, res) => {
               appointmentSlots = [];
               chosenDate = "";
 
-              req.flash("bookingMessage", "");
+              req.flash(
+                "bookingMessage",
+                "Cannot Book Appointment Due To Undefined Booking Fee"
+              );
 
               return res.render("book-appointment", {
                 details: details,
-                appointmentFee: "",
+                appointmentFee: "Undefined",
                 appointmentSlots: appointmentSlots,
                 chosenDate: chosenDate,
                 today: today,
@@ -314,6 +316,7 @@ router.post("/book-appointment", (req, res) => {
         req.flash("bookingMessage", "Please Select A Time Slot");
         return res.render("book-appointment", {
           details: details,
+          appointmentFee: req.session.appointmentDetails.amount,
           appointmentSlots: appointmentSlots,
           today: today,
           chosenDate: chosenDate,
@@ -338,6 +341,7 @@ router.post("/book-appointment", (req, res) => {
                   );
                   return res.render("book-appointment", {
                     details: details,
+                    appointmentFee: req.session.appointmentDetails.amount,
                     appointmentSlots: appointmentSlots,
                     chosenDate: chosenDate,
                     today: today,
@@ -358,6 +362,7 @@ router.post("/book-appointment", (req, res) => {
                     );
                     return res.render("book-appointment", {
                       details: details,
+                      appointmentFee: req.session.appointmentDetails.amount,
                       appointmentSlots: appointmentSlots,
                       chosenDate: chosenDate,
                       today: today,
@@ -381,13 +386,13 @@ router.post("/book-appointment", (req, res) => {
                         }
                       );
                     } else {
-                      req.session.appointmentDetails = {
-                        doctorId: req.session.doctorId,
-                        patientId: req.session.userId,
-                        date: selectedDate,
-                        time: selectedTime,
-                      };
-                      console.log(req.session.appointmentDetails);
+                      (req.session.appointmentDetails.doctorId =
+                        req.session.doctorId),
+                        (req.session.appointmentDetails.patientId =
+                          req.session.userId),
+                        (req.session.appointmentDetails.date = selectedDate),
+                        (req.session.appointmentDetails.time = selectedTime),
+                        console.log(req.session.appointmentDetails);
 
                       req.flash("paymentStatusMessage", "");
 
@@ -410,73 +415,63 @@ router.post("/book-appointment", (req, res) => {
   }
 });
 
-router.post("/input-number", access, (req, res) => {
-  pool.getConnection((err, connection) => {
-    let amount = req.session.appointmentDetails.amount;
-    let number = req.body.number.substring(1);
-    let mobileNo = "254" + number;
+router.post("/input-number", access, async (req, res) => {
+  let amount = req.session.appointmentDetails.amount;
+  console.log("amount: " + amount);
+  let number = req.body.number.substring(1);
+  let mobileNo = "254" + number;
 
-    const date = new Date();
-    const timestamp =
-      date.getFullYear() +
-      ("0" + (date.getMonth() + 1)).slice(-2) +
-      ("0" + date.getDate()).slice(-2) +
-      ("0" + date.getHours()).slice(-2) +
-      ("0" + date.getMinutes()).slice(-2) +
-      ("0" + date.getSeconds()).slice(-2);
+  const date = new Date();
+  const timestamp =
+    date.getFullYear() +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    ("0" + date.getDate()).slice(-2) +
+    ("0" + date.getHours()).slice(-2) +
+    ("0" + date.getMinutes()).slice(-2) +
+    ("0" + date.getSeconds()).slice(-2);
 
-    const shortcode = process.env.SHORT_CODE2;
-    const passkey = process.env.PASS_KEY;
+  const shortcode = process.env.SHORT_CODE;
+  const passkey = process.env.PASS_KEY;
 
-    const password = new Buffer.from(shortcode + passkey + timestamp).toString(
-      "base64"
-    );
+  const password = new Buffer.from(shortcode + passkey + timestamp).toString(
+    "base64"
+  );
 
-    let request = unirest(
-      "POST",
-      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+  await axios
+    .post(
+      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+      {
+        BusinessShortCode: shortcode,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: "CustomerPayBillOnline",
+        Amount: amount,
+        PartyA: mobileNo,
+        PartyB: shortcode,
+        PhoneNumber: mobileNo,
+        CallBackURL: "https://ba27-41-212-28-227.ngrok-free.app",
+        AccountReference: "Cancer Support System",
+        TransactionDesc: "Payment of Appointment",
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
     )
-      .headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      })
-      .send(
-        JSON.stringify({
-          BusinessShortCode: shortcode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: "CustomerPayBillOnline",
-          Amount: amount,
-          PartyA: mobileNo,
-          PartyB: shortcode,
-          PhoneNumber: mobileNo,
-          CallBackURL: "https://02b6-197-237-171-106.ngrok-free.app/callback",
-          AccountReference: "CSS",
-          TransactionDesc: "Payment of Appointment",
-        })
-      )
-      .end((response) => {
-        if (response.error) {
-          console.log(response.error);
+    .then((response) => {
+      console.log(response);
+      console.log(response.data);
 
-          req.flash(
-            "bookingMessage",
-            "Sorry. There is a problem generating the STK Push"
-          );
-          return res.render("book-appointment", {
-            details: [],
-            appointmentSlots: [],
-            chosenDate: "",
-            today: today,
-            bookingMessage: req.flash("bookingMessage"),
-          });
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
         } else {
-          console.log(response.body);
-          console.log(response.body.CheckoutRequestID);
+          console.log(response.data.CheckoutRequestID);
 
           req.session.paymentDetails = {
             mobileNo: mobileNo,
-            CheckoutRequestID: response.body.CheckoutRequestID,
+            CheckoutRequestID: response.data.CheckoutRequestID,
           };
 
           console.log(req.session.paymentDetails);
@@ -485,7 +480,7 @@ router.post("/input-number", access, (req, res) => {
           const query2 =
             "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
           const values2 = [
-            response.body.CheckoutRequestID,
+            response.data.CheckoutRequestID,
             mobileNo,
             amount,
             timestamp,
@@ -499,13 +494,90 @@ router.post("/input-number", access, (req, res) => {
             console.log("STK data inserted successfully");
 
             req.flash("stkStatusMessage", "");
-            res.render("stk-push", { message: req.flash("stkStatusMessage") });
+            return res.render("stk-push", {
+              message: req.flash("stkStatusMessage"),
+            });
           });
         }
-      });
 
-    connection.release();
-  });
+        connection.release();
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      req.flash("paymentStatusMessage", "Error Generating The STK Push");
+
+      return res.render("input-number", {
+        message: req.flash("paymentStatusMessage"),
+      });
+    });
+
+  // let request = unirest(
+  //   "POST",
+  //   "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+  // )
+  //   .headers({
+  //     "Content-Type": "application/json",
+  //     Authorization: "Bearer " + token,
+  //   })
+  //   .send(
+  //     JSON.stringify({
+  //       BusinessShortCode: shortcode,
+  //       Password: password,
+  //       Timestamp: timestamp,
+  //       TransactionType: "CustomerPayBillOnline",
+  //       Amount: amount,
+  //       PartyA: mobileNo,
+  //       PartyB: shortcode,
+  //       PhoneNumber: mobileNo,
+  //       CallBackURL: "https://ba27-41-212-28-227.ngrok-free.app",
+  //       AccountReference: "CSS",
+  //       TransactionDesc: "Payment of Appointment",
+  //     })
+  //   )
+  //   .end((response) => {
+  //     if (response.error) {
+  //       console.log(response.error);
+
+  //       req.flash("paymentStatusMessage", "Error Generating The STK Push");
+
+  //       return res.render("input-number", {
+  //         message: req.flash("paymentStatusMessage"),
+  //       });
+
+  //     } else {
+  //       console.log(response.body);
+  //       console.log(response.body.CheckoutRequestID);
+
+  //       req.session.paymentDetails = {
+  //         mobileNo: mobileNo,
+  //         CheckoutRequestID: response.body.CheckoutRequestID,
+  //       };
+
+  //       console.log(req.session.paymentDetails);
+
+  //       if (err) throw err;
+  //       const query2 =
+  //         "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
+  //       const values2 = [
+  //         response.body.CheckoutRequestID,
+  //         mobileNo,
+  //         amount,
+  //         timestamp,
+  //         req.session.appointmentDetails.doctorId,
+  //         req.session.appointmentDetails.patientId,
+  //         req.session.appointmentDetails.date,
+  //         req.session.appointmentDetails.time,
+  //       ];
+  //       connection.query(query2, [values2], (err, data) => {
+  //         if (err) throw err;
+  //         console.log("STK data inserted successfully");
+
+  //         req.flash("stkStatusMessage", "");
+  //         res.render("stk-push", { message: req.flash("stkStatusMessage") });
+  //       });
+  //     }
+  //   });
 });
 
 router.post("/stk-push", (req, res) => {
@@ -518,7 +590,7 @@ router.post("/stk-push", (req, res) => {
     ("0" + date.getMinutes()).slice(-2) +
     ("0" + date.getSeconds()).slice(-2);
 
-  const shortcode = process.env.SHORT_CODE2;
+  const shortcode = process.env.SHORT_CODE;
   const passkey = process.env.PASS_KEY;
 
   const password = new Buffer.from(shortcode + passkey + timestamp).toString(
