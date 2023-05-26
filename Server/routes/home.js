@@ -104,12 +104,16 @@ router.post("/", (req, res) => {
                 req.session.roomId = roomId;
                 resolve(roomId);
               } else {
+                const now = new Date();
+                let status = "inactive";
                 const query2 =
-                  "INSERT INTO chat_rooms(`room_id`, `patient_id`, `doctor_id`) VALUES(?)";
+                  "INSERT INTO chat_rooms(`room_id`, `patient_id`, `doctor_id`, `status`, `last_active`) VALUES(?)";
                 const values = [
                   `room-${req.session.userId}-${req.body.doctor_id}`,
                   req.session.userId,
                   req.body.doctor_id,
+                  status,
+                  now,
                 ];
                 connection.query(query2, [values], (err, data) => {
                   if (err) throw err;
@@ -280,12 +284,16 @@ router.post("/doctors", (req, res) => {
               req.session.roomId = roomId;
               resolve(roomId);
             } else {
+              const now = new Date();
+              let status = "inactive";
               const query2 =
-                "INSERT INTO chat_rooms(`room_id`, `patient_id`, `doctor_id`) VALUES(?)";
+                "INSERT INTO chat_rooms(`room_id`, `patient_id`, `doctor_id`, `status`, `last_active`) VALUES(?)";
               const values = [
                 `room-${req.session.userId}-${req.body.doctor_id}`,
                 req.session.userId,
                 req.body.doctor_id,
+                status,
+                now,
               ];
               connection.query(query2, [values], (err, data) => {
                 if (err) throw err;
