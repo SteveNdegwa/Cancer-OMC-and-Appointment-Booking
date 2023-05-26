@@ -14,6 +14,29 @@
     <title>Verified Doctors</title>
 </head>
 <body>
+    <ul class="menu">
+        <li class="menu-items">
+          <a href="" class="item" id="">Overview</a>
+        </li>
+        <li class="menu-items" id="doctor-menu">
+          <a href="" class="item" id="selected">Doctors</a>
+          <ul class="sub-menu">
+            <li class="sub-menu-items">
+              <a href="/admin/view-unverified-doctors" class="sub-item" id="">Unverified</a>
+            </li>
+            <li class="sub-menu-items">
+              <a href="/admin/view-verified-doctors" class="sub-item" id="selected">Verified</a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-items">
+          <a href="" class="item">Patients</a>
+        </li>
+        <li class="menu-items">
+          <a href="" class="item">Profile</a>
+        </li>
+      </ul>
+   <div class="container">
     <% if (doctors.length) { %>
         <h2 class="main-header">Verified Doctors</h2>
      <% doctors.forEach(doctor => { %>
@@ -23,7 +46,7 @@
         <h3 class="details">Licence No : <%= doctor.licence_no %></h3>
         <h4 class="details"><%= doctor.cancer_speciality %></h4>
         <h4 class="details"><%= doctor.clinic_location %></h4>
-        <h4 class="details"><%= doctor.email %></h4>
+        <h4 class="details"><%= doctor.clinic_email %></h4>
         <h4 class="details"><%= doctor.phone_no %></h4>
 
         <button type="submit" class="btn-verified" >Unverify</button>
@@ -33,5 +56,6 @@
     <% }else{ %>
         <h1 class="no-details">No Records Found</h1>
     <% } %>
+   </div>
 </body>
 </html>
