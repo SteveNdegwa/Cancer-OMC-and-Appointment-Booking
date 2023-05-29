@@ -4,23 +4,208 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/icons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/icons/site.webmanifest" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/admin.css" />
     <title>Administrator</title>
   </head>
   <body>
     <ul class="menu">
       <li class="menu-items">
-        <a href="" class="item" id="selected">Overview</a>
+        <div class="item-wrap" id="selected">
+          <i class="fa-sharp fa-solid fa-house fa-2x" id="icon" style="color: #ffff; background-color: slategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin" class="item" id="selected">Overview</a>
+        </div>
       </li>
-      <li class="menu-items">
-        <a href="" class="item">Doctors</a>
+      <li class="menu-items" id="doctor-menu">
+        <div class="item-wrap">
+          <i class="fa-solid fa-user-doctor fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item">Doctors</a>
+        </div>
+        <ul class="sub-menu-1">
+          <li class="sub-menu-items">
+            <a href="/admin/view-unverified-doctors" class="sub-item">Unverified</a>
+          </li>
+          <li class="sub-menu-items">
+            <a href="/admin/view-verified-doctors" class="sub-item">Verified</a>
+          </li>
+        </ul>
       </li>
-      <li class="menu-items">
-        <a href="" class="item">Patients</a>
+      <li class="menu-items" id="payment-menu">
+        <div class="item-wrap">
+          <i class="fa-solid fa-credit-card fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item">Payments</a>
+        </div>
+        <ul class="sub-menu-2">
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Consultations</a>
+          </li>
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Appointments</a>
+          </li>
+        </ul>
       </li>
-      <li class="menu-items">
-        <a href="" class="item">Profile</a>
+      <li class="menu-items"  id="my-profile">
+        <div class="item-wrap">
+          
+          <a href="" class="fa-sharp fa-solid fa-user fa-2x"  id="" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px; cursor: pointer;"></a>
+        </div>
       </li>
     </ul>
+
+    <div class="container">
+      <h2>Overall Statistics</h2>
+      <div class="top-details">
+        <div class="details-wrap">
+          <h2>Users</h2>
+          <h4>Patients: <%= usersCount.patientCount %></h4>
+          <h4>Doctors: <%= usersCount.doctorCount %></h4>
+          <h4>Total: <%= usersCount.total %></h4>
+        </div>
+        <div class="details-wrap">
+          <h2>Engagements</h2>
+          <h4>Paid Consultations: <%= revenue.consultationsCount %></h4>
+          <h4>Appointments: <%= revenue.appointmentsCount %></h4>
+          <h4>Total: <%= revenue.count %></h4>
+        </div>
+        <div class="details-wrap">
+          <h2>Revenue</h2>
+          <h4>Consultations: Shs <%= revenue.consultationsSum %></h4>
+          <h4>Appointments: Shs <%= revenue.appointmentsSum %></h4>
+          <h4>Total: Shs <%= revenue.total %></h4>
+        </div>
+      </div>
+      <div class="doctors-wrap">
+        <h2>Doctors' Statistics</h2>
+        <div class="table-wrap">
+          <h3>Revenue</h3>
+          <table>
+            <tr>
+              <th>User Id</th>
+              <th>Name</th>
+              <th>Consultations Revenue</th>
+              <th>Appointments Revenue</th>
+              <th>Total Revenue</th>
+            </tr>
+            <% doctorsRevenueData.forEach(doctor => { %>
+             <tr>
+              <td><%= doctor.userId %></td>
+              <td><%= doctor.name %></td>
+              <td>Shs <%= doctor.consultationsRevenue %></td>
+              <td>Shs <%= doctor.appointmentsRevenue %></td>
+              <td>Shs <%= doctor.totalRevenue %></td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <h3>Total Engagements</h3>
+          <table>
+            <tr>
+              <th>User Id</th>
+              <th>Name</th>
+              <th>No. Of Paid Consultations</th>
+              <th>No. of Appointments</th>
+              <th>Total Engagements</th>
+            </tr>
+            <% doctorsEngagementsData.forEach(doctor => { %>
+             <tr>
+              <td><%= doctor.userId %></td>
+              <td><%= doctor.name %></td>
+              <td><%= doctor.consultationsCount %></td>
+              <td><%= doctor.appointmentsCount %></td>
+              <td><%= doctor.totalEngagements %></td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <h3>Consultations</h3>
+          <table>
+            <tr>
+              <th>User Id</th>
+              <th>Name</th>
+              <th>No. Of Paid Consultations</th>
+              <th>Consultations Revenue</th>
+            </tr>
+            <% doctorsConsultationsData.forEach(doctor => { %>
+             <tr>
+              <td><%= doctor.userId %></td>
+              <td><%= doctor.name %></td>
+              <td><%= doctor.consultationsCount %></td>
+              <td>Shs <%= doctor.consultationsRevenue %></td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <h3>Appointments</h3>
+          <table>
+            <tr>
+              <th>User Id</th>
+              <th>Name</th>
+              <th>No. of Appointments</th>
+              <th>Appointments Revenue</th>
+            </tr>
+            <% doctorsAppointmentsData.forEach(doctor => { %>
+             <tr>
+              <td><%= doctor.userId %></td>
+              <td><%= doctor.name %></td>
+              <td><%= doctor.appointmentsCount %></td>
+              <td>Shs <%= doctor.appointmentsRevenue %></td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+      </div>
+
+      <div class="patients-wrap">
+        <h2>Patients' Statistics</h2>
+        <div class="table-wrap">
+          <h3>Appointments</h3>
+          <table>
+            <tr>
+              <th>User Id</th>
+              <th>Name</th>
+              <th>No. of Paid Consultations</th>
+              <th>Consultations' Fees</th>
+              <th>No. of Appointments</th>
+              <th>Appointments' Fees</th>
+              <th>Total Engagements</th>
+              <th>Total Fees Paid</th>
+            </tr>
+            <% patientsData.forEach(patient => { %>
+             <tr>
+              <td><%= patient.userId %></td>
+              <td><%= patient.name %></td>
+              <td><%= patient.consultationsCount %></td>
+              <td>Shs <%= patient.consultationsRevenue %></td>
+              <td><%= patient.appointmentsCount %></td>
+              <td>Shs <%= patient.appointmentsRevenue %></td>
+              <td><%= patient.totalEngagements %></td>
+              <td>Shs <%= patient.totalRevenue %></td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
