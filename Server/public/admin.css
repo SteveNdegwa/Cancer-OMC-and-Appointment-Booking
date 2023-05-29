@@ -1,40 +1,206 @@
 *{
     padding: 0;
     margin: 0;
+    background-color: ghostwhite;
     font-family: 'Times New Roman', Times, serif;
     box-sizing: border-box;
 }
 
+body{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow:hidden;
+    padding: 40px 0px;
+}
+
+ul{
+    list-style: none;
+}
+
 .menu{
-    width: 30px;
+    width: 100px;
     transition: all .5s ease;
     height: 100vh;
     background-color: darkslategray;
+    border: none;
+    border-right: 2px solid lightgray;
+    position: relative;
 }
 
 
 .menu:hover{
-    width: 300px;
+    width: 250px;
+}
+
+.menu:hover > .menu-items .item{
+    display: block;
+    flex: 1;
+    line-height:80px;
 }
 
 .menu-items{
-    width:100%
+    width:100%;
 }
 
-.menu-items:hover >a{
+
+.item-wrap{
+    width: 100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: darkslategray;
+    border: 2px solid transparent;
+}
+
+.item-wrap:hover{
     border-color: white;
 }
+
 .item{
     text-decoration: none;
+    background-color: darkslategray;
+    color: white;
+    text-align: center;
+    display: none;
+}
+
+#selected{
+    background-color: slategray;
+}
+
+.sub-menu-items:hover >a{
+    border-color: white;
+}
+
+.sub-menu-1, .sub-menu-2{
+    display: none;
+}
+
+#doctor-menu:hover >.sub-menu-1{
     display: block;
-    width: 100%;
-    line-height:100px;
+}
+
+#payment-menu:hover >.sub-menu-2{
+    display: block;
+}
+
+#doctor-menu, #payment-menu{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    background-color: ghostwhite;
+}
+
+#my-profile{
+    position: absolute;
+    bottom: 20px;
+}
+
+.sub-item{
+    text-decoration: none;
+    display: block;
+    width: 180px;
+    line-height:80px;
     background-color: darkslategray;
     border: 1px solid transparent;
     color: white;
     text-align: center;
 }
 
-#selected{
-    background-color: slategray;
+
+#icon{
+    background-color: darkslategray;
+}
+
+.container{
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center safe;
+    align-items: center;
+    overflow-y: scroll;
+}
+
+.top-details{
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.details-wrap{
+    width: 250px;
+    padding: 20px 0px;
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: white;
+    box-shadow: 1px 2px 4px gray;
+}
+
+.details-wrap h4{
+    background-color: white;
+    color: dimgray;
+}
+.details-wrap h2{
+    background-color: white;
+    color: darkslategray;
+}
+
+.doctors-wrap{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+h2{
+    color: darkslategray;
+}
+
+.table-wrap{
+    width: 100%;
+    padding: 0px 20px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: white;
+    box-shadow: 1px 2px 5px gray;
+}
+
+table{
+    width: 100%;
+    background-color: white;
+}
+
+.table-wrap h3{
+    background-color: white;
+}
+
+table, th, td{
+    border: 1px solid dimgray;
+    background-color: white;
+}
+
+th{
+    text-align: left;
 }

@@ -26,7 +26,7 @@ ul{
     height: 100vh;
     background-color: darkslategray;
     border: none;
-    border-right: 2px solid dimgray;
+    border-right: 2px solid lightgray;
     position: relative;
 }
 
