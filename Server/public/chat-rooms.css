@@ -10,11 +10,23 @@ body{
     justify-content: center;
     align-items: center;
     width: 100%;
+    padding: 20px 0px;
+}
+
+.unviewed-messages{
+    justify-self: flex-end;
+    border-radius: 50%;
+    line-height: 40px;
+    width: 40px;
+    text-align: center;
+    background-color: green;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .main-header{
     color: dimgray;
-    margin: 30px 0px;
+    margin-bottom: 30px;
 }
 
 .room-id{
@@ -36,7 +48,6 @@ body{
     justify-content: center;
     align-items: center;
     padding: 30px;
-    margin-bottom: 20px;
     background-color: white;
     box-shadow: 1px 2px 5px gray;
 }
@@ -50,7 +61,7 @@ form{
 }
 
 .name{
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     background-color: white;
 }
 
