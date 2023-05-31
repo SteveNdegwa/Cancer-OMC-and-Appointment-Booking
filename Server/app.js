@@ -611,8 +611,18 @@ app.get("/chats/chat-rooms", (req, res) => {
                 if (err) throw err;
                 if (messages.length) {
                   rooms[i].message = messages[messages.length - 1].message;
-                  rooms[i].date = messages[messages.length - 1].date;
                   rooms[i].time = messages[messages.length - 1].time;
+
+                  let d = new Date();
+                  let date =("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getFullYear();
+
+                  if(date == messages[messages.length - 1].date){
+                    rooms[i].date = "Today"
+                  }else{
+                    rooms[i].date = messages[messages.length - 1].date;
+                  }
+
+
                   if (
                     messages[messages.length - 1].sender_id ==
                     req.session.userId
