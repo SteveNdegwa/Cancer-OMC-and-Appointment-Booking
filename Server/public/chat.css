@@ -60,7 +60,7 @@ form{
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    border: 2px solid dimgray;
+    border-bottom: 1px solid dimgray;
 }
 
 .message-div, .room-div{
