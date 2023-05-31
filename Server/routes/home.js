@@ -40,7 +40,7 @@ router.get("/", (req, res) => {
             query =
               "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id = ?";
           }
-          connection.query(query,[req.session.userId], (err, results) => {
+          connection.query(query, [req.session.userId], (err, results) => {
             if (err) {
               throw err;
             } else {
@@ -89,60 +89,83 @@ router.get("/", (req, res) => {
       });
     });
 
-    pool.getConnection((err, connection) => {
-      if (err) console.log(err);
-      else {
-        ///// check if professional and medical details registered
-        if (req.session.accountType == "patient") {
-          const query =
-            "SELECT name, cancer_type FROM patient_details where user_id = ?";
-          connection.query(query, [req.session.userId], (err, results) => {
-            if (err) console.log(err);
-            else {
-              if (results.length) {
-                if (results[0].cancer_type == null) {
-                  return res.redirect("/register/patient/medical-details");
+    if (req.session.accountType == "doctor") {
+      /// doctor
+      const checkDetails = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT name, cancer_speciality FROM doctor_details where user_id = ?";
+            connection.query(query, [req.session.userId], (err, results) => {
+              if (err) console.log(err);
+              else {
+                if (results.length) {
+                  if (results[0].cancer_speciality == null) {
+                    return res.redirect(
+                      "/register/doctor/professional-details"
+                    );
+                  } else {
+                    resolve();
+                  }
                 } else {
-                  getUnviewedMessages.then((unviewedMessages) => {
-                    getDoctorsData.then((results) => {
-                      return res.render("index", {
-                        doctors: results,
-                        unviewedMessages: unviewedMessages,
-                      });
-                    });
-                  });
+                  return res.redirect("/register/doctor");
                 }
-              } else {
-                return res.redirect("/register/patient");
               }
-            }
-          });
-        } else if (req.session.accountType == "doctor") {
-          const query =
-            "SELECT name, cancer_speciality FROM doctor_details where user_id = ?";
-          connection.query(query, [req.session.userId], (err, results) => {
-            if (err) console.log(err);
-            else {
-              if (results.length) {
-                if (results[0].cancer_speciality == null) {
-                  return res.redirect("/register/doctor/professional-details");
-                } else {
-                  getUnviewedMessages.then((unviewedMessages) => {
-                    return res.render("index2", {
-                      unviewedMessages: unviewedMessages,
-                    });
-                  });
-                }
-              } else {
-                return res.redirect("/register/doctor");
-              }
-            }
-          });
-        }
-      }
+            });
+          }
 
-      connection.release();
-    });
+          connection.release();
+        });
+      });
+      checkDetails.then(() => {
+        getUnviewedMessages.then((unviewedMessages) => {
+          return res.render("index2", {
+            unviewedMessages: unviewedMessages,
+          });
+        });
+      });
+    } else {
+      /// patient
+
+      const checkDetails = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT name, cancer_type FROM patient_details where user_id = ?";
+            connection.query(query, [req.session.userId], (err, results) => {
+              if (err) console.log(err);
+              else {
+                if (results.length) {
+                  if (results[0].cancer_type == null) {
+                    return res.redirect("/register/patient/medical-details");
+                  } else {
+                    resolve();
+                  }
+                } else {
+                  return res.redirect("/register/patient");
+                }
+              }
+            });
+          }
+
+          connection.release();
+        });
+      });
+      checkDetails.then(() => {
+        getUnviewedMessages.then((unviewedMessages) => {
+          getDoctorsData.then((results) => {
+            return res.render("index", {
+              doctors: results,
+              unviewedMessages: unviewedMessages,
+            });
+          });
+        });
+      });
+    }
   } else {
     return res.render("login-index");
   }
