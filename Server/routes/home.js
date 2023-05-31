@@ -346,6 +346,7 @@ router.post("/doctors", (req, res) => {
       if (freeConsultation == true) {
         ///// to free consultation
         req.session.consultationType = "free";
+        req.session.viewMode = false;
         return res.redirect("/chats/chat");
       } else {
         //// to paid consultation

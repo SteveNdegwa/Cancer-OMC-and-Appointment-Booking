@@ -707,6 +707,7 @@ app.post("/chats/chat-rooms", (req, res) => {
         if (freeConsultation == true) {
           ///// to free consultation
           req.session.consultationType = "free";
+          req.session.viewMode = false;
           return res.redirect("/chats/chat");
         } else {
           //// to paid consultation
