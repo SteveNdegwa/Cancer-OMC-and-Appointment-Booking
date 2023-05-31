@@ -641,7 +641,7 @@ app.get("/chats/chat-rooms", (req, res) => {
                   //// logic to check number of unviewed messages
                   let unviewedMessages = 0;
                   for (let j = 0; j < messages.length; j++) {
-                    if (messages[j].status == "unseen") {
+                    if (messages[j].status == "unseen" && messages[j].sender_id != req.session.userId) {
                       unviewedMessages++;
                     }
                     if (j == messages.length - 1) {
@@ -1122,7 +1122,8 @@ io.on("connection", (socket) => {
                     message.time
                   );
 
-                  let query3 = "UPDATE chats SET status = ? WHERE chat_id = ?";
+                  if(message.status == "unseen"){
+                    let query3 = "UPDATE chats SET status = ? WHERE chat_id = ?";
                   connection.query(
                     query3,
                     ["seen", message.chat_id],
@@ -1136,6 +1137,7 @@ io.on("connection", (socket) => {
                       }
                     }
                   );
+                  }
                 }
               });
             });
