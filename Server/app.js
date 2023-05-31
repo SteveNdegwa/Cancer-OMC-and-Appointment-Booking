@@ -616,6 +616,8 @@ app.get("/chats/chat-rooms", (req, res) => {
                   rooms[i].time = messages[messages.length - 1].time;
 
                   let d = new Date();
+                  let y = new Date(d.getTime() - 1440 * 60000);
+
                   let date =
                     ("0" + d.getDate()).slice(-2) +
                     "-" +
@@ -623,9 +625,18 @@ app.get("/chats/chat-rooms", (req, res) => {
                     "-" +
                     d.getFullYear();
 
+                  let yesterday =
+                    ("0" + y.getDate()).slice(-2) +
+                    "-" +
+                    ("0" + (y.getMonth() + 1)).slice(-2) +
+                    "-" +
+                    y.getFullYear();
+
                   if (date == messages[messages.length - 1].date) {
                     rooms[i].date = "Today";
-                  } else {
+                  } else if(yesterday == messages[messages.length - 1].date){ 
+                    rooms[i].date = "Yesterday";
+                  }else{
                     rooms[i].date = messages[messages.length - 1].date;
                   }
 
@@ -641,7 +652,10 @@ app.get("/chats/chat-rooms", (req, res) => {
                   //// logic to check number of unviewed messages
                   let unviewedMessages = 0;
                   for (let j = 0; j < messages.length; j++) {
-                    if (messages[j].status == "unseen" && messages[j].sender_id != req.session.userId) {
+                    if (
+                      messages[j].status == "unseen" &&
+                      messages[j].sender_id != req.session.userId
+                    ) {
                       unviewedMessages++;
                     }
                     if (j == messages.length - 1) {
@@ -1122,21 +1136,22 @@ io.on("connection", (socket) => {
                     message.time
                   );
 
-                  if(message.status == "unseen"){
-                    let query3 = "UPDATE chats SET status = ? WHERE chat_id = ?";
-                  connection.query(
-                    query3,
-                    ["seen", message.chat_id],
-                    (err, data) => {
-                      if (err) {
-                        throw err;
-                      } else {
-                        console.log(
-                          `Chat message(id): ${message.chat_id} updated to seen`
-                        );
+                  if (message.status == "unseen") {
+                    let query3 =
+                      "UPDATE chats SET status = ? WHERE chat_id = ?";
+                    connection.query(
+                      query3,
+                      ["seen", message.chat_id],
+                      (err, data) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          console.log(
+                            `Chat message(id): ${message.chat_id} updated to seen`
+                          );
+                        }
                       }
-                    }
-                  );
+                    );
                   }
                 }
               });
