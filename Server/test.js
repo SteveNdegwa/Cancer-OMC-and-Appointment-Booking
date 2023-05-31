@@ -52,17 +52,17 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        //   var sql = "CREATE TABLE chats (chat_id INT NOT NULL AUTO_INCREMENT, room_id VARCHAR(255),  sender_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), message VARCHAR(255), PRIMARY KEY (chat_id))";
-        // connection.query(sql, function(err, result){
-        //     if(err) throw err;
-        //     console.log("Table Created");
-        // }); 
-
         // var sql = "DROP TABLE chats";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");
         // });
+
+        //   var sql = "CREATE TABLE chats (chat_id INT NOT NULL AUTO_INCREMENT, room_id VARCHAR(255),  sender_id INT NOT NULL, date VARCHAR(255), time VARCHAR(255), message TEXT, status VARCHAR(255), PRIMARY KEY (chat_id))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
 
         // var sql = "CREATE TABLE doctor_details (user_id INT NOT NULL, name VARCHAR(255), gender VARCHAR(255) , dob VARCHAR(255), phone_no VARCHAR(255), licence_no VARCHAR(255), cancer_speciality VARCHAR(1000), clinic_location VARCHAR(255), clinic_phone_no VARCHAR(255), clinic_email VARCHAR(255), verification_status VARCHAR(255) ,PRIMARY KEY (user_id))";
