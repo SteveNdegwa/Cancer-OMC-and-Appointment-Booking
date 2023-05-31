@@ -609,19 +609,25 @@ app.get("/chats/chat-rooms", (req, res) => {
               connection.query(query3, [rooms[i].room_id], (err, messages) => {
                 ////// get last message in the chat room   /// and sender name
                 if (err) throw err;
+                console.log(rooms[i].name);
                 if (messages.length) {
+                  console.log(rooms[i].name);
                   rooms[i].message = messages[messages.length - 1].message;
                   rooms[i].time = messages[messages.length - 1].time;
 
                   let d = new Date();
-                  let date =("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getFullYear();
+                  let date =
+                    ("0" + d.getDate()).slice(-2) +
+                    "-" +
+                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                    "-" +
+                    d.getFullYear();
 
-                  if(date == messages[messages.length - 1].date){
-                    rooms[i].date = "Today"
-                  }else{
+                  if (date == messages[messages.length - 1].date) {
+                    rooms[i].date = "Today";
+                  } else {
                     rooms[i].date = messages[messages.length - 1].date;
                   }
-
 
                   if (
                     messages[messages.length - 1].sender_id ==
@@ -634,21 +640,20 @@ app.get("/chats/chat-rooms", (req, res) => {
 
                   //// logic to check number of unviewed messages
                   let unviewedMessages = 0;
-                  for(let j=0; j<messages.length; j++){
-                    if(messages[j].status == "unseen"){
+                  for (let j = 0; j < messages.length; j++) {
+                    if (messages[j].status == "unseen") {
                       unviewedMessages++;
                     }
-                    if(j == messages.length - 1){
+                    if (j == messages.length - 1) {
                       rooms[i].unviewedMessages = unviewedMessages;
-                      resolve(rooms);
                     }
                   }
                 } else {
                   rooms[i].message = null;
                   rooms[i].unviewedMessages = 0;
-                  if (i == rooms.length - 1) {
-                    resolve(rooms);
-                  }
+                }
+                if (i == rooms.length - 1) {
+                  resolve(rooms);
                 }
               });
             });
@@ -661,6 +666,7 @@ app.get("/chats/chat-rooms", (req, res) => {
 
     getNames.then((rooms) => {
       console.log(req.session);
+      console.log(rooms);
       res.render("chat-rooms", { rooms: rooms });
     });
   });
@@ -1079,64 +1085,58 @@ io.on("connection", (socket) => {
           if (err) throw err;
           if (results.length) {
             results.forEach((message) => {
-              const emitMessage = new Promise((resolve, reject) => {
-                let query2 = "";
-                if (socket.handshake.session.accountType == "patient") {
-                  query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
-                } else {
-                  query2 = "SELECT name FROM patient_details WHERE user_id = ?";
-                }
-                connection.query(query2, [message.sender_id], (err, result) => {
-                  if (err) throw err;
+              let query2 = "";
+              if (socket.handshake.session.accountType == "patient") {
+                query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
+              } else {
+                query2 = "SELECT name FROM patient_details WHERE user_id = ?";
+              }
+              connection.query(query2, [message.sender_id], (err, result) => {
+                if (err) throw err;
 
-                  if (!(message.date == date)) {
-                    date = message.date;
-                    if (message.date == date2) {
-                      socket.emit("message", "Today");
-                    } else {
-                      //// get previous day -- yesterday
-                      socket.emit("message", message.date);
-                    }
-                  }
-
-                  if (message.sender_id == socket.handshake.session.userId) {
-                    resolve(
-                      socket.emit(
-                        "retrieveSentChats",
-                        message.message,
-                        message.time
-                      )
-                    );
+                if (!(message.date == date)) {
+                  date = message.date;
+                  if (message.date == date2) {
+                    socket.emit("message", "Today");
                   } else {
-                    if (unseenMessages == false && message.status == "unseen") {
-                      socket.emit("message", "Unviewed Messages");
-                      unseenMessages = true;
-                    }
-                    let query3 =
-                      "UPDATE chats SET status = ? WHERE chat_id = ?";
-                    connection.query(
-                      query3,
-                      ["seen", message.chat_id],
-                      (err, data) => {
-                        if (err) {
-                          throw err;
-                        } else {
-                          console.log(
-                            `Chat message(id): ${message.chat_id} updated to seen`
-                          );
-                          resolve(
-                            socket.emit(
-                              "retrieveReceivedChats",
-                              message.message,
-                              result[0].name,
-                              message.time
-                            )
-                          );
-                        }
-                      }
-                    );
+                    //// get previous day -- yesterday
+                    socket.emit("message", message.date);
                   }
-                });
+                }
+
+                if (message.sender_id == socket.handshake.session.userId) {
+                  socket.emit(
+                    "retrieveSentChats",
+                    message.message,
+                    message.time
+                  );
+                } else {
+                  if (unseenMessages == false && message.status == "unseen") {
+                    socket.emit("message", "Unviewed Messages");
+                    unseenMessages = true;
+                  }
+                  socket.emit(
+                    "retrieveReceivedChats",
+                    message.message,
+                    result[0].name,
+                    message.time
+                  );
+
+                  let query3 = "UPDATE chats SET status = ? WHERE chat_id = ?";
+                  connection.query(
+                    query3,
+                    ["seen", message.chat_id],
+                    (err, data) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        console.log(
+                          `Chat message(id): ${message.chat_id} updated to seen`
+                        );
+                      }
+                    }
+                  );
+                }
               });
             });
           }
