@@ -5,9 +5,16 @@ socket.on('message', (message) => {
     displayMessage(message);
 })
 
-socket.on('sentChatMessage', (message,user,time) => {
+socket.on('sentChatMessage', (message, time, chatId, roomId) => {
     console.log(message);
-    displaySentChatMessage(message,user,time);
+    displaySentChatMessage(message,time);
+    socket.broadcast
+    .to(roomId)
+    .emit(
+      "seenReceivedMessage",
+     chatId
+    );
+
 })
 
 socket.on('receivedChatMessage', (message,user,time) => {
