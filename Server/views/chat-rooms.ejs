@@ -22,7 +22,12 @@
                 <input type="text" name="room_id" id="room-id" class="room-id" value="<%= room.room_id %>">
                 <input type="text" name="name" id="name" class="room-id" value="<%= room.name %>">
                 <h2 class="name"><%= room.name %></h2>
-                <% if ((room.message).length) { %>
+                <% if (room.unviewedMessages > 0) { %>
+                 <h2 class="unviewed-messages"><%= room.unviewedMessages %></h2>
+                <% } %>
+                <% if (room.message == null ) { %>
+                    
+                <% }else{ %>
                     <h3 class="last-message"><%= room.sender %> : <%= room.message %></h3>
                     <h3 class="time-date"><%= room.date %>   |   <%= room.time %></h3>
                 <% } %>
