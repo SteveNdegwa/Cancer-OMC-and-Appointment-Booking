@@ -29,6 +29,7 @@ router.get("/patient/medical-details", (req, res) => {
   if (req.session.authenticated) {
     return res.render("patient-register-medical", {
       patientMedicalMsg: req.flash("patientMedicalMsg"),
+      cancer: "",
       stage: "",
       lifestyleDiseases: "",
     });
@@ -164,20 +165,12 @@ router.post("/patient", (req, res) => {
 });
 
 router.post("/patient/medical-details", (req, res) => {
-  if (req.body.cancer == "select") {
-    console.log("Please choose cancer type");
-    req.flash("PatientMedicalMsg", "Please Choose The Cancer Type");
-    return res.render("patient-register-medical", {
-      patientMedicalMsg: req.flash("patientMedicalMsg"),
-      stage: req.body.stage,
-      lifestyleDiseases: req.body.lifestyle,
-    });
-  } else {
     pool.getConnection((err, connection) => {
       if (err) {
         req.flash("PatientMedicalMsg", "Error Connecting To Database");
         return res.render("patient-register-medical", {
           patientMedicalMsg: req.flash("patientMedicalMsg"),
+          cancer: req.body.cancer,
           stage: req.body.stage,
           lifestyleDiseases: req.body.lifestyle,
         });
@@ -198,6 +191,7 @@ router.post("/patient/medical-details", (req, res) => {
               req.flash("PatientMedicalMsg", "Error Saving The Details");
               return res.render("patient-register-medical", {
                 patientMedicalMsg: req.flash("patientMedicalMsg"),
+                cancer: req.body.cancer,
                 stage: req.body.stage,
                 lifestyleDiseases: req.body.lifestyle,
               });
@@ -212,7 +206,6 @@ router.post("/patient/medical-details", (req, res) => {
 
       connection.release();
     });
-  }
 });
 
 router.post("/doctor", (req, res) => {
