@@ -621,11 +621,24 @@ app.get("/chats/chat-rooms", (req, res) => {
                   } else {
                     rooms[i].sender = results[0].name;
                   }
+
+                  //// logic to check number of unviewed messages
+                  let unviewedMessages = 0;
+                  for(let j=0; j<messages.length; j++){
+                    if(messages[j].status == "unseen"){
+                      unviewedMessages++;
+                    }
+                    if(j == messages.length - 1){
+                      rooms[i].unviewedMessages = unviewedMessages;
+                      resolve(rooms);
+                    }
+                  }
                 } else {
-                  rooms[i].message = "";
-                }
-                if (i == rooms.length - 1) {
-                  resolve(rooms);
+                  rooms[i].message = null;
+                  rooms[i].unviewedMessages = 0;
+                  if (i == rooms.length - 1) {
+                    resolve(rooms);
+                  }
                 }
               });
             });
