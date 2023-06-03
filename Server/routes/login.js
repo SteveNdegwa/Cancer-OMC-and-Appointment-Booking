@@ -7,31 +7,7 @@ const path = require("path");
 
 const emailValidator = require("deep-email-validator");
 
-
-// var nodemailer = require('nodemailer');
-
-// var transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'youremail@gmail.com',
-//     pass: 'yourpassword'
-//   }
-// });
-
-// var mailOptions = {
-//   from: 'youremail@gmail.com',
-//   to: 'myfriend@yahoo.com',
-//   subject: 'Sending Email using Node.js',
-//   text: 'That was easy!'
-// };
-
-// transporter.sendMail(mailOptions, function(error, info){
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log('Email sent: ' + info.response);
-//   }
-// });
+var nodemailer = require("nodemailer");
 
 router.get("/", (req, res) => {
   res.render("login", { message: req.flash("message") });
@@ -266,8 +242,336 @@ router.post("/create-account", (req, res) => {
   });
 });
 
-router.get("/forgot-password", (req, res) => {
-  res.sendFile(path.resolve("../forgot-password.html"));
+router.get("/reset-password-or-username", (req, res) => {
+  req.flash("resetEnterEmail", "");
+  res.render("reset-enter-email", { message: req.flash("resetEnterEmail") });
+});
+
+router.post("/reset-enter-email", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      req.flash("resetEnterEmail", "Error Accessing The Database");
+      return res.render("reset-enter-email", {
+        message: req.flash("resetEnterEmail"),
+      });
+    } else {
+      const query = "SELECT * FROM users WHERE email = ?";
+      connection.query(query, [req.body.email], (err, results) => {
+        if (err) {
+          req.flash("resetEnterEmail", "Error Validating The Email Address");
+          return res.render("reset-enter-email", {
+            message: req.flash("resetEnterEmail"),
+          });
+        } else {
+          if (results.length) {
+            let OTP = Math.floor(Math.random() * (9999 - 1000) + 1000);
+            console.log(OTP);
+
+            const now = new Date();
+            let expiryTime = now.getTime() + 10 * 60000;
+
+            let expiryDate = new Date(expiryTime);
+
+            req.session.resetEmail = req.body.email;
+            req.session.resetUserId = results[0].user_id;
+            req.session.resetOtp = OTP;
+            req.session.resetExpiry = expiryDate;
+
+            var transporter = nodemailer.createTransport({
+              service: "gmail",
+              port: 465,
+              secure: true,
+              auth: {
+                user: process.env.EMAIL_ADDRESS,
+                pass: process.env.EMAIL_ADDRESS_PASSWORD,
+              },
+            });
+
+            var mailOptions = {
+              from: process.env.EMAIL_ADDRESS,
+              to: req.body.email,
+              subject: "Reset Username Or Passord OTP",
+              text: `Please use this OTP : ${OTP}`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.log(error);
+                req.flash(
+                  "resetEnterEmail",
+                  "Error Sending The OTP To Your Email Address"
+                );
+                return res.render("reset-enter-email", {
+                  message: req.flash("resetEnterEmail"),
+                });
+              } else {
+                console.log("Email sent: " + info.response);
+                req.flash("resetEnterOtp", "");
+                return res.render("reset-enter-otp", {
+                  message: req.flash("resetEnterOtp"),
+                  messageType: "danger",
+                });
+              }
+            });
+          } else {
+            req.flash("resetEnterEmail", "Invalid Email Address");
+            return res.render("reset-enter-email", {
+              message: req.flash("resetEnterEmail"),
+            });
+          }
+        }
+      });
+    }
+    connection.release();
+  });
+});
+
+router.post("/reset-enter-otp", (req, res) => {
+  if (req.body.resend == "") {
+    //// resend otp
+
+    let OTP = Math.floor(Math.random() * (9999 - 1000) + 1000);
+    console.log(OTP);
+
+    const now = new Date();
+    let expiryTime = now.getTime() + 10 * 60000;
+
+    let expiryDate = new Date(expiryTime);
+
+    req.session.resetOtp = OTP;
+    req.session.resetExpiry = expiryDate;
+
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_ADDRESS_PASSWORD,
+      },
+    });
+
+    var mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: req.session.resetEmail,
+      subject: "Reset Username Or Passord OTP",
+      text: `Please use this OTP : ${OTP}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        req.flash("resetEnterOtp", "Error Sending The OTP");
+        return res.render("reset-enter-otp", {
+          message: req.flash("resetEnterOtp"),
+          messageType: "danger",
+        });
+      } else {
+        console.log("Email sent: " + info.response);
+        req.flash("resetEnterOtp", "OTP Sent Successfully");
+        return res.render("reset-enter-otp", {
+          message: req.flash("resetEnterOtp"),
+          messageType: "success",
+        });
+      }
+    });
+  } else {
+    /// check otp
+
+    if (req.body.otp == req.session.resetOtp) {
+      const now = new Date();
+      const expiryDate = new Date(req.session.resetExpiry);
+
+      if (now.getTime() > expiryDate.getTime()) {
+        req.flash("resetEnterOtp", "The OTP has expired");
+        return res.render("reset-enter-otp", {
+          message: req.flash("resetEnterOtp"),
+          messageType: "danger",
+        });
+      } else {
+        console.log("OTP accepted");
+
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query = "SELECT * FROM users WHERE user_id=?";
+            connection.query(query, [req.session.resetUserId], (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                req.flash("resetDetailsMessage", "");
+                return res.render("reset-login-details", {
+                  message: req.flash("resetDetailsMessage"),
+                  username: results[0].user_name,
+                  email: results[0].email,
+                  password: results[0].password,
+                  confirm: results[0].password,
+                });
+              }
+            });
+          }
+          connection.release();
+        });
+      }
+    } else {
+      req.flash("resetEnterOtp", "Invalid OTP");
+      return res.render("reset-enter-otp", {
+        message: req.flash("resetEnterOtp"),
+        messageType: "danger",
+      });
+    }
+  }
+});
+
+
+router.post("/reset-details", (req, res) => {
+  const verifyEmail = new Promise((resolve, reject) => {
+    /// verify email
+    resolve(emailValidator.validate(req.body.email));
+  });
+  verifyEmail.then((data) => {
+    if (data.valid) {
+      // valid email
+
+      const verifyPassword = new Promise((resolve, reject) => {
+        if (req.body.password == req.body.confirm) {
+          let passwordValid = true;
+          resolve(passwordValid);
+        } else {
+          let passwordValid = false;
+          resolve(passwordValid);
+        }
+      });
+
+      verifyPassword.then((passwordValid) => {
+        if (passwordValid) {
+          const emailUsed = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) throw err;
+
+              const query =
+                "SELECT * FROM users WHERE email = ? AND user_id != ?";
+              pool.query(
+                query,
+                [req.body.email, req.session.resetUserId],
+                (err, results) => {
+                  if (err) throw err;
+
+                  if (results.length) {
+                    let emailAlreadyUsed = true;
+                    resolve(emailAlreadyUsed);
+                  } else {
+                    let emailAlreadyUsed = false;
+                    resolve(emailAlreadyUsed);
+                  }
+                }
+              );
+
+              connection.release();
+            });
+          });
+
+          emailUsed.then((emailAlreadyUsed) => {
+            if (emailAlreadyUsed) {
+              req.flash("resetDetailsMessage", "Email Address Is Already In Use");
+              return res.render("reset-login-details", {
+                message: req.flash("resetDetailsMessage"),
+                username: req.body.username,
+                email: "",
+                password: req.body.password,
+                confirm: req.body.confirm,
+              });
+            } else {
+              const usernameTaken = new Promise((resolve, reject) => {
+                pool.getConnection((err, connection) => {
+                  if (err) throw err;
+
+                  const query =
+                    "SELECT * FROM users WHERE user_name =? AND user_id != ?";
+                  pool.query(
+                    query,
+                    [req.body.username, req.session.resetUserId],
+                    (err, results) => {
+                      if (err) throw err;
+
+                      if (results.length) {
+                        let usernameUsed = true;
+                        resolve(usernameUsed);
+                      } else {
+                        let usernameUsed = false;
+                        resolve(usernameUsed);
+                      }
+                    }
+                  );
+
+                  connection.release();
+                });
+              });
+              usernameTaken.then((usernameUsed) => {
+                if (usernameUsed) {
+                  console.log("Username already exists");
+                  req.flash("resetDetailsMessage", "Username Already Exists");
+                  return res.render("reset-login-details", {
+                    message: req.flash("resetDetailsMessage"),
+                    username: "",
+                    email: req.body.email,
+                    password: req.body.password,
+                    confirm: req.body.confirm,
+                  });
+                } else {
+                  ///save to database
+
+                  const query =
+                    "UPDATE users SET user_name = ?, email = ?, password = ? WHERE user_id = ?";
+
+                  pool.query(
+                    query,
+                    [
+                      req.body.username,
+                      req.body.email,
+                      req.body.password,
+                      req.session.resetUserId,
+                    ],
+                    (err, data) => {
+                      if (err) console.log(err);
+                      else {
+                        console.log("User details have been updated");
+
+                        return res.redirect("/login");
+                      }
+                    }
+                  );
+                }
+              });
+            }
+          });
+        } else {
+          console.log("Passwords don't match");
+          req.flash("resetDetailsMessage", "Passwords don't match");
+          return res.render("reset-login-details", {
+            message: req.flash("resetDetailsMessage"),
+            username: req.body.username,
+            email: req.body.email,
+            password: "",
+            confirm: "",
+          });
+        }
+      });
+    } else {
+      /// invalid email
+
+      console.log("Invalid Email");
+      req.flash("resetDetailsMessage", "Invalid Email Address");
+      return res.render("reset-login-details", {
+        message: req.flash("resetDetailsMessage"),
+        username: req.body.username,
+        email: "",
+        password: req.body.password,
+        confirm: req.body.confirm,
+      });
+    }
+  });
 });
 
 module.exports = router;
