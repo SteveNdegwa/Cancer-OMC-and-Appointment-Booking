@@ -52,7 +52,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "DROP TABLE chats";
+        // var sql = "DROP TABLE otp";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");
