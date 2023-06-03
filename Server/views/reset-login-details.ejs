@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/reset-login-details.css">
+    <title>Reset Details</title>
+</head>
+<body>
+    <form action="/login/reset-details" method="post" id="form">
+        <% if(message.length > 0 ){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= message %>
+            </div>
+       <% } %>
+       <h4>Reset Details</h4>
+       <div class="details-wrap">
+        <h6>Username</h6>
+        <input
+          type="text"
+          class="text"
+          id="username"
+          name="username"
+          minlength="5"
+          maxlength="25"
+          value="<%= username %>"
+          required
+        />
+      </div>
+
+      <div class="details-wrap">
+        <h6>Email Address</h6>
+        <input
+          type="text"
+          class="text"
+          id="email"
+          name="email"
+          value="<%= email %>"
+          required
+        />
+      </div>
+
+      <div class="details-wrap">
+        <h6>Password</h6>
+        <input
+          type="password"
+          class="text"
+          id="password"
+          name="password"
+          minlength="7"
+          value="<%= password %>"
+          required
+        />
+      </div>
+
+      <div class="details-wrap">
+        <h6>Confirm Password</h6>
+        <input
+          type="password"
+          class="text"
+          id="confirm-password"
+          name="confirm"
+          minlength="7"
+          value="<%= confirm %>"
+          required
+        />
+      </div>
+      <button type="submit" class="btn">Submit</button>
+    </form>
+</body>
+</html>
