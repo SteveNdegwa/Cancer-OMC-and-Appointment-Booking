@@ -36,7 +36,26 @@
           placeholder="N/A"
           required
         />
+
+        <% if (details.verification_status == "true") { %>
+         <h5 class="verification">( Verified )</h5>
+         <style>
+          .verification{
+            color: green;
+            margin-top: 20px;
+          }
+         </style>
+        <% }else{ %>
+          <h5 class="verification">( Unverified )</h5>
+          <style>
+           .verification{
+             color: red;
+             margin-top: 20px;
+           }
+          </style>
+        <% } %>
       </div>
+
 
 
       <div class="personal-details">
@@ -125,8 +144,83 @@
           </div>
       </div>
 
+      <div class="medical-details">
+        <h4>Payment Details</h4>
+        <div class="details-wrap">
+          <h5>Business No.</h5>
+          <input
+            type="text"
+            value="<%= details.businessNo %>"
+            class="text"
+            id="business_no"
+            name="business_no"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h5>Appointment Fee (Shs.)</h5>
+          <input
+            type="number"
+            value="<%= details.appointmentFee %>"
+            class="text"
+            id="appointment_fee"
+            name="appointment_fee"
+            placeholder="N/A"
+            required
+          />
+        </div>
+        <div class="details-wrap">
+          <h5>Consultation Type</h5>
+          <div class="gender-div">
+            <div class="gender-wrap">
+                <input type="radio" class="gender" name="free" id="free" <%= free %>/>
+                <label for="free" class="gender-label">Free</label>
+              </div>
+              <div class="gender-wrap">
+                <input type="radio" class="gender" name="paid" id="paid"  <%= paid %>/>
+                <label for="paid" class="gender-label">Paid</label>
+              </div>
+          </div>
+        </div>
+        <div class="details-wrap" id="consultation-div">
+          <h5 id="consultation-header">Consultation Fee (Shs.)</h5>
+          <input
+            type="number"
+            value="<%= details.consultationFee %>"
+            class="text"
+            id="consultation_fee"
+            name="consultation_fee"
+            placeholder="N/A"
+            required
+          />
+        </div>
+      </div>
+      <a href="/appointments/customize-appointment-slots" target="_blank">Customize appointment slots</a>
+      
       <button type="submit" id="btn" class="btn">Update</button>
     </form>
+
+    <% if (details.consultationType == "free") { %>
+     
+      <style>
+        #consultation-div{
+          height: auto;
+          max-height: 0px;
+          transition: all .3s ease;
+          overflow: hidden;
+        }
+      </style>
+    <% } else{ %>
+      <style>
+         #consultation-div{
+          height: auto;
+          max-height: 200px;
+          transition: all .3s ease;
+          overflow: hidden;
+        }
+      </style>
+    <% } %>
 
     <script>
         let checkbox = document.getElementById("check");
@@ -183,6 +277,34 @@
                 male.checked = false;
             }else{
                 male.checked = true;
+            }
+        })
+
+        let free = document.getElementById("free");
+        let paid = document.getElementById("paid");
+        let consultationDiv = document.getElementById("consultation-div");
+        let consultationFee = document.getElementById("consultation_fee");
+
+        free.addEventListener("change",()=>{
+            if(free.checked){
+                paid.checked = false;
+                consultationDiv.style.maxHeight = "0px";
+                consultationFee.value = "0";
+            }else{
+                paid.checked = true;
+                consultationDiv.style.maxHeight = "200px";
+                consultationFee.value = "1";
+            }
+        })
+        paid.addEventListener("change",()=>{
+            if(paid.checked){
+                free.checked = false;
+                consultationDiv.style.maxHeight = "200px";
+                consultationFee.value = "1";
+            }else{
+                free.checked = true;
+                consultationDiv.style.maxHeight = "0px";
+                consultationFee.value = "0";
             }
         })
     </script>
