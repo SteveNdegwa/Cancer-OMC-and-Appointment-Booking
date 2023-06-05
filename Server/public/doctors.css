@@ -46,21 +46,24 @@ form {
 .search-btn {
     width: 100px;
     height: 40px;
-    background-color: white;
     border: 2px solid darkslategray;
+    color: darkslategray;
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
     margin-bottom: 20px;
     background-color: ghostwhite;
+    transition: all .3s ease;
 }
 
 .search-btn:hover{
-    border: 2px solid orange;
+    border-color: white;
+    color: white;
+    background-color: darkslategray;
 }
 
 input:focus {
     outline: none !important;
-    border-bottom:2px solid orange;
+    border-bottom:2px solid goldenrod;
 }
 
 .heading {
@@ -70,6 +73,15 @@ input:focus {
     color: dimgray;
     font-family: 'Times New Roman', Times, serif;
     background-color: ghostwhite;
+}  
+
+.no-details{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: dimgray;
+    background-color: transparent;
 }
 
 .doctors-list {
@@ -154,7 +166,7 @@ input:focus {
 .doctor-tab .doctor-details h4 {
     width: 100%;
     text-align: center;
-    color: orange;
+    color: goldenrod;
     margin-bottom: 10px;
     margin-top: 15px;
 }
