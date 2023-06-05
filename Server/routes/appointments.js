@@ -52,90 +52,95 @@ router.get("/customize-appointment-slots", (req, res) => {
 
 router.post("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
-    let days = [];
-    if (req.body.sunday == "on") {
-      days.push("sunday");
-    }
-    if (req.body.monday == "on") {
-      days.push("monday");
-    }
-    if (req.body.tuesday == "on") {
-      days.push("tuesday");
-    }
-    if (req.body.wednesday == "on") {
-      days.push("wednesday");
-    }
-    if (req.body.thursday == "on") {
-      days.push("thursday");
-    }
-    if (req.body.friday == "on") {
-      days.push("friday");
-    }
-    if (req.body.saturday == "on") {
-      days.push("saturday");
-    }
+    if (req.body.next == "") {
+      return res.redirect("/");  /// next button
+    } else {
+      /// submit button
+      let days = [];
+      if (req.body.sunday == "on") {
+        days.push("sunday");
+      }
+      if (req.body.monday == "on") {
+        days.push("monday");
+      }
+      if (req.body.tuesday == "on") {
+        days.push("tuesday");
+      }
+      if (req.body.wednesday == "on") {
+        days.push("wednesday");
+      }
+      if (req.body.thursday == "on") {
+        days.push("thursday");
+      }
+      if (req.body.friday == "on") {
+        days.push("friday");
+      }
+      if (req.body.saturday == "on") {
+        days.push("saturday");
+      }
 
-    let slotsNo = req.body.slots - 1;
+      let slotsNo = req.body.slots - 1;
 
-    let time = [];
+      let time = [];
 
-    for (let i = 1; i <= slotsNo; i++) {
-      time.push(req.body["time" + i]);
-    }
+      for (let i = 1; i <= slotsNo; i++) {
+        time.push(req.body["time" + i]);
+      }
 
-    let timeJson = JSON.stringify(time);
+      let timeJson = JSON.stringify(time);
 
-    if (days.length > 0) {
-      pool.getConnection((err, connection) => {
-        if (err) console.log(err);
-        else {
-          const save = new Promise((resolve, reject) => {
-            days.forEach((day) => {
-              const query =
-                "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
-              connection.query(
-                query,
-                [req.session.userId, day],
-                (err, result) => {
-                  if (err) console.log(err);
+      if (days.length > 0) {
+        pool.getConnection((err, connection) => {
+          if (err) console.log(err);
+          else {
+            const save = new Promise((resolve, reject) => {
+              days.forEach((day) => {
+                const query =
+                  "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, day],
+                  (err, result) => {
+                    if (err) console.log(err);
 
-                  if (result.length) {
-                    const query =
-                      "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
-                    connection.query(
-                      query,
-                      [timeJson, req.session.userId, day],
-                      (err, data) => {
+                    if (result.length) {
+                      const query =
+                        "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
+                      connection.query(
+                        query,
+                        [timeJson, req.session.userId, day],
+                        (err, data) => {
+                          if (err) console.log(err);
+                          else {
+                            console.log(`${day} updated successfully`);
+                          }
+                        }
+                      );
+                    } else {
+                      const query =
+                        "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
+                      const values = [req.session.userId, day, timeJson];
+                      connection.query(query, [values], (err, data) => {
                         if (err) console.log(err);
                         else {
-                          console.log(`${day} updated successfully`);
+                          console.log(`${day} inserted successfully`);
                         }
-                      }
-                    );
-                  } else {
-                    const query =
-                      "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
-                    const values = [req.session.userId, day, timeJson];
-                    connection.query(query, [values], (err, data) => {
-                      if (err) console.log(err);
-                      else {
-                        console.log(`${day} inserted successfully`);
-                      }
-                    });
+                      });
+                    }
                   }
-                }
-              );
+                );
+              });
             });
-          });
-        }
-        connection.release();
-        return res.redirect("/");
-      });
-    } else {
-      req.flash("appointmentSlotsMessage", "No Days Selected");
-      res.render("appointment-slots", {
-        message: req.flash("appointmentSlotsMessage"),
-      });
+          }
+          connection.release();
+          return res.redirect("/appointments/customize-appointment-slots");
+        });
+      } else {
+        req.flash("appointmentSlotsMessage", "No Days Selected");
+        res.render("appointment-slots", {
+          message: req.flash("appointmentSlotsMessage"),
+        });
+      }
     }
   } else {
     return res.redirect("/login");
@@ -549,87 +554,86 @@ router.post("/input-number", access, async (req, res) => {
                 // return res.render("stk-push", {
                 //   message: req.flash("stkStatusMessage"),
                 // });
-              }
-              else{
+              } else {
                 clearInterval(interval);
                 console.log(response.body.ResultDesc);
 
-              if (
-                response.body.ResultDesc ==
-                "The service request is processed successfully."
-              ) {
-                /// if payment successful
+                if (
+                  response.body.ResultDesc ==
+                  "The service request is processed successfully."
+                ) {
+                  /// if payment successful
 
-                pool.getConnection((err, connection) => {
-                  if (err) throw err;
-                  const query2 =
-                    "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
-                  const values2 = [
-                    req.session.appointmentDetails.doctorId,
-                    req.session.appointmentDetails.patientId,
-                    req.session.appointmentDetails.date,
-                    req.session.appointmentDetails.time,
-                  ];
+                  pool.getConnection((err, connection) => {
+                    if (err) throw err;
+                    const query2 =
+                      "INSERT INTO appointments(`doctor_id`,`patient_id`, `date`, `time`) VALUES(?)";
+                    const values2 = [
+                      req.session.appointmentDetails.doctorId,
+                      req.session.appointmentDetails.patientId,
+                      req.session.appointmentDetails.date,
+                      req.session.appointmentDetails.time,
+                    ];
 
-                  const saveAppointment = new Promise((resolve, reject) => {
-                    connection.query(query2, [values2], (err, data) => {
-                      if (err) throw err;
-                      else {
-                        console.log("appointment inserted");
-                        console.log(`appointment id is ${data.insertId}`);
+                    const saveAppointment = new Promise((resolve, reject) => {
+                      connection.query(query2, [values2], (err, data) => {
+                        if (err) throw err;
+                        else {
+                          console.log("appointment inserted");
+                          console.log(`appointment id is ${data.insertId}`);
 
-                        let appointmentId = data.insertId;
-                        resolve(appointmentId);
-                      }
+                          let appointmentId = data.insertId;
+                          resolve(appointmentId);
+                        }
+                      });
                     });
-                  });
 
-                  saveAppointment.then((appointmentId) => {
-                    const query3 =
-                      "UPDATE appointments_stk_push SET status = ? ,appointment_id = ? WHERE checkout_id = ?";
+                    saveAppointment.then((appointmentId) => {
+                      const query3 =
+                        "UPDATE appointments_stk_push SET status = ? ,appointment_id = ? WHERE checkout_id = ?";
+                      connection.query(
+                        query3,
+                        [
+                          response.body.ResultDesc,
+                          appointmentId,
+                          req.session.paymentDetails.CheckoutRequestID,
+                        ],
+                        (err, result) => {
+                          if (err) throw err;
+                          return res.redirect("/appointments/my-appointments");
+                        }
+                      );
+                    });
+
+                    connection.release();
+                  });
+                } else {
+                  /// if payment not successful
+
+                  pool.getConnection((err, connection) => {
+                    if (err) throw err;
+                    const query =
+                      "UPDATE appointments_stk_push SET status = ? WHERE checkout_id = ?";
                     connection.query(
-                      query3,
+                      query,
                       [
                         response.body.ResultDesc,
-                        appointmentId,
                         req.session.paymentDetails.CheckoutRequestID,
                       ],
                       (err, result) => {
                         if (err) throw err;
-                        return res.redirect("/appointments/my-appointments");
+
+                        req.flash(
+                          "paymentStatusMessage",
+                          response.body.ResultDesc
+                        );
+                        return res.render("input-number", {
+                          message: req.flash("paymentStatusMessage"),
+                        });
                       }
                     );
                   });
-
-                  connection.release();
-                });
-              } else {
-                /// if payment not successful
-
-                pool.getConnection((err, connection) => {
-                  if (err) throw err;
-                  const query =
-                    "UPDATE appointments_stk_push SET status = ? WHERE checkout_id = ?";
-                  connection.query(
-                    query,
-                    [
-                      response.body.ResultDesc,
-                      req.session.paymentDetails.CheckoutRequestID,
-                    ],
-                    (err, result) => {
-                      if (err) throw err;
-
-                      req.flash(
-                        "paymentStatusMessage",
-                        response.body.ResultDesc
-                      );
-                      return res.render("input-number", {
-                        message: req.flash("paymentStatusMessage"),
-                      });
-                    }
-                  );
-                });
-              }
+                }
               }
             });
         };
