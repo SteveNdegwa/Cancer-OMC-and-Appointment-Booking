@@ -126,7 +126,7 @@ body{
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border: 2px solid orange;
+        border: 2px solid darkslategray;
     }
 
     .menu-bar li{
@@ -184,13 +184,13 @@ body{
     }
 
     .sub-menu a:hover{
-        border-color: orange;
+        border-color: darkslategray;
     }
     
     .sub-menu{
         display: none;
         width: 120px;
-        border: 1px solid orange;
+        border: 1px solid darkslategray;
     }
     
     #pages-item:hover >.sub-menu{
@@ -215,12 +215,12 @@ body{
     align-items: center;
 }
 .landing-body .landing-info span{
-    color: orange;
+    color: darkslategray;
     font-size: x-large;
     font-weight: bolder;
 }
 .landing-body .landing-info span:hover{
-    background:-webkit-linear-gradient(white,orange);
+    background:-webkit-linear-gradient(white,darkslategray);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -240,7 +240,8 @@ body{
 }
 .landing-body .landing-info .appointment-btn:hover{
     border: 2px solid white;
-    background-color: orange;
+    background-color: darkslategray;
+    color: white;
 }
 
 .top{
@@ -250,12 +251,12 @@ body{
     right: 30px;
     width: 40px;
     line-height: 40px;
-    background-color: orange;
+    background-color: darkslategray;
     border-radius: 50%;
     border: 2px solid white;
     text-align: center;
     text-decoration: none;
-    color: black;
+    color: white;
     font-family: 'Times New Roman', Times, serif;
     font-size: 15px;
     cursor: pointer;
@@ -472,7 +473,8 @@ body{
     
     .doctors-tabs .button:hover{
         border: 1px solid white;
-        background-color: orange;
+        background-color: darkslategray;
+        color: white;
     }
     
     
@@ -495,7 +497,8 @@ body{
     
     .doctors-body .view-all:hover{
         border: 2px solid white;
-        background-color: orange;
+        color: white;
+        background-color: darkslategray;
     }
     
 }
@@ -504,71 +507,50 @@ body{
 
 
 
-/**********Feedback body**************/
+.footer-distributed{
+    width: 100%;
+    padding: 50px 0px;
+    background-color: darkslategray;
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 40px;
+}
 
-.feedback-body{
-    width: 100vw;
-    height: 100%;
+.footer-center, .footer-left{
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 20px;
 }
 
-.feedback-body h1{
+.footer-left img{
+    width: 180px;
+    height: 100px;
+  }
+  
+  
+.footer-details{
     width: 100%;
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-
-.feedback-body .feedback-wrap form {
     display: flex;
-    flex-direction: column;
+    gap: 10px;
     justify-content: center;
     align-items: center;
-    width: 100%;
 }
 
-
-.feedback-body .feedback-wrap textarea{
-    border: 2px solid black;
-    margin-bottom: 40px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: large;
-    color: black;
-    padding: 20px;
-    width:  90%;
-    max-width: 800px;
-    height: 200px;
-}
-
-textarea:focus{
-    outline: 2px solid orange;
-    border: none;
-}
-
- .feedback-body .feedback-wrap .post-feedback{
-    display: block;
-    width: 120px;
-    line-height: 60px;
-    background-color: white;
-    color: black;
+.footer-details a{
     text-decoration: none;
-    text-align: center;
-    border: 2px solid black;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all .3s ease;
- }
+    color: white;
+}
 
- .feedback-body .feedback-wrap .post-feedback:hover{
-    border: 2px solid white;
-    background-color: orange;
- }
-
-
+.footer-details a:hover{
+    text-decoration: underline;
+}
 
 
 /* glide js */
