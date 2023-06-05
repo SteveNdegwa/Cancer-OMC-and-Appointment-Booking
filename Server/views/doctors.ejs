@@ -24,6 +24,8 @@
         </div>
     </form>
     <h1 class="heading">Oncologists</h1>
+    
+  <% if (details.length) { %>
     <% details.forEach(function(character) { %>
 
         <form action="/doctors" method="post">
@@ -84,7 +86,9 @@
                 </div>
         </form>
         <%; }); %>
-
+  <% }else{ %>
+    <h1 class="no-details">No Records</h1>
+    <% } %>
 
 </body>
 
