@@ -122,6 +122,10 @@ textarea:focus{
 }
 
 
+a{
+    font-size: large;
+}
+
 
 .btn{
     background-color: white;
@@ -131,7 +135,7 @@ textarea:focus{
     height: 60px;
     font-size: medium;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 40px;
     margin-bottom: 50px;
     visibility: hidden;
     transition: all .3s ease;
