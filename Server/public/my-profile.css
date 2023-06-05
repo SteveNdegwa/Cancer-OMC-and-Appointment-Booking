@@ -118,8 +118,7 @@ input:focus{
 }
 
 textarea:focus{
-    outline: 2px solid goldenrod;
-    border: 2px solid goldenrod;
+    outline: none !important;
 }
 
 
