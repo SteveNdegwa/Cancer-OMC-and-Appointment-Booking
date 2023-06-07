@@ -53,7 +53,7 @@ router.get("/customize-appointment-slots", (req, res) => {
 router.post("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
     if (req.body.next == "") {
-      return res.redirect("/");  /// next button
+      return res.redirect("/"); /// next button
     } else {
       /// submit button
       let days = [];
@@ -883,6 +883,28 @@ router.get("/my-appointments", (req, res) => {
                       data[0].status = "scheduled";
                     }
 
+                    let d = new Date();
+                    let y = new Date(d.getTime() - 1440 * 60000);
+                    let t = new Date(d.getTime() + 1440 * 60000);
+
+                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
+                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
+                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
+
+          
+                    if(data[0].date == todate){
+                      data[0].date = "Today";
+                    }else if(data[0].date == yesterday){
+                      data[0].date= "Yesterday";
+                    }else if(data[0].date == tomorrow){
+                      data[0].date = "Tomorrow";
+                    }
+
+                    console.log(data[0].date);
+                    console.log(todate);
+                    console.log(yesterday);
+                    console.log(tomorrow);
+
                     appointments.push(data[0]);
 
                     if (i == results.length - 1) {
@@ -929,9 +951,13 @@ router.get("/view-appointments", (req, res) => {
       else {
         const getDetails = new Promise((resolve, reject) => {
           let appointments = [];
+          let d = new Date();
+          
+          let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
+
           const query =
             "SELECT * FROM appointments WHERE doctor_id = ? AND date >= ? ORDER BY date ASC, time ASC";
-          connection.query(query, [doctorId, today], (err, result) => {
+          connection.query(query, [doctorId, todate], (err, result) => {
             if (err) throw err;
             if (result.length) {
               for (let i = 0; i < result.length; i++) {
@@ -964,6 +990,22 @@ router.get("/view-appointments", (req, res) => {
                       result[i].status = "scheduled";
                     }
 
+                    let d = new Date();
+                    let y = new Date(d.getTime() - 1440 * 60000);
+                    let t = new Date(d.getTime() + 1440 * 60000);
+    
+                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
+                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
+                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
+
+                    if(result[i].date == todate){
+                      result[i].date = "Today";
+                    }else if(result[i].date == yesterday){
+                      result[i].date = "Yesterday";
+                    }else if(result[i].date == tomorrow){
+                      result[i].date = "Tomorrow";
+                    }
+
                     appointments.push(result[i]);
 
                     if (i == result.length - 1) {
@@ -976,6 +1018,7 @@ router.get("/view-appointments", (req, res) => {
               //// no appointments
               return res.render("view-appointments", {
                 appointments: appointments,
+                name: "Scheduled Appointments",
               });
             }
           });
@@ -985,6 +1028,7 @@ router.get("/view-appointments", (req, res) => {
           console.log(appointments);
           return res.render("view-appointments", {
             appointments: appointments,
+            name: "Scheduled Appointments",
           });
         });
       }
@@ -1040,6 +1084,23 @@ router.get("/view-all-appointments", (req, res) => {
                       result[i].status = "scheduled";
                     }
 
+                    let d = new Date();
+                    let y = new Date(d.getTime() - 1440 * 60000);
+                    let t = new Date(d.getTime() + 1440 * 60000);
+    
+                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
+                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
+                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
+
+                    if(result[i].date == todate){
+                      result[i].date = "Today";
+                    }else if(result[i].date == yesterday){
+                      result[i].date = "Yesterday";
+                    }else if(result[i].date == tomorrow){
+                      result[i].date = "Tomorrow";
+                    }
+    
+
                     appointments.push(result[i]);
 
                     if (i == result.length - 1) {
@@ -1052,6 +1113,7 @@ router.get("/view-all-appointments", (req, res) => {
               //// no appointments
               return res.render("view-appointments", {
                 appointments: appointments,
+                name:"All Appointments"
               });
             }
           });
@@ -1061,6 +1123,7 @@ router.get("/view-all-appointments", (req, res) => {
           console.log(appointments);
           return res.render("view-appointments", {
             appointments: appointments,
+            name:"All Appointments"
           });
         });
       }
