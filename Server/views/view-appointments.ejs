@@ -38,20 +38,23 @@
       <% } %>
       <div class="bottom">
         <div class="bottom-details">
-          <h4 class="details-header">Gender</h4>
+          <h4 class="details-header">Gender : </h4>
           <p class="details"><%= appointment.gender %></p>
         </div>
         <div class="bottom-details">
-          <h4 class="details-header">D.O.B</h4>
+          <h4 class="details-header">D.O.B : </h4>
           <p class="details"><%= appointment.dob %></p>
         </div>
         <div class="bottom-details">
-          <h4 class="details-header">Cancer</h4>
-          <p class="details">Type: <%= appointment.cancerType %></p>
-          <p class="details">Stage: <%= appointment.cancerStage %></p>
+          <h4 class="details-header">Cancer Type : </h4>
+          <p class="details"><%= appointment.cancerType %></p>
         </div>
         <div class="bottom-details">
-          <h4 class="details-header">LifeStyle Diseases</h4>
+          <h4 class="details-header">Cancer Stage : </h4>
+          <p class="details"><%= appointment.cancerStage %></p>
+        </div>
+        <div class="bottom-details">
+          <h4 class="details-header">LifeStyle Diseases : </h4>
           <% if (appointment.lifestyleDiseases == "") { %>
           <p class="details">None</p>
           <% } else{%>
@@ -59,12 +62,11 @@
           <% } %>
         </div>
         <div class="bottom-details">
-          <h4 class="details-header">Contacts</h4>
+          <h4 class="details-header">Contacts : </h4>
           <p class="details"><%= appointment.phoneNo %></p>
-          <p class="details"><%= appointment.email %></p>
         </div>
         <div class="bottom-details">
-          <h4 class="details-header">Location</h4>
+          <h4 class="details-header">Location : </h4>
           <p class="details"><%= appointment.location %></p>
         </div>
       </div>
