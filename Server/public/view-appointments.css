@@ -12,6 +12,16 @@ body{
     background-color: ghostwhite;
 }
 
+a{
+    margin-top: 40px;
+    font-size: larger;
+    color: dimgray;
+}
+
+a:hover{
+    color: blue;
+}
+
 .all-records{
     display: flex;
     flex-direction: row;

@@ -79,6 +79,11 @@ h4{
     align-items: flex-start;
 }
 
+.details-wrap h5{
+    width: 100%;
+    color: black;
+}
+
 .gender-div{
     width: 100%;
     display: flex;
