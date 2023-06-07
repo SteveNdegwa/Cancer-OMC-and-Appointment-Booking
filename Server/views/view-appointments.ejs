@@ -11,11 +11,14 @@
     <link rel="manifest" href="/icons/site.webmanifest">
 
     <link rel="stylesheet" href="/view-appointments.css" />
-    <title>View Appointments</title>
+    <title>View <%= name %></title>
   </head>
   <body>
+    <% if (name == "Scheduled Appointments") { %>
+      <a href="/appointments/view-all-appointments" class="all-link" target="_blank">View All Appointments</a>
+    <% } %>
     <% if (appointments.length) { %>
-    <h1 class="main-header">Appointments</h1>
+    <h1 class="main-header"><%= name %></h1>
     <% appointments.forEach(appointment => { %>
     <form action="/appointments/view-appointments" id="form" method="post">
       <input type="checkbox" class="check" id="check-<%= appointment.appointment_id %>">
