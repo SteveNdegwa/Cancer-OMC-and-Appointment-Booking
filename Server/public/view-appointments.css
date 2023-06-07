@@ -145,6 +145,7 @@ form{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 20px;
     background-color: ghostwhite;
     transition: all .8s ease;
     min-height: 0px;
@@ -154,11 +155,13 @@ form{
 
 .bottom .bottom-details{
     width: 100%;
+    max-width: 300px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin: 10px 0px;
+    gap: 15px;
     background-color: ghostwhite;
 }
 
@@ -168,7 +171,7 @@ form{
 }
 
 .bottom .bottom-details .details-header{
-    color: goldenrod;
+    color: dimgray;
 }
 
 
