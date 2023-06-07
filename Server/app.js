@@ -45,6 +45,12 @@ app.use(express.static(path.resolve("./public")));
 
 app.set("view engine", "ejs");
 
+const { Configuration, OpenAIApi } = require("openai"); //// open ai
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 //to routes
 
 const home = require("./routes/home");
@@ -634,9 +640,9 @@ app.get("/chats/chat-rooms", (req, res) => {
 
                   if (date == messages[messages.length - 1].date) {
                     rooms[i].date = "Today";
-                  } else if(yesterday == messages[messages.length - 1].date){ 
+                  } else if (yesterday == messages[messages.length - 1].date) {
                     rooms[i].date = "Yesterday";
-                  }else{
+                  } else {
                     rooms[i].date = messages[messages.length - 1].date;
                   }
 
@@ -967,22 +973,98 @@ app.get("/chats/view-profile", (req, res) => {
     });
 
     getPatientId.then((patientId) => {
-      pool.getConnection((err, connection) => {
-        if (err) {
-          throw err;
-        } else {
-          const query = "SELECT * from patient_details WHERE user_id=?";
-          connection.query(query, [patientId], (err, results) => {
+      const getPatientDetails = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query = "SELECT * from patient_details WHERE user_id=?";
+            connection.query(query, [patientId], (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                let details = results[0];
+                resolve(details);
+              }
+            });
+          }
+
+          connection.release();
+        });
+      });
+      getPatientDetails.then((details) => {
+        const getChats = new Promise((resolve, reject) => {
+          let chats = [];
+          pool.getConnection((err, connection) => {
             if (err) {
               throw err;
             } else {
-              let details = results[0];
-              return res.render("view-patient-profile", { details: details });
-            }
-          });
-        }
+              const query =
+                "SELECT time, message, sender_id FROM chats WHERE room_id =?";
+              connection.query(query, [req.session.roomId], (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  let text = "";
 
-        connection.release();
+                  for (let i = 0; i < results.length; i++) {
+                    let sender = "";
+                    if (results[i].sender_id == req.session.userId) {
+                      sender = "You";
+                    } else {
+                      sender = details.name;
+                    }
+
+                    text = `${text} Message: ${results[i].message}, Sender: ${sender}, Time: ${results[i].time}. `;
+
+                    if (i == results.length - 1) {
+                      console.log(text);
+                      resolve(text);
+                    }
+                  }
+                }
+              });
+            }
+            connection.release();
+          });
+        });
+
+        getChats.then((chats) => {
+          async function runCompletion() {
+            const completion = await openai.createCompletion({
+              model: "text-davinci-003",
+              prompt: `Summarize this chat without including greetings and time with "You" being the center of the chat:  ${chats}`,
+              max_tokens: 2048,
+              temperature: 1,
+            });
+            let summary = completion.data.choices[0].text;
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "UPDATE chat_rooms SET summary = ? WHERE room_id=?";
+                connection.query(
+                  query,
+                  [summary, req.session.roomId],
+                  (err, data) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      return res.render("view-patient-profile", {
+                        details: details,
+                        summary: summary,
+                      });
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          }
+
+          runCompletion();
+        });
       });
     });
   } else {
