@@ -45,7 +45,6 @@ router.get("/", (req, res) => {
               throw err;
             } else {
               if (results.length) {
-                console.log(results);
                 for (let i = 0; i < results.length; i++) {
                   let otherUserId;
                   if (req.session.accountType == "patient") {
@@ -59,7 +58,6 @@ router.get("/", (req, res) => {
                     query2,
                     [results[i].room_id, otherUserId],
                     (err, chats) => {
-                      console.log(chats);
                       if (err) {
                         throw err;
                       } else {
@@ -107,7 +105,25 @@ router.get("/", (req, res) => {
                       "/register/doctor/professional-details"
                     );
                   } else {
-                    resolve();
+                    const query2 =
+                      "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results2) => {
+                        if (err) {
+                          console.log(err);
+                        } else {
+                          if (results2.length) {
+                            resolve();
+                          } else {
+                            return res.redirect(
+                              "/register/doctor/payment-details"
+                            );
+                          }
+                        }
+                      }
+                    );
                   }
                 } else {
                   return res.redirect("/register/doctor");
@@ -878,13 +894,12 @@ router.post("/my-profile", (req, res) => {
                           message: req.flash("myProfileMsg"),
                         });
                       } else {
-
                         let consultationFee = "";
                         let consultationType = "";
-                        if(req.body.free == "on"){
+                        if (req.body.free == "on") {
                           consultationFee = 0;
                           consultationType = "free";
-                        }else{
+                        } else {
                           consultationFee = req.body.consultation_fee;
                           consultationType = "paid";
                         }
