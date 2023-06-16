@@ -900,14 +900,10 @@ router.get("/my-appointments", (req, res) => {
                       data[0].date = "Tomorrow";
                     }
 
-                    console.log(data[0].date);
-                    console.log(todate);
-                    console.log(yesterday);
-                    console.log(tomorrow);
-
                     appointments.push(data[0]);
 
                     if (i == results.length - 1) {
+                      console.log(appointments);
                       resolve(appointments);
                     }
                   }
