@@ -66,8 +66,10 @@ const appointments = require("./routes/appointments");
 app.use("/appointments", appointments);
 
 const admin = require("./routes/admin");
-const { log } = require("console");
 app.use("/admin", admin);
+
+const records = require("./routes/records");
+app.use("/records", records);
 
 //// chats
 
