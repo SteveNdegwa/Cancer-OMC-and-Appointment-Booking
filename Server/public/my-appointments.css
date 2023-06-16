@@ -64,7 +64,14 @@ form{
 }
 
 .records-wrap .records .check{
-    display: none;
+    position: absolute;
+    top: 18px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    z-index: 1;
+    opacity: 0;
+    
 }
 
 .records-wrap .records .check-label{
