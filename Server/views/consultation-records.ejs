@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/consultation-records.css">
+    <title>Consultations Records</title>
+</head>
+<body>
+    <form action="/records/filter-consultation-records" id="form1" method="post">
+        <div class="select-div">
+            <label for="select" class="select-label">Filter by : </label>
+            <select name="select" id="select" class="select" value="<%= filterType %>"  onchange="submit()">
+                <option value="all" <%= all %>>All</option>
+                <option value="search" <%= search %>>Search</option>
+                <option value="date" <%= date %>>Date</option>
+                <option value="month" <%= month %>>Month</option>
+                <option value="year" <%= year %>>Year</option>
+                <option value="last-week" <%= lastWeek %>>Last Week</option>
+                <option value="last-month" <%= lastMonth %>>Last Month</option>
+            </select>
+        </div>
+        <div class="options-div">
+            <% if (filterType == "search") { %>
+                <div class="search-div">
+                    <input type="text" class="search" id="search" name="search" value="<%= searchValue %>">
+                    <button type="submit" class="btn">Search</button>
+                </div>
+               <% } %>
+           <% if (filterType == "date") { %>
+            <input type="date" name="date" id="date" class="input" value="<%= dateValue %>" onchange="submit()">
+           <% } %>
+           <% if (filterType == "month") { %>
+            <input type="month" name="month" id="month" class="input" value="<%= monthValue %>" onchange="submit()">
+           <% } %>
+           <% if (filterType == "year") { %>
+            <div class="search-div">
+                <input type="number" name="year" id="year" class="year" min="1900" max="2100" step="1" value="<%= yearValue %>">
+                <button type="submit" class="btn">Search</button>
+            </div>
+           <% } %>
+        </div>
+    </form>
+
+    <div class="records">
+        <% if (details.length) { %>
+         <h1 class="count">Total Messages: <%= totalMessages %></h1>
+         <table>
+            <tr>
+              <th>Name</th>
+              <th>No. Of Paid Consults</th>
+              <th>No. Of Messages</th>
+            </tr>
+            <% details.forEach(doctor => { %>
+             <tr>
+              <td><%= doctor.name %></td>
+              <td><%= doctor.paidConsults %></td>
+              <td><%= doctor.messages %></td>
+            </tr>
+            <% }) %>
+          </table>
+        <% }else{ %>
+            <h1 class="no-records">No Records</h1>
+        <% } %>
+    </div>
+   
+    <script>
+        const submit = () =>{
+            document.getElementById("form1").submit();
+        }
+    </script>
+</body>
+</html>
