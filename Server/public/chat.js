@@ -152,7 +152,12 @@ messageBtn.addEventListener('click', () => {
     let d = new Date();
 
     let time =("0"+d.getHours()).slice(-2) +":"+("0"+d.getMinutes()).slice(-2);
-    let date =("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getFullYear();
+    let date =
+    d.getFullYear() +
+    "-" +
+    ("0" + (d.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + d.getDate()).slice(-2);
     const messageField = document.getElementById('message');
     let message = messageField.value;
 
