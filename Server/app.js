@@ -194,17 +194,22 @@ app.post("/chats/consultation-input-number", access, (req, res) => {
 
             const now = new Date();
             expiryTime = now.getTime() + 1440 * 60000; //// 1440 minutes
-
-            console.log(expiryTime);
-
             expiryDate = new Date(expiryTime);
 
+            let today =
+              now.getFullYear() +
+              "-" +
+              ("0" + (now.getMonth() + 1)).slice(-2) +
+              "-" +
+              ("0" + now.getDate()).slice(-2);
+
             const query2 =
-              "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
+              "INSERT INTO consultations_stk_push(`checkout_id`, `phone_no` ,`amount` , `date`, `timestamp` , `doctor_id`, `patient_id`, `consultation_expiry_time`) VALUES(?);";
             const values2 = [
               response.body.CheckoutRequestID,
               mobileNo,
               amount,
+              today,
               timestamp,
               req.session.consultation.doctorId,
               req.session.userId,
@@ -1121,11 +1126,12 @@ io.on("connection", (socket) => {
 
   let d = new Date();
   let date2 =
-    ("0" + d.getDate()).slice(-2) +
-    "-" +
-    ("0" + (d.getMonth() + 1)).slice(-2) +
-    "-" +
-    d.getFullYear();
+  d.getFullYear() +
+  "-" +
+  ("0" + (d.getMonth() + 1)).slice(-2) +
+  "-" +
+  ("0" + d.getDate()).slice(-2);
+
 
   console.log(
     `${socket.handshake.session.consultation.userName} joined the chart`

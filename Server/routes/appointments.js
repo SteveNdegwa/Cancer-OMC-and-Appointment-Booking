@@ -482,13 +482,24 @@ router.post("/input-number", access, async (req, res) => {
 
             console.log(req.session.paymentDetails);
 
+            let now = new Date();
+
+            let today2 =
+            now.getFullYear() +
+            "-" +
+            ("0" + (now.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + now.getDate()).slice(-2);
+
+
             if (err) throw err;
             const query2 =
-              "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
+              "INSERT INTO appointments_stk_push(`checkout_id`, `phone_no` ,`amount` , `date` , `timestamp` , `doctor_id`, `patient_id`, `appointment_date`, `appointment_time`) VALUES(?);";
             const values2 = [
               response.data.CheckoutRequestID,
               mobileNo,
               amount,
+              today2,
               timestamp,
               req.session.appointmentDetails.doctorId,
               req.session.appointmentDetails.patientId,
