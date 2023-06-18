@@ -95,54 +95,56 @@
             <% }else{ %>
                 <!-- doctor account -->
                 <% details.forEach(appointment => { %>
-                    <form action="" id="form4" method="post" >
-                      <input type="checkbox" class="check-2" id="check-<%= appointment.appointment_id %>">
-                      <label for="check-<%= appointment.appointment_id %>" class="check-label-2"
-                        ><span class="nav-icon-2"></span
-                      ></label>
-                
-                      <div class="top-details">
-                        <h2 class="day-details"><%= appointment.date %></h2>
-                        <h2 class="day-details"><%= appointment.time %></h2>
-                      </div>
-                      <h2 class="name-2"><%= appointment.name %></h2>
-                      <% if (appointment.status == "scheduled") { %>
-                       <p class="status" id="scheduled">Scheduled</p>
-                      <% }else{ %>
-                        <p class="status" id="completed">Completed</p>
-                      <% } %>
-                      <div class="bottom-2">
-                        <div class="bottom-details">
-                          <h4 class="details-header">Gender : </h4>
-                          <p class="details"><%= appointment.gender %></p>
+                    <form action="" class="form4" method="post" >
+
+                      <div class="records-2">
+                        <input type="checkbox" class="check-2" id="check-<%= appointment.appointment_id %>">
+                        <label for="check-<%= appointment.appointment_id %>" class="check-label-2"
+                          ><span class="nav-icon-2"></span
+                        ></label>
+                        <div class="top-details">
+                          <h2 class="day-details"><%= appointment.date %></h2>
+                          <h2 class="day-details"><%= appointment.time %></h2>
                         </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">D.O.B : </h4>
-                          <p class="details"><%= appointment.dob %></p>
-                        </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">Cancer Type : </h4>
-                          <p class="details"><%= appointment.cancer_type %></p>
-                        </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">Cancer Stage : </h4>
-                          <p class="details"><%= appointment.cancer_stage %></p>
-                        </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">LifeStyle Diseases : </h4>
-                          <% if (appointment.lifestyle_diseases == "") { %>
-                          <p class="details">None</p>
-                          <% } else{%>
-                          <p class="details"><%= appointment.lifestyle_diseases %></p>
-                          <% } %>
-                        </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">Contacts : </h4>
-                          <p class="details"><%= appointment.phone_no %></p>
-                        </div>
-                        <div class="bottom-details">
-                          <h4 class="details-header">Location : </h4>
-                          <p class="details"><%= appointment.location %></p>
+                        <h2 class="name-2"><%= appointment.name %></h2>
+                        <% if (appointment.status == "scheduled") { %>
+                         <p class="status" id="scheduled">Scheduled</p>
+                        <% }else{ %>
+                          <p class="status" id="completed">Completed</p>
+                        <% } %>
+                        <div class="bottom-2">
+                          <div class="bottom-details">
+                            <h5 class="details-header">Gender : </h5>
+                            <p class="details"><%= appointment.gender %></p>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">D.O.B : </h5>
+                            <p class="details"><%= appointment.dob %></p>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">Cancer Type : </h5>
+                            <p class="details"><%= appointment.cancer_type %></p>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">Cancer Stage : </h5>
+                            <p class="details"><%= appointment.cancer_stage %></p>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">LifeStyle Diseases : </h5>
+                            <% if (appointment.lifestyle_diseases == "") { %>
+                            <p class="details">None</p>
+                            <% } else{%>
+                            <p class="details"><%= appointment.lifestyle_diseases %></p>
+                            <% } %>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">Contacts : </h5>
+                            <p class="details"><%= appointment.phone_no %></p>
+                          </div>
+                          <div class="bottom-details">
+                            <h5 class="details-header">Location : </h5>
+                            <p class="details"><%= appointment.location %></p>
+                          </div>
                         </div>
                       </div>
                     </form>
@@ -155,21 +157,6 @@
     </form>
 
     <script>
-        // let select = document.getElementById("select");
-        // select.addEventListener("change",()=>{
-        //     document.getElementById("form1").submit();
-        // })
-
-        // let date = document.getElementById("date");
-        // date.addEventListener("change",()=>{
-        //     document.getElementById("form1").submit();
-        // })
-
-        // let month = document.getElementById("month");
-        // month.addEventListener("change",()=>{
-        //     document.getElementById("form1").submit();
-        // })
-
         const submit = () =>{
             document.getElementById("form1").submit();
         }
