@@ -18,7 +18,8 @@ router.get("/appointment-records", (req, res) => {
           if (err) {
             throw err;
           } else {
-            const query = "SELECT * FROM appointments WHERE patient_id = ?";
+            const query =
+              "SELECT * FROM appointments WHERE patient_id = ? ORDER BY date ASC, time ASC";
             connection.query(query, [req.session.userId], (err, results) => {
               if (err) {
                 throw err;
@@ -131,7 +132,8 @@ router.get("/appointment-records", (req, res) => {
           if (err) {
             throw err;
           } else {
-            const query = "SELECT * FROM appointments WHERE doctor_id = ?";
+            const query =
+              "SELECT * FROM appointments WHERE doctor_id = ? ORDER BY date ASC, time ASC";
             connection.query(query, [req.session.userId], (err, results) => {
               if (err) {
                 throw err;
@@ -277,7 +279,7 @@ router.post("/filter-appointment-records", (req, res) => {
                       if (doctors.length) {
                         for (let i = 0; i < doctors.length; i++) {
                           const query2 =
-                            "SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ?";
+                            "SELECT * FROM appointments WHERE patient_id = ? AND doctor_id = ? ORDER BY date ASC, time ASC";
                           connection.query(
                             query2,
                             [req.session.userId, doctors[i].user_id],
@@ -399,11 +401,10 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (location like ?) or (cancer_type like ?) or (cancer_stage like ?) or (lifestyle_diseases like ?) or (phone_no like ?) or (email like ?)";
+                  "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (location like ?) or (cancer_type like ?) or (cancer_stage like ?) or (lifestyle_diseases like ?) or (phone_no like ?)";
                 connection.query(
                   query,
                   [
-                    "%" + req.body.search + "%",
                     "%" + req.body.search + "%",
                     "%" + req.body.search + "%",
                     "%" + req.body.search + "%",
@@ -419,7 +420,7 @@ router.post("/filter-appointment-records", (req, res) => {
                       if (patients.length) {
                         for (let i = 0; i < patients.length; i++) {
                           const query2 =
-                            "SELECT * FROM appointments WHERE doctor_id = ? AND patient_id = ?";
+                            "SELECT * FROM appointments WHERE doctor_id = ? AND patient_id = ? ORDER BY date ASC, time ASC";
                           connection.query(
                             query2,
                             [req.session.userId, patients[i].user_id],
@@ -578,7 +579,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE patient_id = ? and date = ?";
+                  "SELECT * FROM appointments WHERE patient_id = ? and date = ? ORDER BY time ASC";
                 connection.query(
                   query,
                   [req.session.userId, req.body.date],
@@ -701,7 +702,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE doctor_id = ? and date = ?";
+                  "SELECT * FROM appointments WHERE doctor_id = ? and date = ? ORDER BY time ASC";
                 connection.query(
                   query,
                   [req.session.userId, req.body.date],
@@ -855,7 +856,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE patient_id = ? AND (date like ?)";
+                  "SELECT * FROM appointments WHERE patient_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
                 connection.query(
                   query,
                   [req.session.userId, "%" + req.body.month + "%"],
@@ -978,7 +979,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE doctor_id = ? AND (date like ?)";
+                  "SELECT * FROM appointments WHERE doctor_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
                 connection.query(
                   query,
                   [req.session.userId, "%" + req.body.month + "%"],
@@ -1131,7 +1132,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE patient_id = ? AND (date like ?)";
+                  "SELECT * FROM appointments WHERE patient_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
                 connection.query(
                   query,
                   [req.session.userId, "%" + req.body.year + "%"],
@@ -1254,7 +1255,7 @@ router.post("/filter-appointment-records", (req, res) => {
                 throw err;
               } else {
                 const query =
-                  "SELECT * FROM appointments WHERE doctor_id = ? AND (date like ?)";
+                  "SELECT * FROM appointments WHERE doctor_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
                 connection.query(
                   query,
                   [req.session.userId, "%" + req.body.year + "%"],
@@ -1370,24 +1371,253 @@ router.post("/filter-appointment-records", (req, res) => {
       }
     } else {
       if (req.session.authenticated) {
-        return res.render("appointment-records", {
-          accountType: req.session.accountType,
-          filterType: "year",
-          all: "",
-          search: "",
-          date: "",
-          month: "",
-          year: "selected",
-          lastWeek: "",
-          nextWeek: "",
-          lastMonth: "",
-          nextMonth: "",
-          searchValue: "",
-          dateValue: "",
-          monthValue: "",
-          yearValue: year,
-          details: {},
-        });
+        if (req.session.authenticated) {
+          if (req.session.accountType == "patient") {
+            //// patient account
+            const getDetails = new Promise((resolve, reject) => {
+              let details = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments WHERE patient_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
+                  connection.query(
+                    query,
+                    [req.session.userId, "%" + year + "%"],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT * FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, data) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = data[0].name;
+                                  results[i].cancer_speciality =
+                                    data[0].cancer_speciality;
+                                  results[i].clinic_location =
+                                    data[0].clinic_location;
+                                  results[i].clinic_email = data[0].clinic_email;
+                                  results[i].clinic_phone_no =
+                                    data[0].clinic_phone_no;
+  
+                                  const date = new Date(results[i].date);
+                                  let time = results[i].time;
+                                  date.setHours(
+                                    time.slice(0, 2),
+                                    time.slice(3, 5)
+                                  );
+  
+                                  const nowDate = new Date();
+  
+                                  if (nowDate.getTime() > date.getTime()) {
+                                    results[i].status = "completed";
+                                  } else {
+                                    results[i].status = "scheduled";
+                                  }
+  
+                                  let d = new Date();
+                                  let y = new Date(d.getTime() - 1440 * 60000);
+                                  let t = new Date(d.getTime() + 1440 * 60000);
+  
+                                  let todate =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+                                  let yesterday =
+                                    y.getFullYear() +
+                                    "-" +
+                                    ("0" + (y.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + y.getDate()).slice(-2);
+                                  let tomorrow =
+                                    t.getFullYear() +
+                                    "-" +
+                                    ("0" + (t.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + t.getDate()).slice(-2);
+  
+                                  if (results[i].date == todate) {
+                                    results[i].date = "Today";
+                                  } else if (results[i].date == yesterday) {
+                                    results[i].date = "Yesterday";
+                                  } else if (results[i].date == tomorrow) {
+                                    results[i].date = "Tomorrow";
+                                  }
+  
+                                  details.push(results[i]);
+  
+                                  if (i == results.length - 1) {
+                                    console.log(details);
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(details);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getDetails.then((details) => {
+              return res.render("appointment-records", {
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
+            });
+          } else {
+            /// doctor account
+            const getDetails = new Promise((resolve, reject) => {
+              let details = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments WHERE doctor_id = ? AND (date like ?) ORDER BY date ASC, time ASC";
+                  connection.query(
+                    query,
+                    [req.session.userId, "%" + year + "%"],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT * FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, data) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  data[0].appointment_id =
+                                    results[i].appointment_id;
+                                  data[0].date = results[i].date;
+                                  data[0].time = results[i].time;
+  
+                                  const date = new Date(results[i].date);
+                                  let time = results[i].time;
+                                  date.setHours(
+                                    time.slice(0, 2),
+                                    time.slice(3, 5)
+                                  );
+  
+                                  const nowDate = new Date();
+  
+                                  if (nowDate.getTime() > date.getTime()) {
+                                    data[0].status = "completed";
+                                  } else {
+                                    data[0].status = "scheduled";
+                                  }
+  
+                                  let d = new Date();
+                                  let y = new Date(d.getTime() - 1440 * 60000);
+                                  let t = new Date(d.getTime() + 1440 * 60000);
+  
+                                  let todate =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+                                  let yesterday =
+                                    y.getFullYear() +
+                                    "-" +
+                                    ("0" + (y.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + y.getDate()).slice(-2);
+                                  let tomorrow =
+                                    t.getFullYear() +
+                                    "-" +
+                                    ("0" + (t.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + t.getDate()).slice(-2);
+  
+                                  if (data[0].date == todate) {
+                                    data[0].date = "Today";
+                                  } else if (data[0].date == yesterday) {
+                                    data[0].date = "Yesterday";
+                                  } else if (data[0].date == tomorrow) {
+                                    data[0].date = "Tomorrow";
+                                  }
+  
+                                  details.push(data[0]);
+  
+                                  if (i == results.length - 1) {
+                                    console.log(details);
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(details);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getDetails.then((details) => {
+              return res.render("appointment-records", {
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
+            });
+          }
+        } else {
+          return res.redirect("/login");
+        }
       } else {
         return res.redirect("/login");
       }
@@ -1422,7 +1652,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, date2, today],
@@ -1542,7 +1772,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, date2, today],
@@ -1683,7 +1913,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, today, date2],
@@ -1803,7 +2033,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, today, date2],
@@ -1944,7 +2174,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, date2, today],
@@ -2064,7 +2294,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, date2, today],
@@ -2205,7 +2435,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE patient_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, today, date2],
@@ -2325,7 +2555,7 @@ router.post("/filter-appointment-records", (req, res) => {
               throw err;
             } else {
               const query =
-                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ?";
+                "SELECT * FROM appointments WHERE doctor_id = ? AND date BETWEEN ? AND ? ORDER BY date ASC, time ASC";
               connection.query(
                 query,
                 [req.session.userId, today, date2],
@@ -2436,6 +2666,2049 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       return res.redirect("/login");
     }
+  }
+});
+
+router.get("/consultation-records", (req, res) => {
+  if (req.session.authenticated) {
+    if (req.session.accountType == "patient") {
+      ///patient account
+      let totalMessages = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+            connection.query(
+              query,
+              [req.session.userId, "active"],
+              (err, chatRooms) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (chatRooms.length) {
+                    for (let i = 0; i < chatRooms.length; i++) {
+                      const query2 =
+                        "SELECT name FROM doctor_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [chatRooms[i].doctor_id],
+                        (err, result) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            chatRooms[i].name = result[0].name;
+                            const query3 =
+                              "SELECT COUNT(*) AS count FROM chats WHERE room_id = ?";
+                            connection.query(
+                              query3,
+                              [chatRooms[i].room_id],
+                              (err, chats) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (chats.length) {
+                                    chatRooms[i].messages = chats[0].count;
+                                  } else {
+                                    chatRooms[i].messages = 0;
+                                  }
+
+                                  const query4 =
+                                    "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =?";
+                                  connection.query(
+                                    query4,
+                                    [
+                                      "The service request is processed successfully.",
+                                      req.session.userId,
+                                      chatRooms[i].doctor_id,
+                                    ],
+                                    (err, results) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results.length) {
+                                          chatRooms[i].paidConsults =
+                                            results[0].count;
+                                        } else {
+                                          chatRooms[i].paidConsults = 0;
+                                        }
+
+                                        totalMessages =
+                                          totalMessages + chatRooms[i].messages;
+                                        details.push(chatRooms[i]);
+
+                                        if (i == chatRooms.length - 1) {
+                                          details.sort(
+                                            (a, b) => b.messages - a.messages
+                                          );
+                                          resolve(details);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+      getDetails.then((details) => {
+        return res.render("consultation-records", {
+          accountType: req.session.accountType,
+          filterType: "all",
+          all: "selected",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          totalMessages: totalMessages,
+          details: details,
+        });
+      });
+    } else {
+      //// doctor account
+      let totalMessages = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+            connection.query(
+              query,
+              [req.session.userId, "active"],
+              (err, chatRooms) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (chatRooms.length) {
+                    for (let i = 0; i < chatRooms.length; i++) {
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [chatRooms[i].patient_id],
+                        (err, result) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            chatRooms[i].name = result[0].name;
+                            const query3 =
+                              "SELECT COUNT(*) AS count FROM chats WHERE room_id = ?";
+                            connection.query(
+                              query3,
+                              [chatRooms[i].room_id],
+                              (err, chats) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (chats.length) {
+                                    chatRooms[i].messages = chats[0].count;
+                                  } else {
+                                    chatRooms[i].messages = 0;
+                                  }
+
+                                  const query4 =
+                                    "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =?";
+                                  connection.query(
+                                    query4,
+                                    [
+                                      "The service request is processed successfully.",
+                                      chatRooms[i].patient_id,
+                                      req.session.userId,
+                                    ],
+                                    (err, results) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results.length) {
+                                          chatRooms[i].paidConsults =
+                                            results[0].count;
+                                        } else {
+                                          chatRooms[i].paidConsults = 0;
+                                        }
+
+                                        details.push(chatRooms[i]);
+                                        totalMessages =
+                                          totalMessages + chatRooms[i].messages;
+
+                                        if (i == chatRooms.length - 1) {
+                                          details.sort(
+                                            (a, b) => b.messages - a.messages
+                                          );
+                                          resolve(details);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+      getDetails.then((details) => {
+        return res.render("consultation-records", {
+          accountType: req.session.accountType,
+          filterType: "all",
+          all: "selected",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          totalMessages: totalMessages,
+          details: details,
+        });
+      });
+    }
+  } else {
+    return res.redirect("/login");
+  }
+});
+
+router.post("/filter-consultation-records", (req, res) => {
+  if (req.session.authenticated) {
+    let totalMessages = 0;
+
+    ///////// all
+    if (req.body.select == "all") {
+      return res.redirect("/records/consultation-records");
+    }
+
+    //////// search
+    else if (req.body.select == "search") {
+      if (req.body.search) {
+        if (req.session.accountType == "patient") {
+          /// patient account
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT user_id, name FROM doctor_details WHERE (name like ?) or (gender like ?) or (licence_no like ?) or (cancer_speciality like ?) or (clinic_location like ?) or (clinic_phone_no like ?) or (clinic_email like ?)";
+                connection.query(
+                  query,
+                  [
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                  ],
+                  (err, users) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (users.length) {
+                        for (let i = 0; i < users.length; i++) {
+                          const query =
+                            "SELECT room_id FROM chat_rooms WHERE patient_id= ? AND doctor_id = ? AND status = ?";
+                          connection.query(
+                            query,
+                            [req.session.userId, users[i].user_id, "active"],
+                            (err, chatRoom) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                if (chatRoom.length) {
+                                  const query2 =
+                                    "SELECT COUNT(*) AS count FROM chats WHERE room_id = ?";
+                                  connection.query(
+                                    query2,
+                                    [chatRoom[0].room_id],
+                                    (err, chats) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (chats.length) {
+                                          users[i].messages = chats[0].count;
+                                        } else {
+                                          users[i].messages = 0;
+                                        }
+
+                                        const query3 =
+                                          "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =?";
+                                        connection.query(
+                                          query3,
+                                          [
+                                            "The service request is processed successfully.",
+                                            req.session.userId,
+                                            users[i].user_id,
+                                          ],
+                                          (err, results) => {
+                                            if (err) {
+                                              throw err;
+                                            } else {
+                                              if (results.length) {
+                                                users[i].paidConsults =
+                                                  results[0].count;
+                                              } else {
+                                                users[i].paidConsults = 0;
+                                              }
+
+                                              totalMessages =
+                                                totalMessages +
+                                                users[i].messages;
+                                              details.push(users[i]);
+
+                                              if (i == users.length - 1) {
+                                                details.sort(
+                                                  (a, b) =>
+                                                    b.messages - a.messages
+                                                );
+                                                resolve(details);
+                                              }
+                                            }
+                                          }
+                                        );
+                                      }
+                                    }
+                                  );
+                                } else {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "search",
+              all: "",
+              search: "selected",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: req.body.search,
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        } else {
+          ///////doctor account
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (location like ?) or (cancer_type like ?) or (cancer_stage like ?) or (lifestyle_diseases like ?) or (phone_no like ?)";
+                connection.query(
+                  query,
+                  [
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                    "%" + req.body.search + "%",
+                  ],
+                  (err, users) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (users.length) {
+                        for (let i = 0; i < users.length; i++) {
+                          const query =
+                            "SELECT room_id FROM chat_rooms WHERE doctor_id= ? AND patient_id = ? AND status = ?";
+                          connection.query(
+                            query,
+                            [req.session.userId, users[i].user_id, "active"],
+                            (err, chatRoom) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                if (chatRoom.length) {
+                                  const query2 =
+                                    "SELECT COUNT(*) AS count FROM chats WHERE room_id = ?";
+                                  connection.query(
+                                    query2,
+                                    [chatRoom[0].room_id],
+                                    (err, chats) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (chats.length) {
+                                          users[i].messages = chats[0].count;
+                                        } else {
+                                          users[i].messages = 0;
+                                        }
+
+                                        const query3 =
+                                          "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND doctor_id =?  AND patient_id =?";
+                                        connection.query(
+                                          query3,
+                                          [
+                                            "The service request is processed successfully.",
+                                            req.session.userId,
+                                            users[i].user_id,
+                                          ],
+                                          (err, results) => {
+                                            if (err) {
+                                              throw err;
+                                            } else {
+                                              if (results.length) {
+                                                users[i].paidConsults =
+                                                  results[0].count;
+                                              } else {
+                                                users[i].paidConsults = 0;
+                                              }
+
+                                              totalMessages =
+                                                totalMessages +
+                                                users[i].messages;
+                                              details.push(users[i]);
+
+                                              if (i == users.length - 1) {
+                                                details.sort(
+                                                  (a, b) =>
+                                                    b.messages - a.messages
+                                                );
+                                                resolve(details);
+                                              }
+                                            }
+                                          }
+                                        );
+                                      }
+                                    }
+                                  );
+                                } else {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "search",
+              all: "",
+              search: "selected",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: req.body.search,
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        }
+      } else {
+        return res.render("consultation-records", {
+          accountType: req.session.accountType,
+          filterType: "search",
+          all: "",
+          search: "selected",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          totalMessages: totalMessages,
+          details: {},
+        });
+      }
+    }
+
+    /////////////// date
+    else if (req.body.select == "date") {
+      if (req.body.date) {
+        if (req.session.accountType == "patient") {
+          ///patient account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date = ?";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, req.body.date],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND date = ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          req.session.userId,
+                                          chatRooms[i].doctor_id,
+                                          req.body.date,
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+                                            details.push(chatRooms[i]);
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "date",
+              all: "",
+              search: "",
+              date: "selected",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: req.body.date,
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        } else {
+          //// doctor account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date = ?";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, req.body.date],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND date = ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          chatRooms[i].patient_id,
+                                          req.session.userId,
+                                          req.body.date,
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            details.push(chatRooms[i]);
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "date",
+              all: "",
+              search: "",
+              date: "selected",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: req.body.date,
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        }
+      } else {
+        return res.render("consultation-records", {
+          accountType: req.session.accountType,
+          filterType: "date",
+          all: "",
+          search: "",
+          date: "selected",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          totalMessages: totalMessages,
+          details: {},
+        });
+      }
+    }
+
+    /////////////// month
+    else if (req.body.select == "month") {
+      if (req.body.month) {
+        if (req.session.accountType == "patient") {
+          ///patient account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + req.body.month + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND (date like ?)";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          req.session.userId,
+                                          chatRooms[i].doctor_id,
+                                          "%" + req.body.month + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+                                            details.push(chatRooms[i]);
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "month",
+              all: "",
+              search: "",
+              date: "",
+              month: "selected",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: req.body.month,
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        } else {
+          //// doctor account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + req.body.month + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND (date like ?)";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          chatRooms[i].patient_id,
+                                          req.session.userId,
+                                          "%" + req.body.month + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            details.push(chatRooms[i]);
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "month",
+              all: "",
+              search: "",
+              date: "",
+              month: "selected",
+              year: "",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: req.body.month,
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        }
+      } else {
+        return res.render("consultation-records", {
+          accountType: req.session.accountType,
+          filterType: "month",
+          all: "",
+          search: "",
+          date: "",
+          month: "selected",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          totalMessages: totalMessages,
+          details: {},
+        });
+      }
+    }
+
+    /////////////// year
+    else if (req.body.select == "year") {
+      if (req.body.year) {
+        if (req.session.accountType == "patient") {
+          ///patient account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + req.body.year + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND date like ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          req.session.userId,
+                                          chatRooms[i].doctor_id,
+                                          "%" + req.body.year + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+                                            details.push(chatRooms[i]);
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "year",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "selected",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: req.body.year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        } else {
+          //// doctor account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + req.body.year + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND date like ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          chatRooms[i].patient_id,
+                                          req.session.userId,
+                                          "%" + req.body.year + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            details.push(chatRooms[i]);
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "year",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "selected",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: req.body.year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        }
+      } else {
+        if (req.session.accountType == "patient") {
+          ///patient account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + year + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND date like ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          req.session.userId,
+                                          chatRooms[i].doctor_id,
+                                          "%" + year + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+                                            details.push(chatRooms[i]);
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "year",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "selected",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        } else {
+          //// doctor account
+          let totalMessages = 0;
+          const getDetails = new Promise((resolve, reject) => {
+            let details = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+                connection.query(
+                  query,
+                  [req.session.userId, "active"],
+                  (err, chatRooms) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (chatRooms.length) {
+                        for (let i = 0; i < chatRooms.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [chatRooms[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                chatRooms[i].name = result[0].name;
+                                const query3 =
+                                  "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
+                                connection.query(
+                                  query3,
+                                  [chatRooms[i].room_id, "%" + year + "%"],
+                                  (err, chats) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (chats.length) {
+                                        chatRooms[i].messages = chats[0].count;
+                                      } else {
+                                        chatRooms[i].messages = 0;
+                                      }
+
+                                      const query4 =
+                                        "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND date like ?";
+                                      connection.query(
+                                        query4,
+                                        [
+                                          "The service request is processed successfully.",
+                                          chatRooms[i].patient_id,
+                                          req.session.userId,
+                                          "%" + year + "%",
+                                        ],
+                                        (err, results) => {
+                                          if (err) {
+                                            throw err;
+                                          } else {
+                                            if (results.length) {
+                                              chatRooms[i].paidConsults =
+                                                results[0].count;
+                                            } else {
+                                              chatRooms[i].paidConsults = 0;
+                                            }
+
+                                            details.push(chatRooms[i]);
+                                            totalMessages =
+                                              totalMessages +
+                                              chatRooms[i].messages;
+
+                                            if (i == chatRooms.length - 1) {
+                                              details.sort(
+                                                (a, b) =>
+                                                  b.messages - a.messages
+                                              );
+                                              resolve(details);
+                                            }
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+
+              connection.release();
+            });
+          });
+          getDetails.then((details) => {
+            return res.render("consultation-records", {
+              accountType: req.session.accountType,
+              filterType: "year",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "selected",
+              lastWeek: "",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
+          });
+        }
+      }
+    }
+
+    /////////////// last week
+    else if (req.body.select == "last-week") {
+      let d = new Date();
+      let y = new Date(d.getTime() - 1440 * 7 * 60000);
+
+      let today =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+      let date2 =
+        y.getFullYear() +
+        "-" +
+        ("0" + (y.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + y.getDate()).slice(-2);
+      if (req.session.accountType == "patient") {
+        ///patient account
+        let totalMessages = 0;
+        const getDetails = new Promise((resolve, reject) => {
+          let details = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+              connection.query(
+                query,
+                [req.session.userId, "active"],
+                (err, chatRooms) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (chatRooms.length) {
+                      for (let i = 0; i < chatRooms.length; i++) {
+                        const query2 =
+                          "SELECT name FROM doctor_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [chatRooms[i].doctor_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              chatRooms[i].name = result[0].name;
+                              const query3 =
+                                "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date BETWEEN ? AND ?";
+                              connection.query(
+                                query3,
+                                [chatRooms[i].room_id, date2, today],
+                                (err, chats) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (chats.length) {
+                                      chatRooms[i].messages = chats[0].count;
+                                    } else {
+                                      chatRooms[i].messages = 0;
+                                    }
+
+                                    const query4 =
+                                      "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND date BETWEEN ? AND ?";
+                                    connection.query(
+                                      query4,
+                                      [
+                                        "The service request is processed successfully.",
+                                        req.session.userId,
+                                        chatRooms[i].doctor_id,
+                                        date2,
+                                        today,
+                                      ],
+                                      (err, results) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results.length) {
+                                            chatRooms[i].paidConsults =
+                                              results[0].count;
+                                          } else {
+                                            chatRooms[i].paidConsults = 0;
+                                          }
+
+                                          totalMessages =
+                                            totalMessages +
+                                            chatRooms[i].messages;
+                                          details.push(chatRooms[i]);
+
+                                          if (i == chatRooms.length - 1) {
+                                            details.sort(
+                                              (a, b) => b.messages - a.messages
+                                            );
+                                            resolve(details);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(details);
+                    }
+                  }
+                }
+              );
+            }
+
+            connection.release();
+          });
+        });
+        getDetails.then((details) => {
+          return res.render("consultation-records", {
+            accountType: req.session.accountType,
+            filterType: "lastWeek",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "selected",
+            lastMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
+        });
+      } else {
+        //// doctor account
+        let totalMessages = 0;
+        const getDetails = new Promise((resolve, reject) => {
+          let details = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+              connection.query(
+                query,
+                [req.session.userId, "active"],
+                (err, chatRooms) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (chatRooms.length) {
+                      for (let i = 0; i < chatRooms.length; i++) {
+                        const query2 =
+                          "SELECT name FROM patient_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [chatRooms[i].patient_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              chatRooms[i].name = result[0].name;
+                              const query3 =
+                                "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date BETWEEN ? AND ?";
+                              connection.query(
+                                query3,
+                                [chatRooms[i].room_id, date2, today],
+                                (err, chats) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (chats.length) {
+                                      chatRooms[i].messages = chats[0].count;
+                                    } else {
+                                      chatRooms[i].messages = 0;
+                                    }
+
+                                    const query4 =
+                                      "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND date BETWEEN ? AND ?";
+                                    connection.query(
+                                      query4,
+                                      [
+                                        "The service request is processed successfully.",
+                                        chatRooms[i].patient_id,
+                                        req.session.userId,
+                                        date2,
+                                        today,
+                                      ],
+                                      (err, results) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results.length) {
+                                            chatRooms[i].paidConsults =
+                                              results[0].count;
+                                          } else {
+                                            chatRooms[i].paidConsults = 0;
+                                          }
+
+                                          details.push(chatRooms[i]);
+                                          totalMessages =
+                                            totalMessages +
+                                            chatRooms[i].messages;
+
+                                          if (i == chatRooms.length - 1) {
+                                            details.sort(
+                                              (a, b) => b.messages - a.messages
+                                            );
+                                            resolve(details);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(details);
+                    }
+                  }
+                }
+              );
+            }
+
+            connection.release();
+          });
+        });
+        getDetails.then((details) => {
+          return res.render("consultation-records", {
+            accountType: req.session.accountType,
+            filterType: "lastWeek",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "selected",
+            lastMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
+        });
+      }
+    }
+
+    /////////////// last month
+    else if (req.body.select == "last-month") {
+      let d = new Date();
+      let y = new Date(d.getTime() - 1440 * 30 * 60000);
+
+      let today =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+      let date2 =
+        y.getFullYear() +
+        "-" +
+        ("0" + (y.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + y.getDate()).slice(-2);
+      if (req.session.accountType == "patient") {
+        ///patient account
+        let totalMessages = 0;
+        const getDetails = new Promise((resolve, reject) => {
+          let details = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT room_id, doctor_id FROM chat_rooms WHERE patient_id= ? AND status = ?";
+              connection.query(
+                query,
+                [req.session.userId, "active"],
+                (err, chatRooms) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (chatRooms.length) {
+                      for (let i = 0; i < chatRooms.length; i++) {
+                        const query2 =
+                          "SELECT name FROM doctor_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [chatRooms[i].doctor_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              chatRooms[i].name = result[0].name;
+                              const query3 =
+                                "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date BETWEEN ? AND ?";
+                              connection.query(
+                                query3,
+                                [chatRooms[i].room_id, date2, today],
+                                (err, chats) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (chats.length) {
+                                      chatRooms[i].messages = chats[0].count;
+                                    } else {
+                                      chatRooms[i].messages = 0;
+                                    }
+
+                                    const query4 =
+                                      "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =?  AND doctor_id =? AND date BETWEEN ? AND ?";
+                                    connection.query(
+                                      query4,
+                                      [
+                                        "The service request is processed successfully.",
+                                        req.session.userId,
+                                        chatRooms[i].doctor_id,
+                                        date2,
+                                        today,
+                                      ],
+                                      (err, results) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results.length) {
+                                            chatRooms[i].paidConsults =
+                                              results[0].count;
+                                          } else {
+                                            chatRooms[i].paidConsults = 0;
+                                          }
+
+                                          totalMessages =
+                                            totalMessages +
+                                            chatRooms[i].messages;
+                                          details.push(chatRooms[i]);
+
+                                          if (i == chatRooms.length - 1) {
+                                            details.sort(
+                                              (a, b) => b.messages - a.messages
+                                            );
+                                            resolve(details);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(details);
+                    }
+                  }
+                }
+              );
+            }
+
+            connection.release();
+          });
+        });
+        getDetails.then((details) => {
+          return res.render("consultation-records", {
+            accountType: req.session.accountType,
+            filterType: "lastMonth",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "selected",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
+        });
+      } else {
+        //// doctor account
+        let totalMessages = 0;
+        const getDetails = new Promise((resolve, reject) => {
+          let details = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT room_id, patient_id FROM chat_rooms WHERE doctor_id= ? AND status = ?";
+              connection.query(
+                query,
+                [req.session.userId, "active"],
+                (err, chatRooms) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (chatRooms.length) {
+                      for (let i = 0; i < chatRooms.length; i++) {
+                        const query2 =
+                          "SELECT name FROM patient_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [chatRooms[i].patient_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              chatRooms[i].name = result[0].name;
+                              const query3 =
+                                "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND date BETWEEN ? AND ?";
+                              connection.query(
+                                query3,
+                                [chatRooms[i].room_id, date2, today],
+                                (err, chats) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (chats.length) {
+                                      chatRooms[i].messages = chats[0].count;
+                                    } else {
+                                      chatRooms[i].messages = 0;
+                                    }
+
+                                    const query4 =
+                                      "SELECT COUNT(*) AS count FROM consultations_stk_push WHERE status = ? AND patient_id =? AND doctor_id =? AND date BETWEEN ? AND ?";
+                                    connection.query(
+                                      query4,
+                                      [
+                                        "The service request is processed successfully.",
+                                        chatRooms[i].patient_id,
+                                        req.session.userId,
+                                        date2,
+                                        today,
+                                      ],
+                                      (err, results) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results.length) {
+                                            chatRooms[i].paidConsults =
+                                              results[0].count;
+                                          } else {
+                                            chatRooms[i].paidConsults = 0;
+                                          }
+
+                                          details.push(chatRooms[i]);
+                                          totalMessages =
+                                            totalMessages +
+                                            chatRooms[i].messages;
+
+                                          if (i == chatRooms.length - 1) {
+                                            details.sort(
+                                              (a, b) => b.messages - a.messages
+                                            );
+                                            resolve(details);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(details);
+                    }
+                  }
+                }
+              );
+            }
+
+            connection.release();
+          });
+        });
+        getDetails.then((details) => {
+          return res.render("consultation-records", {
+            accountType: req.session.accountType,
+            filterType: "lastMonth",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "selected",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
+        });
+      }
+    }
+  } else {
+    return res.redirect("/login");
   }
 });
 
