@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const dotenv = require('dotenv');
-const { json } = require('express');
+const { json, query } = require('express');
 dotenv.config();
 
 
