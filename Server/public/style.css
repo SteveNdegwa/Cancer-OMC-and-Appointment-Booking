@@ -108,11 +108,11 @@ body{
     margin-bottom: 10px;
 }
 
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 868px){
     .menu{
         position: absolute;
         top: 60px;
-        left: -800px;
+        left: -900px;
         width: 100%;
         transition: all .5s ease-in;
         z-index: 1;
@@ -150,7 +150,7 @@ body{
     }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 868px) {
     .check, .check-label{
         display: none;
     }
