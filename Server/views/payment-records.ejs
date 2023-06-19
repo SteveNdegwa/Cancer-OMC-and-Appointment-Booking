@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link data-minify="1" href="https://www.bacancytechnology.com/blog/wp-content/cache/min/1/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css?ver=1673506287" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/payment-records.css">
+    <title>Payment Records</title>
+</head>
+<body>
+    <form action="/records/filter-payment-records" id="form1" method="post">
+        <div class="select-div">
+            <label for="select" class="select-label">Filter by : </label>
+            <select name="select" id="select" class="select" value="<%= filterType %>"  onchange="submit()">
+                <option value="all" <%= all %>>All</option>
+                <option value="date" <%= date %>>Date</option>
+                <option value="month" <%= month %>>Month</option>
+                <option value="year" <%= year %>>Year</option>
+                <option value="last-week" <%= lastWeek %>>Last Week</option>
+                <option value="last-month" <%= lastMonth %>>Last Month</option>
+            </select>
+        </div>
+        <div class="options-div">
+           <% if (filterType == "date") { %>
+            <input type="date" name="date" id="date" class="input" value="<%= dateValue %>" onchange="submit()">
+           <% } %>
+           <% if (filterType == "month") { %>
+            <input type="month" name="month" id="month" class="input" value="<%= monthValue %>" onchange="submit()">
+           <% } %>
+           <% if (filterType == "year") { %>
+            <div class="search-div">
+                <input type="number" name="year" id="year" class="year" min="1900" max="2100" step="1" value="<%= yearValue %>">
+                <button type="submit" class="btn">Search</button>
+            </div>
+           <% } %>
+        </div>
+    </form>
+
+
+
+    <div class="summary-div">
+        <div class="summary">
+            <h4 class="summary-header">Consultations</h2>
+            <h5 class="summary-header">Count: <%= summary.consultationCount %></h5>
+            <h5 class="summary-header">Total Payments: Kshs. <%= summary.consultationTotal %></h5>
+        </div>
+        <div class="summary">
+            <h4 class="summary-header">Appointments</h4>
+            <h5 class="summary-header">Count: <%= summary.appointmentCount %></h5>
+            <h5 class="summary-header">Total Payments: Kshs. <%= summary.appointmentTotal %></h5>
+        </div>
+        <div class="summary">
+            <h4 class="summary-header">All</h4>
+            <h5 class="summary-header">Count: <%= summary.consultationCount + summary.appointmentCount %></h5>
+            <h5 class="summary-header">Total Payments: Kshs. <%= summary.consultationTotal + summary.appointmentTotal %></h5>
+        </div>
+    </div>
+
+
+    <div class="records">
+        <h2 class="header">Consultations Payments</h2>
+        <% if (consultationDetails.length) { %>
+         <table>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount(Kshs)</th>
+              <th>Consultation Expiry Time</th>
+            </tr>
+            <% consultationDetails.forEach(details => { %>
+             <tr>
+              <td><%= details.name %></td>
+              <td><%= details.date %></td>
+              <td><%= details.amount %></td>
+              <td><%= details.consultation_expiry_time %></td>
+            </tr>
+            <% }) %>
+          </table>
+        <% }else{ %>
+            <h3 class="no-records">No Records</h3>
+        <% } %>
+    </div>
+
+    <div class="records">
+        <h2 class="header">Appointments Payments</h2>
+        <% if (appointmentDetails.length) { %>
+         <table>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount(Kshs)</th>
+              <th>Appointment Date</th>
+              <th>Appointment Time</th>
+            </tr>
+            <% appointmentDetails.forEach(details => { %>
+             <tr>
+              <td><%= details.name %></td>
+              <td><%= details.date %></td>
+              <td><%= details.amount %></td>
+              <td><%= details.appointment_date %></td>
+              <td><%= details.appointment_time %></td>
+            </tr>
+            <% }) %>
+          </table>
+        <% }else{ %>
+            <h3 class="no-records">No Records</h3>
+        <% } %>
+    </div>
+
+    <div class="records">
+        <% if (accountType == "patient") { %>
+            <h2 class="header">Doctors Details</h2>
+        <% }else{ %>
+            <h2 class="header">Patient Details</h2>
+        <% } %>
+        <% if (userDetails.length) { %>
+         <table>
+            <tr>
+              <th>Name</th>
+              <th>No. Of Paid Consultations</th>
+              <th>Consultations Fees(Kshs)</th>
+              <th>No. Of Appointments</th>
+              <th>Appointment Fees(Kshs)</th>
+              <th>Total Fees(Kshs)</th>
+            </tr>
+            <% userDetails.forEach(details => { %>
+             <tr>
+              <td><%= details.name %></td>
+              <td><%= details.consultationCount %></td>
+              <td><%= details.consultationFees %></td>
+              <td><%= details.appointmentCount %></td>
+              <td><%= details.appointmentFees %></td>
+              <td><%= details.totalFees %></td>
+            </tr>
+            <% }) %>
+          </table>
+        <% }else{ %>
+            <h3 class="no-records">No Records</h3>
+        <% } %>
+    </div>
+   
+    <script>
+        const submit = () =>{
+            document.getElementById("form1").submit();
+        }
+    </script>
+</body>
+</html>
