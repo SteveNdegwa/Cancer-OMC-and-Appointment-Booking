@@ -8,6 +8,11 @@ const path = require("path");
 const yearDate = new Date();
 let year = yearDate.getFullYear();
 
+
+router.get("/",(req,res)=>{
+  return res.render("records-menu")
+})
+
 router.get("/appointment-records", (req, res) => {
   if (req.session.authenticated) {
     if (req.session.accountType == "patient") {
@@ -1405,29 +1410,30 @@ router.post("/filter-appointment-records", (req, res) => {
                                     data[0].cancer_speciality;
                                   results[i].clinic_location =
                                     data[0].clinic_location;
-                                  results[i].clinic_email = data[0].clinic_email;
+                                  results[i].clinic_email =
+                                    data[0].clinic_email;
                                   results[i].clinic_phone_no =
                                     data[0].clinic_phone_no;
-  
+
                                   const date = new Date(results[i].date);
                                   let time = results[i].time;
                                   date.setHours(
                                     time.slice(0, 2),
                                     time.slice(3, 5)
                                   );
-  
+
                                   const nowDate = new Date();
-  
+
                                   if (nowDate.getTime() > date.getTime()) {
                                     results[i].status = "completed";
                                   } else {
                                     results[i].status = "scheduled";
                                   }
-  
+
                                   let d = new Date();
                                   let y = new Date(d.getTime() - 1440 * 60000);
                                   let t = new Date(d.getTime() + 1440 * 60000);
-  
+
                                   let todate =
                                     d.getFullYear() +
                                     "-" +
@@ -1446,7 +1452,7 @@ router.post("/filter-appointment-records", (req, res) => {
                                     ("0" + (t.getMonth() + 1)).slice(-2) +
                                     "-" +
                                     ("0" + t.getDate()).slice(-2);
-  
+
                                   if (results[i].date == todate) {
                                     results[i].date = "Today";
                                   } else if (results[i].date == yesterday) {
@@ -1454,9 +1460,9 @@ router.post("/filter-appointment-records", (req, res) => {
                                   } else if (results[i].date == tomorrow) {
                                     results[i].date = "Tomorrow";
                                   }
-  
+
                                   details.push(results[i]);
-  
+
                                   if (i == results.length - 1) {
                                     console.log(details);
                                     resolve(details);
@@ -1527,26 +1533,26 @@ router.post("/filter-appointment-records", (req, res) => {
                                     results[i].appointment_id;
                                   data[0].date = results[i].date;
                                   data[0].time = results[i].time;
-  
+
                                   const date = new Date(results[i].date);
                                   let time = results[i].time;
                                   date.setHours(
                                     time.slice(0, 2),
                                     time.slice(3, 5)
                                   );
-  
+
                                   const nowDate = new Date();
-  
+
                                   if (nowDate.getTime() > date.getTime()) {
                                     data[0].status = "completed";
                                   } else {
                                     data[0].status = "scheduled";
                                   }
-  
+
                                   let d = new Date();
                                   let y = new Date(d.getTime() - 1440 * 60000);
                                   let t = new Date(d.getTime() + 1440 * 60000);
-  
+
                                   let todate =
                                     d.getFullYear() +
                                     "-" +
@@ -1565,7 +1571,7 @@ router.post("/filter-appointment-records", (req, res) => {
                                     ("0" + (t.getMonth() + 1)).slice(-2) +
                                     "-" +
                                     ("0" + t.getDate()).slice(-2);
-  
+
                                   if (data[0].date == todate) {
                                     data[0].date = "Today";
                                   } else if (data[0].date == yesterday) {
@@ -1573,9 +1579,9 @@ router.post("/filter-appointment-records", (req, res) => {
                                   } else if (data[0].date == tomorrow) {
                                     data[0].date = "Tomorrow";
                                   }
-  
+
                                   details.push(data[0]);
-  
+
                                   if (i == results.length - 1) {
                                     console.log(details);
                                     resolve(details);
@@ -3491,7 +3497,10 @@ router.post("/filter-consultation-records", (req, res) => {
                                   "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
                                 connection.query(
                                   query3,
-                                  [chatRooms[i].room_id, "%" + req.body.month + "%"],
+                                  [
+                                    chatRooms[i].room_id,
+                                    "%" + req.body.month + "%",
+                                  ],
                                   (err, chats) => {
                                     if (err) {
                                       throw err;
@@ -3609,7 +3618,10 @@ router.post("/filter-consultation-records", (req, res) => {
                                   "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
                                 connection.query(
                                   query3,
-                                  [chatRooms[i].room_id, "%" + req.body.month + "%"],
+                                  [
+                                    chatRooms[i].room_id,
+                                    "%" + req.body.month + "%",
+                                  ],
                                   (err, chats) => {
                                     if (err) {
                                       throw err;
@@ -3752,7 +3764,10 @@ router.post("/filter-consultation-records", (req, res) => {
                                   "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
                                 connection.query(
                                   query3,
-                                  [chatRooms[i].room_id, "%" + req.body.year + "%"],
+                                  [
+                                    chatRooms[i].room_id,
+                                    "%" + req.body.year + "%",
+                                  ],
                                   (err, chats) => {
                                     if (err) {
                                       throw err;
@@ -3870,7 +3885,10 @@ router.post("/filter-consultation-records", (req, res) => {
                                   "SELECT COUNT(*) AS count FROM chats WHERE room_id = ? AND (date like ?)";
                                 connection.query(
                                   query3,
-                                  [chatRooms[i].room_id, "%" + req.body.year + "%"],
+                                  [
+                                    chatRooms[i].room_id,
+                                    "%" + req.body.year + "%",
+                                  ],
                                   (err, chats) => {
                                     if (err) {
                                       throw err;
@@ -4703,6 +4721,4128 @@ router.post("/filter-consultation-records", (req, res) => {
             yearValue: year,
             totalMessages: totalMessages,
             details: details,
+          });
+        });
+      }
+    }
+  } else {
+    return res.redirect("/login");
+  }
+});
+
+router.get("/payment-records", (req, res) => {
+  if (req.session.authenticated) {
+    if (req.session.accountType == "patient") {
+      ///// patient account
+
+      const getSummary = new Promise((resolve, reject) => {
+        let summary = {
+          consultationCount: 0,
+          consultationTotal: 0,
+          appointmentCount: 0,
+          appointmentTotal: 0,
+        };
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ?";
+            connection.query(
+              query,
+              [
+                req.session.userId,
+                "The service request is processed successfully.",
+              ],
+              (err, results1) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results1.length) {
+                    summary.consultationCount = results1[0].count;
+                    summary.consultationTotal = results1[0].sum;
+
+                    const query2 =
+                      "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ?";
+                    connection.query(
+                      query2,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                      ],
+                      (err, results2) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results2.length) {
+                            summary.appointmentCount = results2[0].count;
+                            summary.appointmentTotal = results2[0].sum;
+                            resolve(summary);
+                          } else {
+                            resolve(summary);
+                          }
+                        }
+                      }
+                    );
+                  } else {
+                    resolve(summary);
+                  }
+                }
+              }
+            );
+          }
+          connection.release();
+        });
+      });
+      getSummary.then((summary) => {
+        const getConsultationDetails = new Promise((resolve, reject) => {
+          let consultationDetails = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                ],
+                (err, results) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results.length) {
+                      for (let i = 0; i < results.length; i++) {
+                        const query2 =
+                          "SELECT name FROM doctor_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [results[i].doctor_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              results[i].name = result[0].name;
+                              consultationDetails.push(results[i]);
+
+                              if (i == results.length - 1) {
+                                resolve(consultationDetails);
+                              }
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(consultationDetails);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getConsultationDetails.then((consultationDetails) => {
+          const getAppointmentDetails = new Promise((resolve, reject) => {
+            let appointmentDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                appointmentDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(appointmentDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(appointmentDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getAppointmentDetails.then((appointmentDetails) => {
+            const getUserDetails = new Promise((resolve, reject) => {
+              let userDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT * FROM doctor_details";
+                  connection.query(query, (err, users) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (users.length) {
+                        for (let i = 0; i < users.length; i++) {
+                          const query2 =
+                            "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =?";
+                          connection.query(
+                            query2,
+                            [
+                              users[i].user_id,
+                              req.session.userId,
+                              "The service request is processed successfully.",
+                            ],
+                            (err, results1) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                if (results1.length) {
+                                  users[i].consultationCount =
+                                    results1[0].count;
+                                  users[i].consultationFees = results1[0].sum;
+                                  if (users[i].consultationFees == null) {
+                                    users[i].consultationFees = 0;
+                                  }
+                                } else {
+                                  users[i].consultationCount = 0;
+                                  users[i].consultationFees = 0;
+                                }
+
+                                const query3 =
+                                  "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ?";
+                                connection.query(
+                                  query3,
+                                  [
+                                    users[i].user_id,
+                                    req.session.userId,
+                                    "The service request is processed successfully.",
+                                  ],
+                                  (err, results2) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (results2.length) {
+                                        users[i].appointmentCount =
+                                          results2[0].count;
+                                        users[i].appointmentFees =
+                                          results2[0].sum;
+                                        if (users[i].appointmentFees == null) {
+                                          users[i].appointmentFees = 0;
+                                        }
+                                      } else {
+                                        users[i].appointmentCount = 0;
+                                        users[i].appointmentFees = 0;
+                                      }
+
+                                      users[i].totalFees =
+                                        users[i].consultationFees +
+                                        users[i].appointmentFees;
+                                      userDetails.push(users[i]);
+
+                                      if (i == users.length - 1) {
+                                        resolve(userDetails);
+                                      }
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(userDetails);
+                      }
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            getUserDetails.then((userDetails) => {
+              userDetails.sort((a, b) => b.totalFees - a.totalFees);
+              return res.render("payment-records", {
+                accountType: req.session.accountType,
+                filterType: "all",
+                all: "selected",
+                search: "",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                summary: summary,
+                consultationDetails: consultationDetails,
+                appointmentDetails: appointmentDetails,
+                userDetails: userDetails,
+              });
+            });
+          });
+        });
+      });
+    } else {
+      //// doctor account
+
+      const getSummary = new Promise((resolve, reject) => {
+        let summary = {
+          consultationCount: 0,
+          consultationTotal: 0,
+          appointmentCount: 0,
+          appointmentTotal: 0,
+        };
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ?";
+            connection.query(
+              query,
+              [
+                req.session.userId,
+                "The service request is processed successfully.",
+              ],
+              (err, results1) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results1.length) {
+                    summary.consultationCount = results1[0].count;
+                    summary.consultationTotal = results1[0].sum;
+
+                    const query2 =
+                      "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ?";
+                    connection.query(
+                      query2,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                      ],
+                      (err, results2) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results2.length) {
+                            summary.appointmentCount = results2[0].count;
+                            summary.appointmentTotal = results2[0].sum;
+                            resolve(summary);
+                          } else {
+                            resolve(summary);
+                          }
+                        }
+                      }
+                    );
+                  } else {
+                    resolve(summary);
+                  }
+                }
+              }
+            );
+          }
+          connection.release();
+        });
+      });
+      getSummary.then((summary) => {
+        const getConsultationDetails = new Promise((resolve, reject) => {
+          let consultationDetails = [];
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                ],
+                (err, results) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results.length) {
+                      for (let i = 0; i < results.length; i++) {
+                        const query2 =
+                          "SELECT name FROM patient_details WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [results[i].patient_id],
+                          (err, result) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              results[i].name = result[0].name;
+                              consultationDetails.push(results[i]);
+
+                              if (i == results.length - 1) {
+                                resolve(consultationDetails);
+                              }
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      resolve(consultationDetails);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getConsultationDetails.then((consultationDetails) => {
+          const getAppointmentDetails = new Promise((resolve, reject) => {
+            let appointmentDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                appointmentDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(appointmentDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(appointmentDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getAppointmentDetails.then((appointmentDetails) => {
+            const getUserDetails = new Promise((resolve, reject) => {
+              let userDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT user_id, name FROM patient_details";
+                  connection.query(query, (err, users) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (users.length) {
+                        for (let i = 0; i < users.length; i++) {
+                          const query2 =
+                            "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ?";
+                          connection.query(
+                            query2,
+                            [
+                              users[i].user_id,
+                              req.session.userId,
+                              "The service request is processed successfully.",
+                            ],
+                            (err, results1) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                if (results1.length) {
+                                  users[i].consultationCount =
+                                    results1[i].count;
+                                  users[i].consultationFees = results1[i].sum;
+                                  if (users[i].consultationFees == null) {
+                                    users[i].consultationFees = 0;
+                                  }
+                                } else {
+                                  users[i].consultationCount = 0;
+                                  users[i].consultationFees = 0;
+                                }
+
+                                const query3 =
+                                  "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ?";
+                                connection.query(
+                                  query3,
+                                  [
+                                    users[i].user_id,
+                                    req.session.userId,
+                                    "The service request is processed successfully.",
+                                  ],
+                                  (err, results2) => {
+                                    if (err) {
+                                      throw err;
+                                    } else {
+                                      if (results2.length) {
+                                        users[i].appointmentCount =
+                                          results2[i].count;
+                                        users[i].appointmentFees =
+                                          results2[i].sum;
+                                        if (users[i].appointmentFees == null) {
+                                          users[i].appointmentFees = 0;
+                                        }
+                                      } else {
+                                        users[i].appointmentCount = 0;
+                                        users[i].appointmentFees = 0;
+                                      }
+
+                                      users[i].totalFees =
+                                        users[i].consultationFees +
+                                        users[i].appointmentFees;
+                                      userDetails.push(users[i]);
+
+                                      if (i == users.length - 1) {
+                                        resolve(userDetails);
+                                      }
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(userDetails);
+                      }
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            getUserDetails.then((userDetails) => {
+              userDetails.sort((a, b) => b.totalFees - a.totalFees);
+              return res.render("payment-records", {
+                accountType: req.session.accountType,
+                filterType: "all",
+                all: "selected",
+                search: "",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                summary: summary,
+                consultationDetails: consultationDetails,
+                appointmentDetails: appointmentDetails,
+                userDetails: userDetails,
+              });
+            });
+          });
+        });
+      });
+    }
+  } else {
+    return res.redirect("/login");
+  }
+});
+
+router.post("/filter-payment-records", (req, res) => {
+  if (req.session.authenticated) {
+    let emptySummary = {
+      consultationCount: 0,
+      consultationTotal: 0,
+      appointmentCount: 0,
+      appointmentTotal: 0,
+    };
+    /////////all
+    if (req.body.select == "all") {
+      return res.redirect("/records/payment-records");
+    }
+
+    ///////// date
+    else if (req.body.select == "date") {
+      if (req.body.date) {
+        if (req.session.accountType == "patient") {
+          ///// patient account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date = ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    req.body.date,
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date = ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            req.body.date,
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date = ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      req.body.date,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date=?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        req.body.date,
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM doctor_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].doctor_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT * FROM doctor_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date=?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  req.body.date,
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[0].count;
+                                      users[i].consultationFees =
+                                        results1[0].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date=?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        req.body.date,
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[0].count;
+                                            users[i].appointmentFees =
+                                              results2[0].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "date",
+                    all: "",
+                    search: "",
+                    date: "selected",
+                    month: "",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: req.body.date,
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        } else {
+          //// doctor account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date = ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    req.body.date,
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date=?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            req.body.date,
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date = ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      req.body.date,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date=?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        req.body.date,
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM patient_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].patient_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT user_id, name FROM patient_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date =?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  req.body.date,
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[i].count;
+                                      users[i].consultationFees =
+                                        results1[i].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date =?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        req.body.date,
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[i].count;
+                                            users[i].appointmentFees =
+                                              results2[i].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "date",
+                    all: "",
+                    search: "",
+                    date: "selected",
+                    month: "",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: req.body.date,
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        }
+      } else {
+        return res.render("payment-records", {
+          accountType: req.session.accountType,
+          filterType: "date",
+          all: "",
+          search: "",
+          date: "selected",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          summary: emptySummary,
+          consultationDetails: [],
+          appointmentDetails: [],
+          userDetails: [],
+        });
+      }
+    }
+
+    ///////// month
+    else if (req.body.select == "month") {
+      if (req.body.month) {
+        if (req.session.accountType == "patient") {
+          ///// patient account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + req.body.month + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + req.body.month + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + req.body.month + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + req.body.month + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM doctor_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].doctor_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT * FROM doctor_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + req.body.month + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[0].count;
+                                      users[i].consultationFees =
+                                        results1[0].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + req.body.month + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[0].count;
+                                            users[i].appointmentFees =
+                                              results2[0].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "month",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "selected",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: req.body.month,
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        } else {
+          //// doctor account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + req.body.month + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + req.body.month + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + req.body.month + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + req.body.month + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM patient_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].patient_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT user_id, name FROM patient_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + req.body.month + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[i].count;
+                                      users[i].consultationFees =
+                                        results1[i].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + req.body.month + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[i].count;
+                                            users[i].appointmentFees =
+                                              results2[i].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "month",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "selected",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: req.body.month,
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        }
+      } else {
+        return res.render("payment-records", {
+          accountType: req.session.accountType,
+          filterType: "month",
+          all: "",
+          search: "",
+          date: "",
+          month: "selected",
+          year: "",
+          lastWeek: "",
+          lastMonth: "",
+          searchValue: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          summary: emptySummary,
+          consultationDetails: [],
+          appointmentDetails: [],
+          userDetails: [],
+        });
+      }
+    }
+
+    /////////////// year
+    else if (req.body.select == "year") {
+      if (req.body.year) {
+        if (req.session.accountType == "patient") {
+          ///// patient account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + req.body.year + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + req.body.year + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + req.body.year + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + req.body.year + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM doctor_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].doctor_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT * FROM doctor_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + req.body.year + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[0].count;
+                                      users[i].consultationFees =
+                                        results1[0].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + req.body.year + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[0].count;
+                                            users[i].appointmentFees =
+                                              results2[0].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "year",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "selected",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: req.body.year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        } else {
+          //// doctor account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + req.body.year + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + req.body.year + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + req.body.year + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + req.body.year + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM patient_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].patient_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT user_id, name FROM patient_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + req.body.year + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[i].count;
+                                      users[i].consultationFees =
+                                        results1[i].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + req.body.year + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[i].count;
+                                            users[i].appointmentFees =
+                                              results2[i].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "year",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "selected",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: req.body.year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        }
+      } else {
+        if (req.session.accountType == "patient") {
+          ///// patient account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + year + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + year + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + year + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + year + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM doctor_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].doctor_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT * FROM doctor_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + year + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[0].count;
+                                      users[i].consultationFees =
+                                        results1[0].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + year + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[0].count;
+                                            users[i].appointmentFees =
+                                              results2[0].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "year",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "selected",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        } else {
+          //// doctor account
+
+          const getSummary = new Promise((resolve, reject) => {
+            let summary = {
+              consultationCount: 0,
+              consultationTotal: 0,
+              appointmentCount: 0,
+              appointmentTotal: 0,
+            };
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    "%" + year + "%",
+                  ],
+                  (err, results1) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results1.length) {
+                        summary.consultationCount = results1[0].count;
+                        summary.consultationTotal = results1[0].sum;
+
+                        const query2 =
+                          "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                        connection.query(
+                          query2,
+                          [
+                            req.session.userId,
+                            "The service request is processed successfully.",
+                            "%" + year + "%",
+                          ],
+                          (err, results2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              if (results2.length) {
+                                summary.appointmentCount = results2[0].count;
+                                summary.appointmentTotal = results2[0].sum;
+                                resolve(summary);
+                              } else {
+                                resolve(summary);
+                              }
+                            }
+                          }
+                        );
+                      } else {
+                        resolve(summary);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getSummary.then((summary) => {
+            const getConsultationDetails = new Promise((resolve, reject) => {
+              let consultationDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      "%" + year + "%",
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  consultationDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(consultationDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(consultationDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getConsultationDetails.then((consultationDetails) => {
+              const getAppointmentDetails = new Promise((resolve, reject) => {
+                let appointmentDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query =
+                      "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date like ?";
+                    connection.query(
+                      query,
+                      [
+                        req.session.userId,
+                        "The service request is processed successfully.",
+                        "%" + year + "%",
+                      ],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (results.length) {
+                            for (let i = 0; i < results.length; i++) {
+                              const query2 =
+                                "SELECT name FROM patient_details WHERE user_id = ?";
+                              connection.query(
+                                query2,
+                                [results[i].patient_id],
+                                (err, result) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    results[i].name = result[0].name;
+                                    appointmentDetails.push(results[i]);
+
+                                    if (i == results.length - 1) {
+                                      resolve(appointmentDetails);
+                                    }
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(appointmentDetails);
+                          }
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              getAppointmentDetails.then((appointmentDetails) => {
+                const getUserDetails = new Promise((resolve, reject) => {
+                  let userDetails = [];
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT user_id, name FROM patient_details";
+                      connection.query(query, (err, users) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          if (users.length) {
+                            for (let i = 0; i < users.length; i++) {
+                              const query2 =
+                                "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                              connection.query(
+                                query2,
+                                [
+                                  users[i].user_id,
+                                  req.session.userId,
+                                  "The service request is processed successfully.",
+                                  "%" + year + "%",
+                                ],
+                                (err, results1) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    if (results1.length) {
+                                      users[i].consultationCount =
+                                        results1[i].count;
+                                      users[i].consultationFees =
+                                        results1[i].sum;
+                                      if (users[i].consultationFees == null) {
+                                        users[i].consultationFees = 0;
+                                      }
+                                    } else {
+                                      users[i].consultationCount = 0;
+                                      users[i].consultationFees = 0;
+                                    }
+
+                                    const query3 =
+                                      "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date like ?";
+                                    connection.query(
+                                      query3,
+                                      [
+                                        users[i].user_id,
+                                        req.session.userId,
+                                        "The service request is processed successfully.",
+                                        "%" + year + "%",
+                                      ],
+                                      (err, results2) => {
+                                        if (err) {
+                                          throw err;
+                                        } else {
+                                          if (results2.length) {
+                                            users[i].appointmentCount =
+                                              results2[i].count;
+                                            users[i].appointmentFees =
+                                              results2[i].sum;
+                                            if (
+                                              users[i].appointmentFees == null
+                                            ) {
+                                              users[i].appointmentFees = 0;
+                                            }
+                                          } else {
+                                            users[i].appointmentCount = 0;
+                                            users[i].appointmentFees = 0;
+                                          }
+
+                                          users[i].totalFees =
+                                            users[i].consultationFees +
+                                            users[i].appointmentFees;
+                                          userDetails.push(users[i]);
+
+                                          if (i == users.length - 1) {
+                                            resolve(userDetails);
+                                          }
+                                        }
+                                      }
+                                    );
+                                  }
+                                }
+                              );
+                            }
+                          } else {
+                            resolve(userDetails);
+                          }
+                        }
+                      });
+                    }
+                    connection.release();
+                  });
+                });
+                getUserDetails.then((userDetails) => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    accountType: req.session.accountType,
+                    filterType: "year",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "selected",
+                    lastWeek: "",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
+                });
+              });
+            });
+          });
+        }
+      }
+    }
+
+    /////// last week
+    else if (req.body.select == "last-week") {
+      let d = new Date();
+      let y = new Date(d.getTime() - 1440 * 7 * 60000);
+
+      let today =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+      let date2 =
+        y.getFullYear() +
+        "-" +
+        ("0" + (y.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + y.getDate()).slice(-2);
+
+      if (req.session.accountType == "patient") {
+        ///// patient account
+
+        const getSummary = new Promise((resolve, reject) => {
+          let summary = {
+            consultationCount: 0,
+            consultationTotal: 0,
+            appointmentCount: 0,
+            appointmentTotal: 0,
+          };
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                  date2,
+                  today,
+                ],
+                (err, results1) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results1.length) {
+                      summary.consultationCount = results1[0].count;
+                      summary.consultationTotal = results1[0].sum;
+
+                      const query2 =
+                        "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                      connection.query(
+                        query2,
+                        [
+                          req.session.userId,
+                          "The service request is processed successfully.",
+                          date2,
+                          today,
+                        ],
+                        (err, results2) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            if (results2.length) {
+                              summary.appointmentCount = results2[0].count;
+                              summary.appointmentTotal = results2[0].sum;
+                              resolve(summary);
+                            } else {
+                              resolve(summary);
+                            }
+                          }
+                        }
+                      );
+                    } else {
+                      resolve(summary);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getSummary.then((summary) => {
+          const getConsultationDetails = new Promise((resolve, reject) => {
+            let consultationDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    date2,
+                    today,
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                consultationDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(consultationDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(consultationDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getConsultationDetails.then((consultationDetails) => {
+            const getAppointmentDetails = new Promise((resolve, reject) => {
+              let appointmentDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date BETWEEN ? AND ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      date2,
+                      today,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  appointmentDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(appointmentDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(appointmentDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getAppointmentDetails.then((appointmentDetails) => {
+              const getUserDetails = new Promise((resolve, reject) => {
+                let userDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT * FROM doctor_details";
+                    connection.query(query, (err, users) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (users.length) {
+                          for (let i = 0; i < users.length; i++) {
+                            const query2 =
+                              "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date BETWEEN ? AND ?";
+                            connection.query(
+                              query2,
+                              [
+                                users[i].user_id,
+                                req.session.userId,
+                                "The service request is processed successfully.",
+                                date2,
+                                today,
+                              ],
+                              (err, results1) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (results1.length) {
+                                    users[i].consultationCount =
+                                      results1[0].count;
+                                    users[i].consultationFees = results1[0].sum;
+                                    if (users[i].consultationFees == null) {
+                                      users[i].consultationFees = 0;
+                                    }
+                                  } else {
+                                    users[i].consultationCount = 0;
+                                    users[i].consultationFees = 0;
+                                  }
+
+                                  const query3 =
+                                    "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                                  connection.query(
+                                    query3,
+                                    [
+                                      users[i].user_id,
+                                      req.session.userId,
+                                      "The service request is processed successfully.",
+                                      date2,
+                                      today,
+                                    ],
+                                    (err, results2) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results2.length) {
+                                          users[i].appointmentCount =
+                                            results2[0].count;
+                                          users[i].appointmentFees =
+                                            results2[0].sum;
+                                          if (
+                                            users[i].appointmentFees == null
+                                          ) {
+                                            users[i].appointmentFees = 0;
+                                          }
+                                        } else {
+                                          users[i].appointmentCount = 0;
+                                          users[i].appointmentFees = 0;
+                                        }
+
+                                        users[i].totalFees =
+                                          users[i].consultationFees +
+                                          users[i].appointmentFees;
+                                        userDetails.push(users[i]);
+
+                                        if (i == users.length - 1) {
+                                          resolve(userDetails);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(userDetails);
+                        }
+                      }
+                    });
+                  }
+                  connection.release();
+                });
+              });
+              getUserDetails.then((userDetails) => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  accountType: req.session.accountType,
+                  filterType: "lastWeek",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "selected",
+                  lastMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: "",
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
+              });
+            });
+          });
+        });
+      } else {
+        //// doctor account
+
+        const getSummary = new Promise((resolve, reject) => {
+          let summary = {
+            consultationCount: 0,
+            consultationTotal: 0,
+            appointmentCount: 0,
+            appointmentTotal: 0,
+          };
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                  date2,
+                  today,
+                ],
+                (err, results1) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results1.length) {
+                      summary.consultationCount = results1[0].count;
+                      summary.consultationTotal = results1[0].sum;
+
+                      const query2 =
+                        "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                      connection.query(
+                        query2,
+                        [
+                          req.session.userId,
+                          "The service request is processed successfully.",
+                          date2,
+                          today,
+                        ],
+                        (err, results2) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            if (results2.length) {
+                              summary.appointmentCount = results2[0].count;
+                              summary.appointmentTotal = results2[0].sum;
+                              resolve(summary);
+                            } else {
+                              resolve(summary);
+                            }
+                          }
+                        }
+                      );
+                    } else {
+                      resolve(summary);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getSummary.then((summary) => {
+          const getConsultationDetails = new Promise((resolve, reject) => {
+            let consultationDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    date2,
+                    today,
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                consultationDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(consultationDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(consultationDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getConsultationDetails.then((consultationDetails) => {
+            const getAppointmentDetails = new Promise((resolve, reject) => {
+              let appointmentDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      date2,
+                      today,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  appointmentDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(appointmentDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(appointmentDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getAppointmentDetails.then((appointmentDetails) => {
+              const getUserDetails = new Promise((resolve, reject) => {
+                let userDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT user_id, name FROM patient_details";
+                    connection.query(query, (err, users) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (users.length) {
+                          for (let i = 0; i < users.length; i++) {
+                            const query2 =
+                              "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                            connection.query(
+                              query2,
+                              [
+                                users[i].user_id,
+                                req.session.userId,
+                                "The service request is processed successfully.",
+                                date2,
+                                today,
+                              ],
+                              (err, results1) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (results1.length) {
+                                    users[i].consultationCount =
+                                      results1[i].count;
+                                    users[i].consultationFees = results1[i].sum;
+                                    if (users[i].consultationFees == null) {
+                                      users[i].consultationFees = 0;
+                                    }
+                                  } else {
+                                    users[i].consultationCount = 0;
+                                    users[i].consultationFees = 0;
+                                  }
+
+                                  const query3 =
+                                    "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                                  connection.query(
+                                    query3,
+                                    [
+                                      users[i].user_id,
+                                      req.session.userId,
+                                      "The service request is processed successfully.",
+                                      date2,
+                                      today,
+                                    ],
+                                    (err, results2) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results2.length) {
+                                          users[i].appointmentCount =
+                                            results2[i].count;
+                                          users[i].appointmentFees =
+                                            results2[i].sum;
+                                          if (
+                                            users[i].appointmentFees == null
+                                          ) {
+                                            users[i].appointmentFees = 0;
+                                          }
+                                        } else {
+                                          users[i].appointmentCount = 0;
+                                          users[i].appointmentFees = 0;
+                                        }
+
+                                        users[i].totalFees =
+                                          users[i].consultationFees +
+                                          users[i].appointmentFees;
+                                        userDetails.push(users[i]);
+
+                                        if (i == users.length - 1) {
+                                          resolve(userDetails);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(userDetails);
+                        }
+                      }
+                    });
+                  }
+                  connection.release();
+                });
+              });
+              getUserDetails.then((userDetails) => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  accountType: req.session.accountType,
+                  filterType: "lastWeek",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "selected",
+                  lastMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
+              });
+            });
+          });
+        });
+      }
+    }
+
+    /////// last month
+    else if (req.body.select == "last-month") {
+      let d = new Date();
+      let y = new Date(d.getTime() - 1440 * 30 * 60000);
+
+      let today =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+      let date2 =
+        y.getFullYear() +
+        "-" +
+        ("0" + (y.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + y.getDate()).slice(-2);
+
+      if (req.session.accountType == "patient") {
+        ///// patient account
+
+        const getSummary = new Promise((resolve, reject) => {
+          let summary = {
+            consultationCount: 0,
+            consultationTotal: 0,
+            appointmentCount: 0,
+            appointmentTotal: 0,
+          };
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                  date2,
+                  today,
+                ],
+                (err, results1) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results1.length) {
+                      summary.consultationCount = results1[0].count;
+                      summary.consultationTotal = results1[0].sum;
+
+                      const query2 =
+                        "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                      connection.query(
+                        query2,
+                        [
+                          req.session.userId,
+                          "The service request is processed successfully.",
+                          date2,
+                          today,
+                        ],
+                        (err, results2) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            if (results2.length) {
+                              summary.appointmentCount = results2[0].count;
+                              summary.appointmentTotal = results2[0].sum;
+                              resolve(summary);
+                            } else {
+                              resolve(summary);
+                            }
+                          }
+                        }
+                      );
+                    } else {
+                      resolve(summary);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getSummary.then((summary) => {
+          const getConsultationDetails = new Promise((resolve, reject) => {
+            let consultationDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM consultations_stk_push WHERE patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    date2,
+                    today,
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].doctor_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                consultationDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(consultationDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(consultationDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getConsultationDetails.then((consultationDetails) => {
+            const getAppointmentDetails = new Promise((resolve, reject) => {
+              let appointmentDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments_stk_push WHERE patient_id = ? AND status = ? and date BETWEEN ? AND ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      date2,
+                      today,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].doctor_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  appointmentDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(appointmentDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(appointmentDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getAppointmentDetails.then((appointmentDetails) => {
+              const getUserDetails = new Promise((resolve, reject) => {
+                let userDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT * FROM doctor_details";
+                    connection.query(query, (err, users) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (users.length) {
+                          for (let i = 0; i < users.length; i++) {
+                            const query2 =
+                              "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? AND patient_id = ? AND status =? and date BETWEEN ? AND ?";
+                            connection.query(
+                              query2,
+                              [
+                                users[i].user_id,
+                                req.session.userId,
+                                "The service request is processed successfully.",
+                                date2,
+                                today,
+                              ],
+                              (err, results1) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (results1.length) {
+                                    users[i].consultationCount =
+                                      results1[0].count;
+                                    users[i].consultationFees = results1[0].sum;
+                                    if (users[i].consultationFees == null) {
+                                      users[i].consultationFees = 0;
+                                    }
+                                  } else {
+                                    users[i].consultationCount = 0;
+                                    users[i].consultationFees = 0;
+                                  }
+
+                                  const query3 =
+                                    "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? AND patient_id = ? and status = ? and date BETWEEN ? AND ?";
+                                  connection.query(
+                                    query3,
+                                    [
+                                      users[i].user_id,
+                                      req.session.userId,
+                                      "The service request is processed successfully.",
+                                      date2,
+                                      today,
+                                    ],
+                                    (err, results2) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results2.length) {
+                                          users[i].appointmentCount =
+                                            results2[0].count;
+                                          users[i].appointmentFees =
+                                            results2[0].sum;
+                                          if (
+                                            users[i].appointmentFees == null
+                                          ) {
+                                            users[i].appointmentFees = 0;
+                                          }
+                                        } else {
+                                          users[i].appointmentCount = 0;
+                                          users[i].appointmentFees = 0;
+                                        }
+
+                                        users[i].totalFees =
+                                          users[i].consultationFees +
+                                          users[i].appointmentFees;
+                                        userDetails.push(users[i]);
+
+                                        if (i == users.length - 1) {
+                                          resolve(userDetails);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(userDetails);
+                        }
+                      }
+                    });
+                  }
+                  connection.release();
+                });
+              });
+              getUserDetails.then((userDetails) => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  accountType: req.session.accountType,
+                  filterType: "lastMonth",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "",
+                  lastMonth: "selected",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
+              });
+            });
+          });
+        });
+      } else {
+        //// doctor account
+
+        const getSummary = new Promise((resolve, reject) => {
+          let summary = {
+            consultationCount: 0,
+            consultationTotal: 0,
+            appointmentCount: 0,
+            appointmentTotal: 0,
+          };
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query =
+                "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+              connection.query(
+                query,
+                [
+                  req.session.userId,
+                  "The service request is processed successfully.",
+                  date2,
+                  today,
+                ],
+                (err, results1) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    if (results1.length) {
+                      summary.consultationCount = results1[0].count;
+                      summary.consultationTotal = results1[0].sum;
+
+                      const query2 =
+                        "SELECT COUNT(*) AS count, SUM(amount) AS sum FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                      connection.query(
+                        query2,
+                        [
+                          req.session.userId,
+                          "The service request is processed successfully.",
+                          date2,
+                          today,
+                        ],
+                        (err, results2) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            if (results2.length) {
+                              summary.appointmentCount = results2[0].count;
+                              summary.appointmentTotal = results2[0].sum;
+                              resolve(summary);
+                            } else {
+                              resolve(summary);
+                            }
+                          }
+                        }
+                      );
+                    } else {
+                      resolve(summary);
+                    }
+                  }
+                }
+              );
+            }
+            connection.release();
+          });
+        });
+        getSummary.then((summary) => {
+          const getConsultationDetails = new Promise((resolve, reject) => {
+            let consultationDetails = [];
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT * FROM consultations_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                connection.query(
+                  query,
+                  [
+                    req.session.userId,
+                    "The service request is processed successfully.",
+                    date2,
+                    today,
+                  ],
+                  (err, results) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      if (results.length) {
+                        for (let i = 0; i < results.length; i++) {
+                          const query2 =
+                            "SELECT name FROM patient_details WHERE user_id = ?";
+                          connection.query(
+                            query2,
+                            [results[i].patient_id],
+                            (err, result) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].name = result[0].name;
+                                consultationDetails.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(consultationDetails);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      } else {
+                        resolve(consultationDetails);
+                      }
+                    }
+                  }
+                );
+              }
+              connection.release();
+            });
+          });
+          getConsultationDetails.then((consultationDetails) => {
+            const getAppointmentDetails = new Promise((resolve, reject) => {
+              let appointmentDetails = [];
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT * FROM appointments_stk_push WHERE doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                  connection.query(
+                    query,
+                    [
+                      req.session.userId,
+                      "The service request is processed successfully.",
+                      date2,
+                      today,
+                    ],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          for (let i = 0; i < results.length; i++) {
+                            const query2 =
+                              "SELECT name FROM patient_details WHERE user_id = ?";
+                            connection.query(
+                              query2,
+                              [results[i].patient_id],
+                              (err, result) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].name = result[0].name;
+                                  appointmentDetails.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(appointmentDetails);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(appointmentDetails);
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            getAppointmentDetails.then((appointmentDetails) => {
+              const getUserDetails = new Promise((resolve, reject) => {
+                let userDetails = [];
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT user_id, name FROM patient_details";
+                    connection.query(query, (err, users) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (users.length) {
+                          for (let i = 0; i < users.length; i++) {
+                            const query2 =
+                              "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM consultations_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                            connection.query(
+                              query2,
+                              [
+                                users[i].user_id,
+                                req.session.userId,
+                                "The service request is processed successfully.",
+                                date2,
+                                today,
+                              ],
+                              (err, results1) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  if (results1.length) {
+                                    users[i].consultationCount =
+                                      results1[i].count;
+                                    users[i].consultationFees = results1[i].sum;
+                                    if (users[i].consultationFees == null) {
+                                      users[i].consultationFees = 0;
+                                    }
+                                  } else {
+                                    users[i].consultationCount = 0;
+                                    users[i].consultationFees = 0;
+                                  }
+
+                                  const query3 =
+                                    "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM appointments_stk_push WHERE patient_id = ? AND doctor_id = ? and status = ? and date BETWEEN ? AND ?";
+                                  connection.query(
+                                    query3,
+                                    [
+                                      users[i].user_id,
+                                      req.session.userId,
+                                      "The service request is processed successfully.",
+                                      date2,
+                                      today,
+                                    ],
+                                    (err, results2) => {
+                                      if (err) {
+                                        throw err;
+                                      } else {
+                                        if (results2.length) {
+                                          users[i].appointmentCount =
+                                            results2[i].count;
+                                          users[i].appointmentFees =
+                                            results2[i].sum;
+                                          if (
+                                            users[i].appointmentFees == null
+                                          ) {
+                                            users[i].appointmentFees = 0;
+                                          }
+                                        } else {
+                                          users[i].appointmentCount = 0;
+                                          users[i].appointmentFees = 0;
+                                        }
+
+                                        users[i].totalFees =
+                                          users[i].consultationFees +
+                                          users[i].appointmentFees;
+                                        userDetails.push(users[i]);
+
+                                        if (i == users.length - 1) {
+                                          resolve(userDetails);
+                                        }
+                                      }
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        } else {
+                          resolve(userDetails);
+                        }
+                      }
+                    });
+                  }
+                  connection.release();
+                });
+              });
+              getUserDetails.then((userDetails) => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  accountType: req.session.accountType,
+                  filterType: "lastMonth",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "",
+                  lastMonth: "selected",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
+              });
+            });
           });
         });
       }
