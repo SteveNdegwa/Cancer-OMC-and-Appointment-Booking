@@ -95,6 +95,14 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
+        
+        var sql = "CREATE TABLE subscription_details (amount INT, business_no VARCHAR(255), days INT)";
+        connection.query(sql, function(err, result){
+            if(err) throw err;
+            console.log("Table Created");
+        }); 
+
+
 
         // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(?)";
         // const values = [2, 4, "27-02-2022", "12.00"];
