@@ -52,8 +52,27 @@ router.get("/customize-appointment-slots", (req, res) => {
 
 router.post("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
-    if (req.body.next == "") {
-      return res.redirect("/"); /// next button
+    if (req.body.next == "") { /// skip button
+      pool.getConnection((err,connection)=>{
+        if(err){throw err;}
+        else{
+          const query = "SELECT subscription_expiry FROM doctor_details WHERE user_id= ?";
+          connection.query(query,[req.session.userId],(err,result)=>{
+            if(err){throw err;}
+            else{
+              let date1 = new Date();
+              let date2 = new Date(result[0].subscription_expiry);
+
+              if(date1.getTime() > date2.getTime()){
+                return res.redirect("/subscription")
+              }else{
+                return res.redirect("/")
+              }
+            }
+          })
+        }
+        connection.release();
+      })
     } else {
       /// submit button
       let days = [];
