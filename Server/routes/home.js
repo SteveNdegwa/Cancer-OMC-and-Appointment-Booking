@@ -13,11 +13,14 @@ router.use(express.static(path.resolve("./node_modules")));
 router.get("/", (req, res) => {
   if (req.session.authenticated) {
     const getDoctorsData = new Promise((resolve, reject) => {
+      let date1 = new Date();
+
       pool.getConnection((err, connection) => {
         if (err) console.log(err);
         else {
-          const query = "SELECT * FROM doctor_details";
-          connection.query(query, (err, results) => {
+          const query =
+            "SELECT * FROM doctor_details WHERE subscription_expiry >= ?";
+          connection.query(query, [date1], (err, results) => {
             if (err) throw err;
             resolve(results);
           });
@@ -89,17 +92,20 @@ router.get("/", (req, res) => {
 
     if (req.session.accountType == "doctor") {
       /// doctor
+      let subscriptionExpiry = "";
       const checkDetails = new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
           if (err) {
             throw err;
           } else {
             const query =
-              "SELECT name, cancer_speciality FROM doctor_details where user_id = ?";
+              "SELECT name, subscription_expiry, cancer_speciality FROM doctor_details where user_id = ?";
             connection.query(query, [req.session.userId], (err, results) => {
               if (err) console.log(err);
               else {
                 if (results.length) {
+                  subscriptionExpiry = results[0].subscription_expiry;
+
                   if (results[0].cancer_speciality == null) {
                     return res.redirect(
                       "/register/doctor/professional-details"
@@ -137,9 +143,23 @@ router.get("/", (req, res) => {
       });
       checkDetails.then(() => {
         getUnviewedMessages.then((unviewedMessages) => {
-          return res.render("index2", {
-            unviewedMessages: unviewedMessages,
-          });
+          if (req.session.rejectedRenewal == true) {
+            return res.render("index2", {
+              unviewedMessages: unviewedMessages,
+            });
+          } else {
+            let date1 = new Date();
+
+            let date2 = new Date(subscriptionExpiry);
+
+            if (date1.getTime() > date2.getTime()) {
+              return res.redirect("/subscription")
+            } else {
+              return res.render("index2", {
+                unviewedMessages: unviewedMessages,
+              });
+            }
+          }
         });
       });
     } else {
@@ -344,12 +364,14 @@ router.post("/", (req, res) => {
 });
 
 router.get("/doctors", (req, res) => {
+  let date1 = new Date();
+
   pool.getConnection((err, connection) => {
     if (err) console.log(err);
     else {
       const query =
-        "SELECT user_id, name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details";
-      connection.query(query, (err, results) => {
+        "SELECT user_id, name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details WHERE subscription_expiry >= ?";
+      connection.query(query, [date1], (err, results) => {
         if (err) console.log(err);
         else {
           console.log(results);
