@@ -240,8 +240,18 @@ router.post("/doctor", (req, res) => {
           female: female,
         });
       } else {
+        let d = new Date();
+        let y = new Date(d.getTime() - 1440 * 1 * 60000);
+
+        let expiryDate =
+          y.getFullYear() +
+          "-" +
+          ("0" + (y.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + y.getDate()).slice(-2);
+       
         const query =
-          "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `verification_status`) VALUES(?)";
+          "INSERT INTO doctor_details(`user_id`, `name`, `gender`, `dob`, `phone_no`, `verification_status`, `subscription_expiry`) VALUES(?)";
         const values = [
           req.session.userId,
           req.body.name,
@@ -249,6 +259,7 @@ router.post("/doctor", (req, res) => {
           req.body.dob,
           req.body.phone,
           "false",
+          expiryDate,
         ];
 
         connection.query(query, [values], (err, data) => {
