@@ -24,8 +24,11 @@
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.3",
     "openai": "^3.2.1",
+    "pdfkit": "^0.13.0",
+    "pdfkit-table": "^0.1.99",
     "socket.io": "^4.6.1",
-    "unirest": "^0.6.0"
+    "unirest": "^0.6.0",
+    "voilab-pdf-table": "^0.5.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
