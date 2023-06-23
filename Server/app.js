@@ -71,6 +71,9 @@ app.use("/admin", admin);
 const records = require("./routes/records");
 app.use("/records", records);
 
+const subscription = require("./routes/subscription");
+app.use("/subscription", subscription);
+
 //// chats
 
 let token = "";
