@@ -21,6 +21,7 @@
             <div class="container">
                 <input type="text" name="room_id" id="room-id" class="room-id" value="<%= room.room_id %>">
                 <input type="text" name="name" id="name" class="room-id" value="<%= room.name %>">
+                <input type="text" name="subscription" id="subscription" class="room-id" value="<%= room.subscription %>">
                 <h2 class="name"><%= room.name %></h2>
                 <% if (room.unviewedMessages > 0) { %>
                  <h2 class="unviewed-messages"><%= room.unviewedMessages %></h2>

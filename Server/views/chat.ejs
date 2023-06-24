@@ -34,7 +34,9 @@
         <% } %>
         <% if (consultationType == "paid") { %>
             <% if (accountType == "doctor") { %>
-                <button type="submit" class="btn" id="renew-btn">Renew Session</button>
+                <% if (subscriptionStatus == true) { %>
+                    <button type="submit" class="btn" id="renew-btn">Renew Session</button>
+                <% } %>
             <% } %>
         <% } %>
     </form>
