@@ -610,7 +610,8 @@ app.get("/chats/chat-rooms", (req, res) => {
             let query2 = "";
             let userId2 = "";
             if (req.session.accountType == "patient") {
-              query2 = "SELECT name FROM doctor_details WHERE user_id = ?";
+              query2 =
+                "SELECT name, subscription_expiry FROM doctor_details WHERE user_id = ?";
               userId2 = rooms[i].doctor_id;
             } else {
               query2 = "SELECT name FROM patient_details WHERE user_id = ?";
@@ -620,6 +621,12 @@ app.get("/chats/chat-rooms", (req, res) => {
               if (err) throw err;
               console.log(results);
               rooms[i].name = results[0].name;
+
+              if (req.session.accountType == "patient") {
+                rooms[i].subscription = results[0].subscription_expiry;
+              } else {
+                rooms[i].subscription = "";
+              }
 
               const query3 = "SELECT * FROM chats WHERE room_id = ?";
               connection.query(query3, [rooms[i].room_id], (err, messages) => {
@@ -769,8 +776,51 @@ app.post("/chats/chat-rooms", (req, res) => {
         if (freeConsultation == true) {
           ///// to free consultation
           req.session.consultationType = "free";
-          req.session.viewMode = false;
-          return res.redirect("/chats/chat");
+
+          //// logic to check if doctor is subscribed
+          if (req.session.accountType == "patient") {
+            let date1 = new Date();
+            let date2 = new Date(req.body.subscription);
+
+            if (date1.getTime() > date2.getTime()) {
+              req.session.viewMode = true;
+              req.session.subscription = false;
+              return res.redirect("/chats/chat");
+            } else {
+              req.session.viewMode = false;
+              req.session.subscription = true;
+              return res.redirect("/chats/chat");
+            }
+          } else {
+            //// doctor account
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query =
+                  "SELECT subscription_expiry FROM doctor_details WHERE user_id = ?";
+                connection.query(query, [req.session.userId], (err, result) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    let date1 = new Date();
+                    let date2 = new Date(result[0].subscription_expiry);
+
+                    if (date1.getTime() > date2.getTime()) {
+                      req.session.viewMode = true;
+                      req.session.subscription = false;
+                      return res.redirect("/chats/chat");
+                    } else {
+                      req.session.viewMode = false;
+                      req.session.subscription =true;
+                      return res.redirect("/chats/chat");
+                    }
+                  }
+                });
+              }
+              connection.release();
+            });
+          }
         } else {
           //// to paid consultation
 
@@ -814,17 +864,63 @@ app.post("/chats/chat-rooms", (req, res) => {
           });
 
           checkSessionStatus.then((sessionActive) => {
-            if (sessionActive == true) {
-              //// session still active
-              return res.redirect("/chats/chat");
-            } else {
-              /// session expired
-              if (req.session.accountType == "patient") {
-                return res.redirect("/chats/pay-consultation-fee");
-              } else {
+            ////// logic to check if doctor is subscribed
+
+            if (req.session.accountType == "patient") {
+              let date1 = new Date();
+              let date2 = new Date(req.body.subscription);
+
+              if (date1.getTime() > date2.getTime()) {
                 req.session.viewMode = true;
+                req.session.subscription = false;
                 return res.redirect("/chats/chat");
+              } else {
+                if (sessionActive == true) {
+                  //// session still active
+                  return res.redirect("/chats/chat");
+                } else {
+                  /// session expired
+                  return res.redirect("/chats/pay-consultation-fee");
+                }
               }
+            } else {
+              //// doctor account
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT subscription_expiry FROM doctor_details WHERE user_id = ?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, result) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        let date1 = new Date();
+                        let date2 = new Date(result[0].subscription_expiry);
+
+                        if (date1.getTime() > date2.getTime()) {
+                          req.session.subscription = false;
+                          req.session.viewMode = true;
+                          return res.redirect("/chats/chat");
+                        } else {
+                          if (sessionActive == true) {
+                            //// session still active
+                            return res.redirect("/chats/chat");
+                          } else {
+                            /// session expired
+                            req.session.viewMode = true;
+                            return res.redirect("/chats/chat");
+                          }
+                        }
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
             }
           });
         }
@@ -886,6 +982,7 @@ app.get("/chats/chat", (req, res) => {
           accountType: req.session.accountType,
           consultationType: req.session.consultationType,
           exp: exp,
+          subscriptionStatus: req.session.subscription,
         });
       } else {
         return res.render("chat", {
@@ -894,6 +991,7 @@ app.get("/chats/chat", (req, res) => {
           accountType: req.session.accountType,
           consultationType: req.session.consultationType,
           exp: exp,
+          subscriptionStatus: req.session.subscription,
         });
       }
     });
@@ -1129,12 +1227,11 @@ io.on("connection", (socket) => {
 
   let d = new Date();
   let date2 =
-  d.getFullYear() +
-  "-" +
-  ("0" + (d.getMonth() + 1)).slice(-2) +
-  "-" +
-  ("0" + d.getDate()).slice(-2);
-
+    d.getFullYear() +
+    "-" +
+    ("0" + (d.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + d.getDate()).slice(-2);
 
   console.log(
     `${socket.handshake.session.consultation.userName} joined the chart`
