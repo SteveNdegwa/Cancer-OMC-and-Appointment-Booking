@@ -23,6 +23,7 @@ form{
     align-items: center;
     box-shadow: 1px 2px 5px gray;
     padding: 20px 0px;
+    gap: 30px;
 }
 
 .edit{
@@ -42,6 +43,7 @@ form{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
 .name-text{
@@ -57,17 +59,26 @@ form{
     padding-bottom: 10px;
 }
 
+.subscription-div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
 .personal-details, .medical-details{
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 30px 0px;
+   gap: 20px;
 }
 
 h4{
-    padding-bottom: 30px;
+    padding-bottom: 20px;
 }
 
 .details-wrap{
