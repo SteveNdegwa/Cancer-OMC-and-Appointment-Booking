@@ -32,23 +32,28 @@ function access(req, res, next) {
 
 router.get("/", (req, res) => {
   if (req.session.authenticated) {
-    pool.getConnection((err,connection)=>{
-        if(err){throw err;}
-        else{
-            const query = "SELECT * FROM subscription_details";
-            connection.query(query,(err,results)=>{
-                if(err){throw err;}
-                else{
-                    req.session.subscriptionAmount = results[0].amount;
-                    req.session.subscriptionShortCode = results[0].business_no;
-                    req.session.subscriptionDays = results[0].days;
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM subscription_details";
+        connection.query(query, (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            req.session.subscriptionAmount = results[0].amount;
+            req.session.subscriptionShortCode = results[0].business_no;
+            req.session.subscriptionDays = results[0].days;
 
-                    return res.render("pay-subscription",{amount: results[0].amount, days: results[0].days});
-                }
-            })
-        }
-        connection.release();
-    })
+            return res.render("pay-subscription", {
+              amount: results[0].amount,
+              days: results[0].days,
+            });
+          }
+        });
+      }
+      connection.release();
+    });
   } else {
     return res.redirect("/login");
   }
@@ -75,7 +80,7 @@ router.get("/pay-subscription", (req, res) => {
 });
 
 router.post("/pay-subscription", access, async (req, res) => {
-    let amount = req.session.subscriptionAmount;
+  let amount = req.session.subscriptionAmount;
 
   let number = req.body.number.substring(1);
   let mobileNo = "254" + number;
@@ -89,7 +94,9 @@ router.post("/pay-subscription", access, async (req, res) => {
     ("0" + date.getMinutes()).slice(-2) +
     ("0" + date.getSeconds()).slice(-2);
 
-  const passkey = req.session.subscriptionShortCode;
+  const passkey = process.env.PASS_KEY;
+
+  const shortcode = req.session.subscriptionShortCode; //////process.env.SHORT_CODE
 
   const password = new Buffer.from(shortcode + passkey + timestamp).toString(
     "base64"
@@ -158,10 +165,6 @@ router.post("/pay-subscription", access, async (req, res) => {
           )
           .end((response) => {
             if (response.error) {
-              req.flash("paymentStatusMessage", "An error occurred");
-              return res.render("subscription-input-number", {
-                message: req.flash("paymentStatusMessage"),
-              });
             } else {
               clearInterval(interval);
               console.log(response.body.ResultDesc);
@@ -176,29 +179,47 @@ router.post("/pay-subscription", access, async (req, res) => {
                   if (err) throw err;
                   else {
                     let d = new Date();
-                    let expiryDate = new Date(d.getTime() + 1440 * req.session.subscriptionDays * 60000);
+                    let expiryDate = new Date(
+                      d.getTime() +
+                        1440 * req.session.subscriptionDays * 60000
+                    );
 
                     const query =
-                      "UPDATE doctor_details SET subscription_expiry = ? WHERE user_id = ?";
-                    connection.query(
-                      query,
-                      [expiryDate, req.session.userId],
-                      (err, data) => {
-                        if (err) {
-                          throw err;
-                        } else {
-                          return res.redirect("/");
-                        }
+                      "INSERT INTO subscriptions(`doctor_id`, `checkout_id`, `days`, `amount`, `expiry_date`) VALUES(?)";
+                    const values = [
+                      req.session.userId,
+                      checkOutId,
+                      req.session.subscriptionDays,
+                      req.session.subscriptionAmount,
+                      expiryDate,
+                    ]  
+                    connection.query(query, [values], (err, results) => {
+                      console.log("Subscription added");
+                      if (err) {
+                        throw err;
+                      } else {
+
+                        const query2 =
+                          "UPDATE doctor_details SET subscription_expiry = ? WHERE user_id = ?";
+                        connection.query(
+                          query2,
+                          [expiryDate, req.session.userId],
+                          (err, data) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              return res.redirect("/");
+                            }
+                          }
+                        );
                       }
-                    );
+                    });
                   }
 
                   connection.release();
                 });
               } else {
                 /// if payment not successful
-
-                if (err) throw err;
                 req.flash("paymentStatusMessage", response.body.ResultDesc);
                 return res.render("subscription-input-number", {
                   message: req.flash("paymentStatusMessage"),
@@ -213,7 +234,7 @@ router.post("/pay-subscription", access, async (req, res) => {
       console.log(err);
       req.flash("paymentStatusMessage", "Error Generating The STK Push");
 
-      return res.render("input-number", {
+      return res.render("subscription-input-number", {
         message: req.flash("paymentStatusMessage"),
       });
     });
