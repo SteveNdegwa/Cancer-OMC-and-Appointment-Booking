@@ -52,7 +52,7 @@ pool.getConnection(function (err, connection) {
         //     console.log("Table Created");
         // }); 
 
-        // var sql = "DROP TABLE otp";
+        // var sql = "DROP TABLE subscriptions";
         // connection.query(sql, function(err, result){
         //     if(err) throw err;
         //     console.log("Table deleted");
@@ -96,12 +96,18 @@ pool.getConnection(function (err, connection) {
         // }); 
 
         
-        var sql = "CREATE TABLE subscription_details (amount INT, business_no VARCHAR(255), days INT)";
-        connection.query(sql, function(err, result){
-            if(err) throw err;
-            console.log("Table Created");
-        }); 
+        // var sql = "CREATE TABLE subscription_details (amount INT, business_no VARCHAR(255), days INT)";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
+
+        // var sql = "CREATE TABLE subscriptions (doctor_id INT, checkout_id VARCHAR(255), days INT, amount INT, expiry_date VARCHAR(255))";
+        // connection.query(sql, function(err, result){
+        //     if(err) throw err;
+        //     console.log("Table Created");
+        // }); 
 
 
         // var sql = "INSERT INTO appointments (patient_id, doctor_id, date, time) VALUES(?)";
