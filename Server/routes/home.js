@@ -153,7 +153,7 @@ router.get("/", (req, res) => {
             let date2 = new Date(subscriptionExpiry);
 
             if (date1.getTime() > date2.getTime()) {
-              return res.redirect("/subscription")
+              return res.redirect("/subscription");
             } else {
               return res.render("index2", {
                 unviewedMessages: unviewedMessages,
@@ -656,6 +656,59 @@ router.get("/my-profile", (req, res) => {
           });
         });
         getPaymentDetails.then((details) => {
+          //// check subscription
+          let date1 = new Date();
+          let date2 = new Date(details.subscription_expiry);
+          if (date1.getTime() > date2.getTime()) {
+            details.subscription = "inactive";
+          } else {
+            details.subscription = "active";
+          }
+
+          const expiryDate =
+            date2.getFullYear() +
+            "-" +
+            ("0" + (date2.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + date2.getDate()).slice(-2);
+
+          details.subscriptionDate = expiryDate;
+          details.subscriptionTime =
+            ("0" + date2.getHours()).slice(-2) +
+            ":" +
+            ("0" + date2.getMinutes()).slice(-2);
+
+          // let d = new Date();
+          // let y = new Date(d.getTime() - 1440 * 60000);
+          // let t = new Date(d.getTime() + 1440 * 60000);
+
+          // let todate =
+          //   d.getFullYear() +
+          //   "-" +
+          //   ("0" + (d.getMonth() + 1)).slice(-2) +
+          //   "-" +
+          //   ("0" + d.getDate()).slice(-2);
+          // let yesterday =
+          //   y.getFullYear() +
+          //   "-" +
+          //   ("0" + (y.getMonth() + 1)).slice(-2) +
+          //   "-" +
+          //   ("0" + y.getDate()).slice(-2);
+          // let tomorrow =
+          //   t.getFullYear() +
+          //   "-" +
+          //   ("0" + (t.getMonth() + 1)).slice(-2) +
+          //   "-" +
+          //   ("0" + t.getDate()).slice(-2);
+
+          // if (expiryDate == todate) {
+          //   details.subscriptionDate = "Today";
+          // } else if (expiryDate == yesterday) {
+          //   details.subscriptionDate = "Yesterday";
+          // } else if (expiryDate == tomorrow) {
+          //   details.subscriptionDate = "Tomorrow";
+          // }
+
           let male = "",
             female = "";
           if (details.gender == "male") {
