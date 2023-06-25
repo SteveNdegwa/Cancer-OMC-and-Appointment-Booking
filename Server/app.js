@@ -42,6 +42,7 @@ app.use(express.json()); // to get access to data being sent through url eg name
 app.use(express.urlencoded({ extended: false })); //to get data being sent through url eg name,password sent through html forms
 
 app.use(express.static(path.resolve("./public")));
+app.use(express.static(path.resolve("./pdfs")));
 
 app.set("view engine", "ejs");
 
