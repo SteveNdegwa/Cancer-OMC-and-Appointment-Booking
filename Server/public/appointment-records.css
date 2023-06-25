@@ -36,6 +36,9 @@ body{
     padding: 30px 0px;
 }
 
+.pdf-name{
+    display: none;
+}
 
 .no-records{
     color: dimgray;
@@ -84,13 +87,14 @@ input:focus{
 }
 
 .btn{
-    padding: 5px 10px;
+    padding: 15px 10px;
     background-color: ghostwhite;
     color: darkslategray;
     border: 2px solid darkslategray;
     font-size: medium;
     cursor: pointer;
     transition: all .3s ease;
+    margin: 30px 0px;
 }
 
 .btn:hover{
