@@ -8,10 +8,16 @@ const path = require("path");
 const yearDate = new Date();
 let year = yearDate.getFullYear();
 
+var PdfTable = require("voilab-pdf-table");
+var PdfDocument = require("pdfkit");
 
-router.get("/",(req,res)=>{
-  return res.render("records-menu")
-})
+const fs = require("fs");
+
+let pdfName = "";
+
+router.get("/", (req, res) => {
+  return res.render("records-menu");
+});
 
 router.get("/appointment-records", (req, res) => {
   if (req.session.authenticated) {
@@ -110,23 +116,201 @@ router.get("/appointment-records", (req, res) => {
         });
       });
       getDetails.then((details) => {
-        return res.render("appointment-records", {
-          accountType: req.session.accountType,
-          filterType: "all",
-          all: "",
-          search: "",
-          date: "",
-          month: "",
-          year: "",
-          lastWeek: "",
-          nextWeek: "",
-          lastMonth: "",
-          nextMonth: "",
-          searchValue: "",
-          dateValue: "",
-          monthValue: "",
-          yearValue: year,
-          details: details,
+        const generatePdf = new Promise((resolve, reject) => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query = "SELECT email FROM users WHERE user_id=?";
+              connection.query(query, [req.session.userId], (err, email) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query2 =
+                    "SELECT * FROM patient_details WHERE user_id=?";
+                  connection.query(
+                    query2,
+                    [req.session.userId],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        let d = new Date();
+                        let date =
+                          d.getFullYear() +
+                          "-" +
+                          ("0" + (d.getMonth() + 1)).slice(-2) +
+                          "-" +
+                          ("0" + d.getDate()).slice(-2);
+
+                        let time =
+                          ("0" + d.getHours()).slice(-2) +
+                          ":" +
+                          ("0" + d.getMinutes()).slice(-2);
+
+                        var doc = new PdfDocument();
+                        table = new PdfTable(doc, {
+                          bottomMargin: 30,
+                        });
+
+                        pdfName = Math.floor(
+                          Math.random() * (999999 - 100000) + 100000
+                        );
+                        doc.pipe(
+                          fs.createWriteStream(
+                            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                          )
+                        );
+
+                        doc.image(
+                          path.resolve(
+                            __dirname,
+                            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                          ),
+                          30,
+                          20,
+                          { width: 130 }
+                        );
+
+                        doc.fontSize(13);
+                        doc.font("Times-Bold");
+                        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("P.O BOX 56 - 01004,", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("KANJUKU", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.font("Times-Roman");
+                        doc.moveDown();
+                        doc.text(`${date}     ${time}`, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.fontSize(11);
+                        doc.font("Times-Roman");
+                        doc.text(
+                          `NAME:            ${results[0].name}`,
+                          75,
+                          180
+                        );
+
+                        doc.moveDown();
+                        doc.text(`EMAIL:           ${email[0].email}`);
+
+                        doc.moveDown();
+                        doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                        doc.moveDown();
+                        doc.text(`LOCATION:    ${results[0].location}`);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+
+                        doc.font("Times-Bold");
+                        doc.fontSize(13);
+
+                        doc.text("ALL APPOINTMENTS REPORT", {
+                          underline: true,
+                          width: 595,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+
+                        table
+                          // add some plugins (here, a 'fit-to-width' for a column)
+                          .addPlugin(
+                            new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                              {
+                                column: "name",
+                              }
+                            )
+                          )
+                          // set defaults to your columns
+                          .setColumnsDefaults({
+                            headerBorder: ["B"],
+                            // border: ["B"],
+                            padding: [10, 10, 0, 0],
+                          })
+                          // add table columns
+                          .addColumns([
+                            {
+                              id: "name",
+                              header: "Doctor's Name",
+                              align: "left",
+                            },
+                            {
+                              id: "date",
+                              header: "Date",
+                              width: 100,
+                            },
+                            {
+                              id: "time",
+                              header: "Time",
+                              width: 100,
+                            },
+                          ]);
+                        doc.moveDown();
+                        doc.font("Times-Roman");
+
+                        table.addBody(details);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.font("Times-Bold");
+                        doc.text(
+                          "Number of appointments: " + details.length,
+                          75
+                        );
+
+                        doc.end();
+                        resolve();
+                      }
+                    }
+                  );
+                }
+              });
+            }
+            connection.release();
+          });
+        });
+        generatePdf.then(() => {
+          return res.render("appointment-records", {
+            pdfName:`${pdfName}.pdf`,
+            accountType: req.session.accountType,
+            filterType: "all",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            nextWeek: "",
+            lastMonth: "",
+            nextMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            details: details,
+          });
         });
       });
     } else {
@@ -221,23 +405,200 @@ router.get("/appointment-records", (req, res) => {
         });
       });
       getDetails.then((details) => {
-        return res.render("appointment-records", {
-          accountType: req.session.accountType,
-          filterType: "all",
-          all: "",
-          search: "",
-          date: "",
-          month: "",
-          year: "",
-          lastWeek: "",
-          nextWeek: "",
-          lastMonth: "",
-          nextMonth: "",
-          searchValue: "",
-          dateValue: "",
-          monthValue: "",
-          yearValue: year,
-          details: details,
+        const generatePdf = new Promise((resolve, reject) => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query = "SELECT email FROM users WHERE user_id=?";
+              connection.query(query, [req.session.userId], (err, email) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query2 = "SELECT * FROM doctor_details WHERE user_id=?";
+                  connection.query(
+                    query2,
+                    [req.session.userId],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        let d = new Date();
+                        let date =
+                          d.getFullYear() +
+                          "-" +
+                          ("0" + (d.getMonth() + 1)).slice(-2) +
+                          "-" +
+                          ("0" + d.getDate()).slice(-2);
+
+                        let time =
+                          ("0" + d.getHours()).slice(-2) +
+                          ":" +
+                          ("0" + d.getMinutes()).slice(-2);
+
+                        var doc = new PdfDocument();
+                        table = new PdfTable(doc, {
+                          bottomMargin: 30,
+                        });
+
+                        pdfName = Math.floor(
+                          Math.random() * (999999 - 100000) + 100000
+                        );
+                        doc.pipe(
+                          fs.createWriteStream(
+                            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                          )
+                        );
+
+                        doc.image(
+                          path.resolve(
+                            __dirname,
+                            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                          ),
+                          30,
+                          20,
+                          { width: 130 }
+                        );
+
+                        doc.fontSize(13);
+                        doc.font("Times-Bold");
+                        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("P.O BOX 56 - 01004,", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("KANJUKU", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.font("Times-Roman");
+                        doc.moveDown();
+                        doc.text(`${date}     ${time}`, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.fontSize(11);
+                        doc.font("Times-Roman");
+                        doc.text(
+                          `NAME:            ${results[0].name}`,
+                          75,
+                          180
+                        );
+
+                        doc.moveDown();
+                        doc.text(`EMAIL:           ${email[0].email}`);
+
+                        doc.moveDown();
+                        doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                        doc.moveDown();
+                        doc.text(`LOCATION:    ${results[0].clinic_location}`);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+
+                        doc.font("Times-Bold");
+                        doc.fontSize(13);
+
+                        doc.text("ALL APPOINTMENTS REPORT", {
+                          underline: true,
+                          width: 595,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+
+                        table
+                          // add some plugins (here, a 'fit-to-width' for a column)
+                          .addPlugin(
+                            new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                              {
+                                column: "name",
+                              }
+                            )
+                          )
+                          // set defaults to your columns
+                          .setColumnsDefaults({
+                            headerBorder: ["B"],
+                            // border: ["B"],
+                            padding: [10, 10, 0, 0],
+                          })
+                          // add table columns
+                          .addColumns([
+                            {
+                              id: "name",
+                              header: "Patient's Name",
+                              align: "left",
+                            },
+                            {
+                              id: "date",
+                              header: "Date",
+                              width: 100,
+                            },
+                            {
+                              id: "time",
+                              header: "Time",
+                              width: 100,
+                            },
+                          ]);
+                        doc.moveDown();
+                        doc.font("Times-Roman");
+
+                        table.addBody(details);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.font("Times-Bold");
+                        doc.text(
+                          "Number of appointments: " + details.length,
+                          75
+                        );
+
+                        doc.end();
+                        resolve();
+                      }
+                    }
+                  );
+                }
+              });
+            }
+            connection.release();
+          });
+        });
+        generatePdf.then(() => {
+          return res.render("appointment-records", {
+            pdfName:`${pdfName}.pdf`,
+            accountType: req.session.accountType,
+            filterType: "all",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            nextWeek: "",
+            lastMonth: "",
+            nextMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            details: details,
+          });
         });
       });
     }
@@ -378,23 +739,211 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "search",
-              all: "",
-              search: "selected",
-              date: "",
-              month: "",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: req.body.search,
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `APPOINTMENTS'  '${req.body.search}'  SEARCH RESULTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "search",
+                all: "",
+                search: "selected",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: req.body.search,
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
             });
           });
         } else {
@@ -521,23 +1070,213 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "search",
-              all: "",
-              search: "selected",
-              date: "",
-              month: "",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: req.body.search,
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(
+                                `LOCATION:    ${results[0].clinic_location}`
+                              );
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `APPOINTMENTS'  '${req.body.search}'  SEARCH RESULTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "search",
+                all: "",
+                search: "selected",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: req.body.search,
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
             });
           });
         }
@@ -547,6 +1286,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "search",
           all: "",
@@ -679,23 +1419,211 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "date",
-              all: "",
-              search: "",
-              date: "selected",
-              month: "",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: req.body.date,
-              monthValue: "",
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `DATE: ${req.body.date} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "date",
+                all: "",
+                search: "",
+                date: "selected",
+                month: "",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: req.body.date,
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
             });
           });
         } else {
@@ -798,23 +1726,213 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "date",
-              all: "",
-              search: "",
-              date: "selected",
-              month: "",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: req.body.date,
-              monthValue: "",
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(
+                                `LOCATION:    ${results[0].clinic_location}`
+                              );
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `DATE: ${req.body.date} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "date",
+                all: "",
+                search: "",
+                date: "selected",
+                month: "",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: req.body.date,
+                monthValue: "",
+                yearValue: year,
+                details: details,
+              });
             });
           });
         }
@@ -824,6 +1942,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "date",
           all: "",
@@ -956,23 +2075,211 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "month",
-              all: "",
-              search: "",
-              date: "",
-              month: "selected",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: req.body.month,
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `MONTH: ${req.body.month} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "month",
+                all: "",
+                search: "",
+                date: "",
+                month: "selected",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: req.body.month,
+                yearValue: year,
+                details: details,
+              });
             });
           });
         } else {
@@ -1075,23 +2382,213 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "month",
-              all: "",
-              search: "",
-              date: "",
-              month: "selected",
-              year: "",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: req.body.month,
-              yearValue: year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(
+                                `LOCATION:    ${results[0].clinic_location}`
+                              );
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `MONTH: ${req.body.month} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "month",
+                all: "",
+                search: "",
+                date: "",
+                month: "selected",
+                year: "",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: req.body.month,
+                yearValue: year,
+                details: details,
+              });
             });
           });
         }
@@ -1101,6 +2598,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "month",
           all: "",
@@ -1232,23 +2730,211 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: req.body.year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR: ${req.body.year} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: req.body.year,
+                details: details,
+              });
             });
           });
         } else {
@@ -1351,23 +3037,213 @@ router.post("/filter-appointment-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
-            return res.render("appointment-records", {
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              nextWeek: "",
-              lastMonth: "",
-              nextMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: req.body.year,
-              details: details,
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
+                                )
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(
+                                `LOCATION:    ${results[0].clinic_location}`
+                              );
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR: ${req.body.year} APPOINTMENTS  REPORT`,
+                                {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "date",
+                                    header: "Date",
+                                    width: 100,
+                                  },
+                                  {
+                                    id: "time",
+                                    header: "Time",
+                                    width: 100,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Number of appointments: " + details.length,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
+              return res.render("appointment-records", {
+                pdfName:`${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                nextWeek: "",
+                lastMonth: "",
+                nextMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: req.body.year,
+                details: details,
+              });
             });
           });
         }
@@ -1482,23 +3358,205 @@ router.post("/filter-appointment-records", (req, res) => {
               });
             });
             getDetails.then((details) => {
-              return res.render("appointment-records", {
-                accountType: req.session.accountType,
-                filterType: "year",
-                all: "",
-                search: "",
-                date: "",
-                month: "",
-                year: "selected",
-                lastWeek: "",
-                nextWeek: "",
-                lastMonth: "",
-                nextMonth: "",
-                searchValue: "",
-                dateValue: "",
-                monthValue: "",
-                yearValue: year,
-                details: details,
+              const generatePdf = new Promise((resolve, reject) => {
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT email FROM users WHERE user_id=?";
+                    connection.query(
+                      query,
+                      [req.session.userId],
+                      (err, email) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          const query2 =
+                            "SELECT * FROM patient_details WHERE user_id=?";
+                          connection.query(
+                            query2,
+                            [req.session.userId],
+                            (err, results) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                let d = new Date();
+                                let date =
+                                  d.getFullYear() +
+                                  "-" +
+                                  ("0" + (d.getMonth() + 1)).slice(-2) +
+                                  "-" +
+                                  ("0" + d.getDate()).slice(-2);
+
+                                let time =
+                                  ("0" + d.getHours()).slice(-2) +
+                                  ":" +
+                                  ("0" + d.getMinutes()).slice(-2);
+
+                                var doc = new PdfDocument();
+                                table = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+
+                                doc.pipe(
+                                  fs.createWriteStream(
+                                    path.resolve(
+                                      __dirname,
+                                      "../pdfs/example.pdf"
+                                    )
+                                  )
+                                );
+
+                                doc.image(
+                                  path.resolve(
+                                    __dirname,
+                                    "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                  ),
+                                  30,
+                                  20,
+                                  { width: 130 }
+                                );
+
+                                doc.fontSize(13);
+                                doc.font("Times-Bold");
+                                doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("P.O BOX 56 - 01004,", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("KANJUKU", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.font("Times-Roman");
+                                doc.moveDown();
+                                doc.text(`${date}     ${time}`, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.fontSize(11);
+                                doc.font("Times-Roman");
+                                doc.text(
+                                  `NAME:            ${results[0].name}`,
+                                  75,
+                                  180
+                                );
+
+                                doc.moveDown();
+                                doc.text(`EMAIL:           ${email[0].email}`);
+
+                                doc.moveDown();
+                                doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                                doc.moveDown();
+                                doc.text(`LOCATION:    ${results[0].location}`);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+
+                                doc.font("Times-Bold");
+                                doc.fontSize(13);
+
+                                doc.text(`YEAR: ${year} APPOINTMENTS  REPORT`, {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+
+                                table
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Doctor's Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "time",
+                                      header: "Time",
+                                      width: 100,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table.addBody(details);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "Number of appointments: " + details.length,
+                                  75
+                                );
+
+                                doc.end();
+                                resolve();
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              generatePdf.then(() => {
+                return res.render("appointment-records", {
+                  pdfName:`${pdfName}.pdf`,
+                  accountType: req.session.accountType,
+                  filterType: "year",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "selected",
+                  lastWeek: "",
+                  nextWeek: "",
+                  lastMonth: "",
+                  nextMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  details: details,
+                });
               });
             });
           } else {
@@ -1601,23 +3659,207 @@ router.post("/filter-appointment-records", (req, res) => {
               });
             });
             getDetails.then((details) => {
-              return res.render("appointment-records", {
-                accountType: req.session.accountType,
-                filterType: "year",
-                all: "",
-                search: "",
-                date: "",
-                month: "",
-                year: "selected",
-                lastWeek: "",
-                nextWeek: "",
-                lastMonth: "",
-                nextMonth: "",
-                searchValue: "",
-                dateValue: "",
-                monthValue: "",
-                yearValue: year,
-                details: details,
+              const generatePdf = new Promise((resolve, reject) => {
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT email FROM users WHERE user_id=?";
+                    connection.query(
+                      query,
+                      [req.session.userId],
+                      (err, email) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          const query2 =
+                            "SELECT * FROM doctor_details WHERE user_id=?";
+                          connection.query(
+                            query2,
+                            [req.session.userId],
+                            (err, results) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                let d = new Date();
+                                let date =
+                                  d.getFullYear() +
+                                  "-" +
+                                  ("0" + (d.getMonth() + 1)).slice(-2) +
+                                  "-" +
+                                  ("0" + d.getDate()).slice(-2);
+
+                                let time =
+                                  ("0" + d.getHours()).slice(-2) +
+                                  ":" +
+                                  ("0" + d.getMinutes()).slice(-2);
+
+                                var doc = new PdfDocument();
+                                table = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+
+                                doc.pipe(
+                                  fs.createWriteStream(
+                                    path.resolve(
+                                      __dirname,
+                                      "../pdfs/example.pdf"
+                                    )
+                                  )
+                                );
+
+                                doc.image(
+                                  path.resolve(
+                                    __dirname,
+                                    "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                  ),
+                                  30,
+                                  20,
+                                  { width: 130 }
+                                );
+
+                                doc.fontSize(13);
+                                doc.font("Times-Bold");
+                                doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("P.O BOX 56 - 01004,", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("KANJUKU", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.font("Times-Roman");
+                                doc.moveDown();
+                                doc.text(`${date}     ${time}`, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.fontSize(11);
+                                doc.font("Times-Roman");
+                                doc.text(
+                                  `NAME:            ${results[0].name}`,
+                                  75,
+                                  180
+                                );
+
+                                doc.moveDown();
+                                doc.text(`EMAIL:           ${email[0].email}`);
+
+                                doc.moveDown();
+                                doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                                doc.moveDown();
+                                doc.text(
+                                  `LOCATION:    ${results[0].clinic_location}`
+                                );
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+
+                                doc.font("Times-Bold");
+                                doc.fontSize(13);
+
+                                doc.text(`YEAR: ${year} APPOINTMENTS  REPORT`, {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+
+                                table
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Patient's Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "time",
+                                      header: "Time",
+                                      width: 100,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table.addBody(details);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "Number of appointments: " + details.length,
+                                  75
+                                );
+
+                                doc.end();
+                                resolve();
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              generatePdf.then(() => {
+                return res.render("appointment-records", {
+                  pdfName:`${pdfName}.pdf`,
+                  accountType: req.session.accountType,
+                  filterType: "year",
+                  all: "",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "selected",
+                  lastWeek: "",
+                  nextWeek: "",
+                  lastMonth: "",
+                  nextMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  details: details,
+                });
               });
             });
           }
@@ -1750,23 +3992,204 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "lastWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "selected",
-            nextWeek: "",
-            lastMonth: "",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "selected",
+              nextWeek: "",
+              lastMonth: "",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       } else {
@@ -1866,23 +4289,206 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "lastWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "selected",
-            nextWeek: "",
-            lastMonth: "",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(
+                            `LOCATION:    ${results[0].clinic_location}`
+                          );
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "selected",
+              nextWeek: "",
+              lastMonth: "",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       }
@@ -2011,23 +4617,204 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "nextWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "selected",
-            lastMonth: "",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${today}'  TO  '${date2}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "nextWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "selected",
+              lastMonth: "",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       } else {
@@ -2127,23 +4914,206 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "nextWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "selected",
-            lastMonth: "",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(
+                            `LOCATION:    ${results[0].clinic_location}`
+                          );
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${today}'  TO  '${date2}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "nextWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "selected",
+              lastMonth: "",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       }
@@ -2272,23 +5242,204 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "lastMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "",
-            lastMonth: "selected",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "",
+              lastMonth: "selected",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       } else {
@@ -2388,23 +5539,206 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "lastMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "",
-            lastMonth: "selected",
-            nextMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(
+                            `LOCATION:    ${results[0].clinic_location}`
+                          );
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "",
+              lastMonth: "selected",
+              nextMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       }
@@ -2533,23 +5867,204 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "nextMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "",
-            lastMonth: "",
-            nextMonth: "selected",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${today}'  TO  '${date2}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "nextMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "",
+              lastMonth: "",
+              nextMonth: "selected",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       } else {
@@ -2649,23 +6164,206 @@ router.post("/filter-appointment-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
-          return res.render("appointment-records", {
-            accountType: req.session.accountType,
-            filterType: "nextMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            nextWeek: "",
-            lastMonth: "",
-            nextMonth: "selected",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            details: details,
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                          doc.moveDown();
+                          doc.text(
+                            `LOCATION:    ${results[0].clinic_location}`
+                          );
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+
+                          doc.text(
+                            `'${today}'  TO  '${date2}'  APPOINTMENTS  REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
+                          doc.moveDown();
+
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "date",
+                                header: "Date",
+                                width: 100,
+                              },
+                              {
+                                id: "time",
+                                header: "Time",
+                                width: 100,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+
+                          table.addBody(details);
+
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Number of appointments: " + details.length,
+                            75
+                          );
+
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
+            return res.render("appointment-records", {
+              pdfName:`${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "nextMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              nextWeek: "",
+              lastMonth: "",
+              nextMonth: "selected",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              details: details,
+            });
           });
         });
       }
@@ -2774,7 +6472,184 @@ router.get("/consultation-records", (req, res) => {
         });
       });
       getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query = "SELECT email FROM users WHERE user_id=?";
+              connection.query(query, [req.session.userId], (err, email) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query2 =
+                    "SELECT * FROM patient_details WHERE user_id=?";
+                  connection.query(
+                    query2,
+                    [req.session.userId],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        let d = new Date();
+                        let date =
+                          d.getFullYear() +
+                          "-" +
+                          ("0" + (d.getMonth() + 1)).slice(-2) +
+                          "-" +
+                          ("0" + d.getDate()).slice(-2);
+
+                        let time =
+                          ("0" + d.getHours()).slice(-2) +
+                          ":" +
+                          ("0" + d.getMinutes()).slice(-2);
+
+                        var doc = new PdfDocument();
+                        table = new PdfTable(doc, {
+                          bottomMargin: 30,
+                        });
+
+                        pdfName = Math.floor(
+                          Math.random() * (999999 - 100000) + 100000
+                        );
+                        doc.pipe(
+                          fs.createWriteStream(
+                            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                          )
+                        );
+
+                        doc.image(
+                          path.resolve(
+                            __dirname,
+                            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                          ),
+                          30,
+                          20,
+                          { width: 130 }
+                        );
+
+                        doc.fontSize(13);
+                        doc.font("Times-Bold");
+                        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("P.O BOX 56 - 01004,", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("KANJUKU", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.font("Times-Roman");
+                        doc.moveDown();
+                        doc.text(`${date}     ${time}`, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.fontSize(11);
+                        doc.font("Times-Roman");
+                        doc.text(
+                          `NAME:            ${results[0].name}`,
+                          75,
+                          180
+                        );
+
+                        doc.moveDown();
+                        doc.text(`EMAIL:           ${email[0].email}`);
+
+                        doc.moveDown();
+                        doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                        doc.moveDown();
+                        doc.text(`LOCATION:    ${results[0].location}`);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+
+                        doc.font("Times-Bold");
+                        doc.fontSize(13);
+
+                        doc.text("ALL CONSULTATIONS REPORT", {
+                          underline: true,
+                          width: 595,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+
+                        table
+                          // add some plugins (here, a 'fit-to-width' for a column)
+                          .addPlugin(
+                            new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                              {
+                                column: "name",
+                              }
+                            )
+                          )
+                          // set defaults to your columns
+                          .setColumnsDefaults({
+                            headerBorder: ["B"],
+                            // border: ["B"],
+                            padding: [10, 10, 0, 0],
+                          })
+                          // add table columns
+                          .addColumns([
+                            {
+                              id: "name",
+                              header: "Doctor's Name",
+                              align: "left",
+                            },
+                            {
+                              id: "paidConsults",
+                              header: "Paid Consultations",
+                              width: 130,
+                            },
+                            {
+                              id: "messages",
+                              header: "Messages",
+                              width: 130,
+                            },
+                          ]);
+                        doc.moveDown();
+                        doc.font("Times-Roman");
+
+                        table.addBody(details);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.font("Times-Bold");
+                        doc.text(
+                          "Total Number of Messages: " + totalMessages,
+                          75
+                        );
+
+                        doc.end();
+                        resolve();
+                      }
+                    }
+                  );
+                }
+              });
+            }
+            connection.release();
+          });
+        });
+        generatePdf.then(() => {
         return res.render("consultation-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "all",
           all: "selected",
@@ -2791,6 +6666,7 @@ router.get("/consultation-records", (req, res) => {
           totalMessages: totalMessages,
           details: details,
         });
+      });
       });
     } else {
       //// doctor account
@@ -2889,7 +6765,184 @@ router.get("/consultation-records", (req, res) => {
         });
       });
       getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          pool.getConnection((err, connection) => {
+            if (err) {
+              throw err;
+            } else {
+              const query = "SELECT email FROM users WHERE user_id=?";
+              connection.query(query, [req.session.userId], (err, email) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query2 =
+                    "SELECT * FROM doctor_details WHERE user_id=?";
+                  connection.query(
+                    query2,
+                    [req.session.userId],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        let d = new Date();
+                        let date =
+                          d.getFullYear() +
+                          "-" +
+                          ("0" + (d.getMonth() + 1)).slice(-2) +
+                          "-" +
+                          ("0" + d.getDate()).slice(-2);
+
+                        let time =
+                          ("0" + d.getHours()).slice(-2) +
+                          ":" +
+                          ("0" + d.getMinutes()).slice(-2);
+
+                        var doc = new PdfDocument();
+                        table = new PdfTable(doc, {
+                          bottomMargin: 30,
+                        });
+
+                        pdfName = Math.floor(
+                          Math.random() * (999999 - 100000) + 100000
+                        );
+                        doc.pipe(
+                          fs.createWriteStream(
+                            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                          )
+                        );
+
+                        doc.image(
+                          path.resolve(
+                            __dirname,
+                            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                          ),
+                          30,
+                          20,
+                          { width: 130 }
+                        );
+
+                        doc.fontSize(13);
+                        doc.font("Times-Bold");
+                        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("P.O BOX 56 - 01004,", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+                        doc.text("KANJUKU", {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.font("Times-Roman");
+                        doc.moveDown();
+                        doc.text(`${date}     ${time}`, {
+                          width: 315,
+                          align: "center",
+                        });
+
+                        doc.fontSize(11);
+                        doc.font("Times-Roman");
+                        doc.text(
+                          `NAME:            ${results[0].name}`,
+                          75,
+                          180
+                        );
+
+                        doc.moveDown();
+                        doc.text(`EMAIL:           ${email[0].email}`);
+
+                        doc.moveDown();
+                        doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                        doc.moveDown();
+                        doc.text(`LOCATION:    ${results[0].location}`);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+
+                        doc.font("Times-Bold");
+                        doc.fontSize(13);
+
+                        doc.text("ALL CONSULTATIONS REPORT", {
+                          underline: true,
+                          width: 595,
+                          align: "center",
+                        });
+
+                        doc.moveDown();
+
+                        table
+                          // add some plugins (here, a 'fit-to-width' for a column)
+                          .addPlugin(
+                            new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                              {
+                                column: "name",
+                              }
+                            )
+                          )
+                          // set defaults to your columns
+                          .setColumnsDefaults({
+                            headerBorder: ["B"],
+                            // border: ["B"],
+                            padding: [10, 10, 0, 0],
+                          })
+                          // add table columns
+                          .addColumns([
+                            {
+                              id: "name",
+                              header: "Patient's Name",
+                              align: "left",
+                            },
+                            {
+                              id: "paidConsults",
+                              header: "Paid Consultations",
+                              width: 130,
+                            },
+                            {
+                              id: "messages",
+                              header: "Messages",
+                              width: 130,
+                            },
+                          ]);
+                        doc.moveDown();
+                        doc.font("Times-Roman");
+
+                        table.addBody(details);
+
+                        doc.text("", 0);
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.font("Times-Bold");
+                        doc.text(
+                          "Total Number of Messages: " + totalMessages,
+                          75
+                        );
+
+                        doc.end();
+                        resolve();
+                      }
+                    }
+                  );
+                }
+              });
+            }
+            connection.release();
+          });
+        });
+        generatePdf.then(() => {
         return res.render("consultation-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "all",
           all: "selected",
@@ -2907,6 +6960,7 @@ router.get("/consultation-records", (req, res) => {
           details: details,
         });
       });
+    })
     }
   } else {
     return res.redirect("/login");
@@ -3033,7 +7087,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM patient_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Doctor's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "search",
               all: "",
@@ -3050,6 +7281,7 @@ router.post("/filter-consultation-records", (req, res) => {
               totalMessages: totalMessages,
               details: details,
             });
+          })
           });
         } else {
           ///////doctor account
@@ -3159,7 +7391,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM doctor_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Patient's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "search",
               all: "",
@@ -3177,9 +7586,11 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         }
       } else {
         return res.render("consultation-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "search",
           all: "",
@@ -3302,7 +7713,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM patient_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`DATE:  '${req.body.date}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Doctor's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "date",
               all: "",
@@ -3320,6 +7908,7 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         } else {
           //// doctor account
           let totalMessages = 0;
@@ -3420,7 +8009,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM doctor_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`DATE:  '${req.body.date}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Patient's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "date",
               all: "",
@@ -3438,9 +8204,11 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         }
       } else {
         return res.render("consultation-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "date",
           all: "",
@@ -3566,7 +8334,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM patient_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Doctor's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "month",
               all: "",
@@ -3583,6 +8528,7 @@ router.post("/filter-consultation-records", (req, res) => {
               totalMessages: totalMessages,
               details: details,
             });
+          })
           });
         } else {
           //// doctor account
@@ -3687,7 +8633,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM doctor_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Patient's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "month",
               all: "",
@@ -3705,9 +8828,11 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+          })
         }
       } else {
         return res.render("consultation-records", {
+          pdfName:`${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "month",
           all: "",
@@ -3724,6 +8849,7 @@ router.post("/filter-consultation-records", (req, res) => {
           totalMessages: totalMessages,
           details: {},
         });
+      
       }
     }
 
@@ -3833,7 +8959,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM patient_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Doctor's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "year",
               all: "",
@@ -3850,6 +9153,7 @@ router.post("/filter-consultation-records", (req, res) => {
               totalMessages: totalMessages,
               details: details,
             });
+          })
           });
         } else {
           //// doctor account
@@ -3954,7 +9258,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM doctor_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Patient's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "year",
               all: "",
@@ -3972,6 +9453,7 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         }
       } else {
         if (req.session.accountType == "patient") {
@@ -4074,7 +9556,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM patient_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`YEAR:  '${year}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Doctor's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "year",
               all: "",
@@ -4092,6 +9751,7 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         } else {
           //// doctor account
           let totalMessages = 0;
@@ -4192,7 +9852,184 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           getDetails.then((details) => {
+            const generatePdf = new Promise((resolve, reject) => {
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query = "SELECT email FROM users WHERE user_id=?";
+                  connection.query(query, [req.session.userId], (err, email) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query2 =
+                        "SELECT * FROM doctor_details WHERE user_id=?";
+                      connection.query(
+                        query2,
+                        [req.session.userId],
+                        (err, results) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            let d = new Date();
+                            let date =
+                              d.getFullYear() +
+                              "-" +
+                              ("0" + (d.getMonth() + 1)).slice(-2) +
+                              "-" +
+                              ("0" + d.getDate()).slice(-2);
+    
+                            let time =
+                              ("0" + d.getHours()).slice(-2) +
+                              ":" +
+                              ("0" + d.getMinutes()).slice(-2);
+    
+                            var doc = new PdfDocument();
+                            table = new PdfTable(doc, {
+                              bottomMargin: 30,
+                            });
+    
+                            pdfName = Math.floor(
+                              Math.random() * (999999 - 100000) + 100000
+                            );
+                            doc.pipe(
+                              fs.createWriteStream(
+                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                              )
+                            );
+    
+                            doc.image(
+                              path.resolve(
+                                __dirname,
+                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                              ),
+                              30,
+                              20,
+                              { width: 130 }
+                            );
+    
+                            doc.fontSize(13);
+                            doc.font("Times-Bold");
+                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("P.O BOX 56 - 01004,", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+                            doc.text("KANJUKU", {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.font("Times-Roman");
+                            doc.moveDown();
+                            doc.text(`${date}     ${time}`, {
+                              width: 315,
+                              align: "center",
+                            });
+    
+                            doc.fontSize(11);
+                            doc.font("Times-Roman");
+                            doc.text(
+                              `NAME:            ${results[0].name}`,
+                              75,
+                              180
+                            );
+    
+                            doc.moveDown();
+                            doc.text(`EMAIL:           ${email[0].email}`);
+    
+                            doc.moveDown();
+                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
+    
+                            doc.moveDown();
+                            doc.text(`LOCATION:    ${results[0].location}`);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+    
+                            doc.font("Times-Bold");
+                            doc.fontSize(13);
+    
+                            doc.text(`YEAR:  '${year}'  CONSULTATIONS REPORT`, {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            });
+    
+                            doc.moveDown();
+    
+                            table
+                              // add some plugins (here, a 'fit-to-width' for a column)
+                              .addPlugin(
+                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                  {
+                                    column: "name",
+                                  }
+                                )
+                              )
+                              // set defaults to your columns
+                              .setColumnsDefaults({
+                                headerBorder: ["B"],
+                                // border: ["B"],
+                                padding: [10, 10, 0, 0],
+                              })
+                              // add table columns
+                              .addColumns([
+                                {
+                                  id: "name",
+                                  header: "Patient's Name",
+                                  align: "left",
+                                },
+                                {
+                                  id: "paidConsults",
+                                  header: "Paid Consultations",
+                                  width: 130,
+                                },
+                                {
+                                  id: "messages",
+                                  header: "Messages",
+                                  width: 130,
+                                },
+                              ]);
+                            doc.moveDown();
+                            doc.font("Times-Roman");
+    
+                            table.addBody(details);
+    
+                            doc.text("", 0);
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.moveDown();
+                            doc.font("Times-Bold");
+                            doc.text(
+                              "Total Number of Messages: " + totalMessages,
+                              75
+                            );
+    
+                            doc.end();
+                            resolve();
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+            generatePdf.then(() => {
             return res.render("consultation-records", {
+              pdfName:`${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "year",
               all: "",
@@ -4210,6 +10047,7 @@ router.post("/filter-consultation-records", (req, res) => {
               details: details,
             });
           });
+        })
         }
       }
     }
@@ -4331,7 +10169,184 @@ router.post("/filter-consultation-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+  
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+  
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+  
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+  
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+  
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+  
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+  
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+  
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+  
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+  
+                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
+                            underline: true,
+                            width: 595,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+  
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "paidConsults",
+                                header: "Paid Consultations",
+                                width: 130,
+                              },
+                              {
+                                id: "messages",
+                                header: "Messages",
+                                width: 130,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+  
+                          table.addBody(details);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Total Number of Messages: " + totalMessages,
+                            75
+                          );
+  
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
           return res.render("consultation-records", {
+            pdfName:`${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "lastWeek",
             all: "",
@@ -4348,6 +10363,7 @@ router.post("/filter-consultation-records", (req, res) => {
             totalMessages: totalMessages,
             details: details,
           });
+        })
         });
       } else {
         //// doctor account
@@ -4449,7 +10465,184 @@ router.post("/filter-consultation-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+  
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+  
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+  
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+  
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+  
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+  
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+  
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+  
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+  
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+  
+                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
+                            underline: true,
+                            width: 595,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+  
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "paidConsults",
+                                header: "Paid Consultations",
+                                width: 130,
+                              },
+                              {
+                                id: "messages",
+                                header: "Messages",
+                                width: 130,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+  
+                          table.addBody(details);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Total Number of Messages: " + totalMessages,
+                            75
+                          );
+  
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
           return res.render("consultation-records", {
+            pdfName:`${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "lastWeek",
             all: "",
@@ -4467,6 +10660,7 @@ router.post("/filter-consultation-records", (req, res) => {
             details: details,
           });
         });
+      })
       }
     }
 
@@ -4587,7 +10781,184 @@ router.post("/filter-consultation-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM patient_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+  
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+  
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+  
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+  
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+  
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+  
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+  
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+  
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+  
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+  
+                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
+                            underline: true,
+                            width: 595,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+  
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Doctor's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "paidConsults",
+                                header: "Paid Consultations",
+                                width: 130,
+                              },
+                              {
+                                id: "messages",
+                                header: "Messages",
+                                width: 130,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+  
+                          table.addBody(details);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Total Number of Messages: " + totalMessages,
+                            75
+                          );
+  
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
           return res.render("consultation-records", {
+            pdfName:`${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "lastMonth",
             all: "",
@@ -4604,6 +10975,7 @@ router.post("/filter-consultation-records", (req, res) => {
             totalMessages: totalMessages,
             details: details,
           });
+        })
         });
       } else {
         //// doctor account
@@ -4705,7 +11077,184 @@ router.post("/filter-consultation-records", (req, res) => {
           });
         });
         getDetails.then((details) => {
+          const generatePdf = new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+              if (err) {
+                throw err;
+              } else {
+                const query = "SELECT email FROM users WHERE user_id=?";
+                connection.query(query, [req.session.userId], (err, email) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query2 =
+                      "SELECT * FROM doctor_details WHERE user_id=?";
+                    connection.query(
+                      query2,
+                      [req.session.userId],
+                      (err, results) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          let d = new Date();
+                          let date =
+                            d.getFullYear() +
+                            "-" +
+                            ("0" + (d.getMonth() + 1)).slice(-2) +
+                            "-" +
+                            ("0" + d.getDate()).slice(-2);
+  
+                          let time =
+                            ("0" + d.getHours()).slice(-2) +
+                            ":" +
+                            ("0" + d.getMinutes()).slice(-2);
+  
+                          var doc = new PdfDocument();
+                          table = new PdfTable(doc, {
+                            bottomMargin: 30,
+                          });
+  
+                          pdfName = Math.floor(
+                            Math.random() * (999999 - 100000) + 100000
+                          );
+                          doc.pipe(
+                            fs.createWriteStream(
+                              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+                            )
+                          );
+  
+                          doc.image(
+                            path.resolve(
+                              __dirname,
+                              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                            ),
+                            30,
+                            20,
+                            { width: 130 }
+                          );
+  
+                          doc.fontSize(13);
+                          doc.font("Times-Bold");
+                          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("P.O BOX 56 - 01004,", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+                          doc.text("KANJUKU", {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.font("Times-Roman");
+                          doc.moveDown();
+                          doc.text(`${date}     ${time}`, {
+                            width: 315,
+                            align: "center",
+                          });
+  
+                          doc.fontSize(11);
+                          doc.font("Times-Roman");
+                          doc.text(
+                            `NAME:            ${results[0].name}`,
+                            75,
+                            180
+                          );
+  
+                          doc.moveDown();
+                          doc.text(`EMAIL:           ${email[0].email}`);
+  
+                          doc.moveDown();
+                          doc.text(`PHONE NO:    ${results[0].phone_no}`);
+  
+                          doc.moveDown();
+                          doc.text(`LOCATION:    ${results[0].location}`);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+  
+                          doc.font("Times-Bold");
+                          doc.fontSize(13);
+  
+                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
+                            underline: true,
+                            width: 595,
+                            align: "center",
+                          });
+  
+                          doc.moveDown();
+  
+                          table
+                            // add some plugins (here, a 'fit-to-width' for a column)
+                            .addPlugin(
+                              new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                {
+                                  column: "name",
+                                }
+                              )
+                            )
+                            // set defaults to your columns
+                            .setColumnsDefaults({
+                              headerBorder: ["B"],
+                              // border: ["B"],
+                              padding: [10, 10, 0, 0],
+                            })
+                            // add table columns
+                            .addColumns([
+                              {
+                                id: "name",
+                                header: "Patient's Name",
+                                align: "left",
+                              },
+                              {
+                                id: "paidConsults",
+                                header: "Paid Consultations",
+                                width: 130,
+                              },
+                              {
+                                id: "messages",
+                                header: "Messages",
+                                width: 130,
+                              },
+                            ]);
+                          doc.moveDown();
+                          doc.font("Times-Roman");
+  
+                          table.addBody(details);
+  
+                          doc.text("", 0);
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.moveDown();
+                          doc.font("Times-Bold");
+                          doc.text(
+                            "Total Number of Messages: " + totalMessages,
+                            75
+                          );
+  
+                          doc.end();
+                          resolve();
+                        }
+                      }
+                    );
+                  }
+                });
+              }
+              connection.release();
+            });
+          });
+          generatePdf.then(() => {
           return res.render("consultation-records", {
+            pdfName:`${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "lastMonth",
             all: "",
@@ -4723,6 +11272,7 @@ router.post("/filter-consultation-records", (req, res) => {
             details: details,
           });
         });
+      })
       }
     }
   } else {
