@@ -50,6 +50,7 @@
         </div>
     </form>
     <form action="" method="post" id="form2">
+      <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
         <% if (details.length) { %>
 
             <h2 class="count">Count: <%= details.length %></h2>
@@ -151,12 +152,17 @@
                     <% }) %> 
             <% } %>
          
+            <button type="button" class="btn" onclick="pdfOpen()">Download PDF</button>
         <% }else{ %>
             <h1 class="no-records">No Records</h1>
         <% } %>
     </form>
 
     <script>
+      const pdfOpen = () =>{
+        let name = document.getElementById("pdf-name").innerText;
+        window.open("/"+name)
+      }
         const submit = () =>{
             document.getElementById("form1").submit();
         }

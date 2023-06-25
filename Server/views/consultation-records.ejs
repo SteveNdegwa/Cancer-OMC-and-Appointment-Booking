@@ -13,6 +13,8 @@
     <title>Consultations Records</title>
 </head>
 <body>
+    <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
+    
     <form action="/records/filter-consultation-records" id="form1" method="post">
         <div class="select-div">
             <label for="select" class="select-label">Filter by : </label>
@@ -65,12 +67,17 @@
             </tr>
             <% }) %>
           </table>
+          <button type="button" class="btn" onclick="pdfOpen()">Download PDF</button>
         <% }else{ %>
             <h1 class="no-records">No Records</h1>
         <% } %>
     </div>
    
     <script>
+        const pdfOpen = () =>{
+        let name = document.getElementById("pdf-name").innerText;
+        window.open("/"+name)
+      }
         const submit = () =>{
             document.getElementById("form1").submit();
         }
