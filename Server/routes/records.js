@@ -293,7 +293,7 @@ router.get("/appointment-records", (req, res) => {
         });
         generatePdf.then(() => {
           return res.render("appointment-records", {
-            pdfName:`${pdfName}.pdf`,
+            pdfName: `${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "all",
             all: "",
@@ -581,7 +581,7 @@ router.get("/appointment-records", (req, res) => {
         });
         generatePdf.then(() => {
           return res.render("appointment-records", {
-            pdfName:`${pdfName}.pdf`,
+            pdfName: `${pdfName}.pdf`,
             accountType: req.session.accountType,
             filterType: "all",
             all: "",
@@ -926,7 +926,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "search",
                 all: "",
@@ -1259,7 +1259,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "search",
                 all: "",
@@ -1286,7 +1286,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "search",
           all: "",
@@ -1606,7 +1606,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "date",
                 all: "",
@@ -1915,7 +1915,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "date",
                 all: "",
@@ -1942,7 +1942,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "date",
           all: "",
@@ -2262,7 +2262,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "month",
                 all: "",
@@ -2571,7 +2571,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "month",
                 all: "",
@@ -2598,7 +2598,7 @@ router.post("/filter-appointment-records", (req, res) => {
     } else {
       if (req.session.authenticated) {
         return res.render("appointment-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "month",
           all: "",
@@ -2917,7 +2917,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "year",
                 all: "",
@@ -3226,7 +3226,7 @@ router.post("/filter-appointment-records", (req, res) => {
             });
             generatePdf.then(() => {
               return res.render("appointment-records", {
-                pdfName:`${pdfName}.pdf`,
+                pdfName: `${pdfName}.pdf`,
                 accountType: req.session.accountType,
                 filterType: "year",
                 all: "",
@@ -3539,7 +3539,7 @@ router.post("/filter-appointment-records", (req, res) => {
               });
               generatePdf.then(() => {
                 return res.render("appointment-records", {
-                  pdfName:`${pdfName}.pdf`,
+                  pdfName: `${pdfName}.pdf`,
                   accountType: req.session.accountType,
                   filterType: "year",
                   all: "",
@@ -3842,7 +3842,7 @@ router.post("/filter-appointment-records", (req, res) => {
               });
               generatePdf.then(() => {
                 return res.render("appointment-records", {
-                  pdfName:`${pdfName}.pdf`,
+                  pdfName: `${pdfName}.pdf`,
                   accountType: req.session.accountType,
                   filterType: "year",
                   all: "",
@@ -4172,7 +4172,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "lastWeek",
               all: "",
@@ -4471,7 +4471,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "lastWeek",
               all: "",
@@ -4797,7 +4797,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "nextWeek",
               all: "",
@@ -5096,7 +5096,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "nextWeek",
               all: "",
@@ -5422,7 +5422,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "lastMonth",
               all: "",
@@ -5721,7 +5721,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "lastMonth",
               all: "",
@@ -6047,7 +6047,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "nextMonth",
               all: "",
@@ -6346,7 +6346,7 @@ router.post("/filter-appointment-records", (req, res) => {
           });
           generatePdf.then(() => {
             return res.render("appointment-records", {
-              pdfName:`${pdfName}.pdf`,
+              pdfName: `${pdfName}.pdf`,
               accountType: req.session.accountType,
               filterType: "nextMonth",
               all: "",
@@ -6648,25 +6648,25 @@ router.get("/consultation-records", (req, res) => {
           });
         });
         generatePdf.then(() => {
-        return res.render("consultation-records", {
-          pdfName:`${pdfName}.pdf`,
-          accountType: req.session.accountType,
-          filterType: "all",
-          all: "selected",
-          search: "",
-          date: "",
-          month: "",
-          year: "",
-          lastWeek: "",
-          lastMonth: "",
-          searchValue: "",
-          dateValue: "",
-          monthValue: "",
-          yearValue: year,
-          totalMessages: totalMessages,
-          details: details,
+          return res.render("consultation-records", {
+            pdfName: `${pdfName}.pdf`,
+            accountType: req.session.accountType,
+            filterType: "all",
+            all: "selected",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
         });
-      });
       });
     } else {
       //// doctor account
@@ -6775,8 +6775,7 @@ router.get("/consultation-records", (req, res) => {
                 if (err) {
                   throw err;
                 } else {
-                  const query2 =
-                    "SELECT * FROM doctor_details WHERE user_id=?";
+                  const query2 = "SELECT * FROM doctor_details WHERE user_id=?";
                   connection.query(
                     query2,
                     [req.session.userId],
@@ -6941,26 +6940,26 @@ router.get("/consultation-records", (req, res) => {
           });
         });
         generatePdf.then(() => {
-        return res.render("consultation-records", {
-          pdfName:`${pdfName}.pdf`,
-          accountType: req.session.accountType,
-          filterType: "all",
-          all: "selected",
-          search: "",
-          date: "",
-          month: "",
-          year: "",
-          lastWeek: "",
-          lastMonth: "",
-          searchValue: "",
-          dateValue: "",
-          monthValue: "",
-          yearValue: year,
-          totalMessages: totalMessages,
-          details: details,
+          return res.render("consultation-records", {
+            pdfName: `${pdfName}.pdf`,
+            accountType: req.session.accountType,
+            filterType: "all",
+            all: "selected",
+            search: "",
+            date: "",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            searchValue: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            totalMessages: totalMessages,
+            details: details,
+          });
         });
       });
-    })
     }
   } else {
     return res.redirect("/login");
@@ -7093,195 +7092,205 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM patient_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Doctor's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "search",
-              all: "",
-              search: "selected",
-              date: "",
-              month: "",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: req.body.search,
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "search",
+                all: "",
+                search: "selected",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: req.body.search,
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
-          })
           });
         } else {
           ///////doctor account
@@ -7397,200 +7406,210 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM doctor_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `CONSULTATIONS'  '${req.body.search}'  RESULTS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Patient's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "search",
-              all: "",
-              search: "selected",
-              date: "",
-              month: "",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: req.body.search,
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "search",
+                all: "",
+                search: "selected",
+                date: "",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: req.body.search,
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         }
       } else {
         return res.render("consultation-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "search",
           all: "",
@@ -7719,196 +7738,206 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM patient_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`DATE:  '${req.body.date}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `DATE:  '${req.body.date}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Doctor's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "date",
-              all: "",
-              search: "",
-              date: "selected",
-              month: "",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: req.body.date,
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "date",
+                all: "",
+                search: "",
+                date: "selected",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: req.body.date,
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         } else {
           //// doctor account
           let totalMessages = 0;
@@ -8015,200 +8044,210 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM doctor_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`DATE:  '${req.body.date}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `DATE:  '${req.body.date}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Patient's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "date",
-              all: "",
-              search: "",
-              date: "selected",
-              month: "",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: req.body.date,
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "date",
+                all: "",
+                search: "",
+                date: "selected",
+                month: "",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: req.body.date,
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         }
       } else {
         return res.render("consultation-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "date",
           all: "",
@@ -8340,195 +8379,205 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM patient_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Doctor's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "month",
-              all: "",
-              search: "",
-              date: "",
-              month: "selected",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: req.body.month,
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "month",
+                all: "",
+                search: "",
+                date: "",
+                month: "selected",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: req.body.month,
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
-          })
           });
         } else {
           //// doctor account
@@ -8639,200 +8688,210 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM doctor_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `MONTH:  '${req.body.month}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Patient's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "month",
-              all: "",
-              search: "",
-              date: "",
-              month: "selected",
-              year: "",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: req.body.month,
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "month",
+                all: "",
+                search: "",
+                date: "",
+                month: "selected",
+                year: "",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: req.body.month,
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-          })
         }
       } else {
         return res.render("consultation-records", {
-          pdfName:`${pdfName}.pdf`,
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "month",
           all: "",
@@ -8849,7 +8908,6 @@ router.post("/filter-consultation-records", (req, res) => {
           totalMessages: totalMessages,
           details: {},
         });
-      
       }
     }
 
@@ -8965,195 +9023,205 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM patient_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Doctor's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: req.body.year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: req.body.year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
-          })
           });
         } else {
           //// doctor account
@@ -9264,196 +9332,206 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM doctor_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR:  '${req.body.year}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Patient's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: req.body.year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: req.body.year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         }
       } else {
         if (req.session.accountType == "patient") {
@@ -9562,196 +9640,206 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM patient_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`YEAR:  '${year}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM patient_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR:  '${year}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Doctor's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Doctor's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         } else {
           //// doctor account
           let totalMessages = 0;
@@ -9858,196 +9946,206 @@ router.post("/filter-consultation-records", (req, res) => {
                   throw err;
                 } else {
                   const query = "SELECT email FROM users WHERE user_id=?";
-                  connection.query(query, [req.session.userId], (err, email) => {
-                    if (err) {
-                      throw err;
-                    } else {
-                      const query2 =
-                        "SELECT * FROM doctor_details WHERE user_id=?";
-                      connection.query(
-                        query2,
-                        [req.session.userId],
-                        (err, results) => {
-                          if (err) {
-                            throw err;
-                          } else {
-                            let d = new Date();
-                            let date =
-                              d.getFullYear() +
-                              "-" +
-                              ("0" + (d.getMonth() + 1)).slice(-2) +
-                              "-" +
-                              ("0" + d.getDate()).slice(-2);
-    
-                            let time =
-                              ("0" + d.getHours()).slice(-2) +
-                              ":" +
-                              ("0" + d.getMinutes()).slice(-2);
-    
-                            var doc = new PdfDocument();
-                            table = new PdfTable(doc, {
-                              bottomMargin: 30,
-                            });
-    
-                            pdfName = Math.floor(
-                              Math.random() * (999999 - 100000) + 100000
-                            );
-                            doc.pipe(
-                              fs.createWriteStream(
-                                path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
-                              )
-                            );
-    
-                            doc.image(
-                              path.resolve(
-                                __dirname,
-                                "../public/icons/css-high-resolution-logo-black-on-white-background.png"
-                              ),
-                              30,
-                              20,
-                              { width: 130 }
-                            );
-    
-                            doc.fontSize(13);
-                            doc.font("Times-Bold");
-                            doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("P.O BOX 56 - 01004,", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-                            doc.text("KANJUKU", {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.font("Times-Roman");
-                            doc.moveDown();
-                            doc.text(`${date}     ${time}`, {
-                              width: 315,
-                              align: "center",
-                            });
-    
-                            doc.fontSize(11);
-                            doc.font("Times-Roman");
-                            doc.text(
-                              `NAME:            ${results[0].name}`,
-                              75,
-                              180
-                            );
-    
-                            doc.moveDown();
-                            doc.text(`EMAIL:           ${email[0].email}`);
-    
-                            doc.moveDown();
-                            doc.text(`PHONE NO:    ${results[0].phone_no}`);
-    
-                            doc.moveDown();
-                            doc.text(`LOCATION:    ${results[0].location}`);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-    
-                            doc.font("Times-Bold");
-                            doc.fontSize(13);
-    
-                            doc.text(`YEAR:  '${year}'  CONSULTATIONS REPORT`, {
-                              underline: true,
-                              width: 595,
-                              align: "center",
-                            });
-    
-                            doc.moveDown();
-    
-                            table
-                              // add some plugins (here, a 'fit-to-width' for a column)
-                              .addPlugin(
-                                new (require("voilab-pdf-table/plugins/fitcolumn"))(
-                                  {
-                                    column: "name",
-                                  }
+                  connection.query(
+                    query,
+                    [req.session.userId],
+                    (err, email) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query2 =
+                          "SELECT * FROM doctor_details WHERE user_id=?";
+                        connection.query(
+                          query2,
+                          [req.session.userId],
+                          (err, results) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              let d = new Date();
+                              let date =
+                                d.getFullYear() +
+                                "-" +
+                                ("0" + (d.getMonth() + 1)).slice(-2) +
+                                "-" +
+                                ("0" + d.getDate()).slice(-2);
+
+                              let time =
+                                ("0" + d.getHours()).slice(-2) +
+                                ":" +
+                                ("0" + d.getMinutes()).slice(-2);
+
+                              var doc = new PdfDocument();
+                              table = new PdfTable(doc, {
+                                bottomMargin: 30,
+                              });
+
+                              pdfName = Math.floor(
+                                Math.random() * (999999 - 100000) + 100000
+                              );
+                              doc.pipe(
+                                fs.createWriteStream(
+                                  path.resolve(
+                                    __dirname,
+                                    `../pdfs/${pdfName}.pdf`
+                                  )
                                 )
-                              )
-                              // set defaults to your columns
-                              .setColumnsDefaults({
-                                headerBorder: ["B"],
-                                // border: ["B"],
-                                padding: [10, 10, 0, 0],
-                              })
-                              // add table columns
-                              .addColumns([
+                              );
+
+                              doc.image(
+                                path.resolve(
+                                  __dirname,
+                                  "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                ),
+                                30,
+                                20,
+                                { width: 130 }
+                              );
+
+                              doc.fontSize(13);
+                              doc.font("Times-Bold");
+                              doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("P.O BOX 56 - 01004,", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.moveDown();
+                              doc.text("KANJUKU", {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.font("Times-Roman");
+                              doc.moveDown();
+                              doc.text(`${date}     ${time}`, {
+                                width: 315,
+                                align: "center",
+                              });
+
+                              doc.fontSize(11);
+                              doc.font("Times-Roman");
+                              doc.text(
+                                `NAME:            ${results[0].name}`,
+                                75,
+                                180
+                              );
+
+                              doc.moveDown();
+                              doc.text(`EMAIL:           ${email[0].email}`);
+
+                              doc.moveDown();
+                              doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                              doc.moveDown();
+                              doc.text(`LOCATION:    ${results[0].location}`);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+
+                              doc.font("Times-Bold");
+                              doc.fontSize(13);
+
+                              doc.text(
+                                `YEAR:  '${year}'  CONSULTATIONS REPORT`,
                                 {
-                                  id: "name",
-                                  header: "Patient's Name",
-                                  align: "left",
-                                },
-                                {
-                                  id: "paidConsults",
-                                  header: "Paid Consultations",
-                                  width: 130,
-                                },
-                                {
-                                  id: "messages",
-                                  header: "Messages",
-                                  width: 130,
-                                },
-                              ]);
-                            doc.moveDown();
-                            doc.font("Times-Roman");
-    
-                            table.addBody(details);
-    
-                            doc.text("", 0);
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.moveDown();
-                            doc.font("Times-Bold");
-                            doc.text(
-                              "Total Number of Messages: " + totalMessages,
-                              75
-                            );
-    
-                            doc.end();
-                            resolve();
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                }
+                              );
+
+                              doc.moveDown();
+
+                              table
+                                // add some plugins (here, a 'fit-to-width' for a column)
+                                .addPlugin(
+                                  new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                    {
+                                      column: "name",
+                                    }
+                                  )
+                                )
+                                // set defaults to your columns
+                                .setColumnsDefaults({
+                                  headerBorder: ["B"],
+                                  // border: ["B"],
+                                  padding: [10, 10, 0, 0],
+                                })
+                                // add table columns
+                                .addColumns([
+                                  {
+                                    id: "name",
+                                    header: "Patient's Name",
+                                    align: "left",
+                                  },
+                                  {
+                                    id: "paidConsults",
+                                    header: "Paid Consultations",
+                                    width: 130,
+                                  },
+                                  {
+                                    id: "messages",
+                                    header: "Messages",
+                                    width: 130,
+                                  },
+                                ]);
+                              doc.moveDown();
+                              doc.font("Times-Roman");
+
+                              table.addBody(details);
+
+                              doc.text("", 0);
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.moveDown();
+                              doc.font("Times-Bold");
+                              doc.text(
+                                "Total Number of Messages: " + totalMessages,
+                                75
+                              );
+
+                              doc.end();
+                              resolve();
+                            }
                           }
-                        }
-                      );
+                        );
+                      }
                     }
-                  });
+                  );
                 }
                 connection.release();
               });
             });
             generatePdf.then(() => {
-            return res.render("consultation-records", {
-              pdfName:`${pdfName}.pdf`,
-              accountType: req.session.accountType,
-              filterType: "year",
-              all: "",
-              search: "",
-              date: "",
-              month: "",
-              year: "selected",
-              lastWeek: "",
-              lastMonth: "",
-              searchValue: "",
-              dateValue: "",
-              monthValue: "",
-              yearValue: year,
-              totalMessages: totalMessages,
-              details: details,
+              return res.render("consultation-records", {
+                pdfName: `${pdfName}.pdf`,
+                accountType: req.session.accountType,
+                filterType: "year",
+                all: "",
+                search: "",
+                date: "",
+                month: "",
+                year: "selected",
+                lastWeek: "",
+                lastMonth: "",
+                searchValue: "",
+                dateValue: "",
+                monthValue: "",
+                yearValue: year,
+                totalMessages: totalMessages,
+                details: details,
+              });
             });
           });
-        })
         }
       }
     }
@@ -10195,17 +10293,17 @@ router.post("/filter-consultation-records", (req, res) => {
                             ("0" + (d.getMonth() + 1)).slice(-2) +
                             "-" +
                             ("0" + d.getDate()).slice(-2);
-  
+
                           let time =
                             ("0" + d.getHours()).slice(-2) +
                             ":" +
                             ("0" + d.getMinutes()).slice(-2);
-  
+
                           var doc = new PdfDocument();
                           table = new PdfTable(doc, {
                             bottomMargin: 30,
                           });
-  
+
                           pdfName = Math.floor(
                             Math.random() * (999999 - 100000) + 100000
                           );
@@ -10214,7 +10312,7 @@ router.post("/filter-consultation-records", (req, res) => {
                               path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
                             )
                           );
-  
+
                           doc.image(
                             path.resolve(
                               __dirname,
@@ -10224,33 +10322,33 @@ router.post("/filter-consultation-records", (req, res) => {
                             20,
                             { width: 130 }
                           );
-  
+
                           doc.fontSize(13);
                           doc.font("Times-Bold");
                           doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("P.O BOX 56 - 01004,", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("KANJUKU", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.font("Times-Roman");
                           doc.moveDown();
                           doc.text(`${date}     ${time}`, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.fontSize(11);
                           doc.font("Times-Roman");
                           doc.text(
@@ -10258,33 +10356,36 @@ router.post("/filter-consultation-records", (req, res) => {
                             75,
                             180
                           );
-  
+
                           doc.moveDown();
                           doc.text(`EMAIL:           ${email[0].email}`);
-  
+
                           doc.moveDown();
                           doc.text(`PHONE NO:    ${results[0].phone_no}`);
-  
+
                           doc.moveDown();
                           doc.text(`LOCATION:    ${results[0].location}`);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
-  
+
                           doc.font("Times-Bold");
                           doc.fontSize(13);
-  
-                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
-                            underline: true,
-                            width: 595,
-                            align: "center",
-                          });
-  
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
                           doc.moveDown();
-  
+
                           table
                             // add some plugins (here, a 'fit-to-width' for a column)
                             .addPlugin(
@@ -10320,9 +10421,9 @@ router.post("/filter-consultation-records", (req, res) => {
                             ]);
                           doc.moveDown();
                           doc.font("Times-Roman");
-  
+
                           table.addBody(details);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
@@ -10332,7 +10433,7 @@ router.post("/filter-consultation-records", (req, res) => {
                             "Total Number of Messages: " + totalMessages,
                             75
                           );
-  
+
                           doc.end();
                           resolve();
                         }
@@ -10345,25 +10446,25 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           generatePdf.then(() => {
-          return res.render("consultation-records", {
-            pdfName:`${pdfName}.pdf`,
-            accountType: req.session.accountType,
-            filterType: "lastWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "selected",
-            lastMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            totalMessages: totalMessages,
-            details: details,
+            return res.render("consultation-records", {
+              pdfName: `${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "selected",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
           });
-        })
         });
       } else {
         //// doctor account
@@ -10491,17 +10592,17 @@ router.post("/filter-consultation-records", (req, res) => {
                             ("0" + (d.getMonth() + 1)).slice(-2) +
                             "-" +
                             ("0" + d.getDate()).slice(-2);
-  
+
                           let time =
                             ("0" + d.getHours()).slice(-2) +
                             ":" +
                             ("0" + d.getMinutes()).slice(-2);
-  
+
                           var doc = new PdfDocument();
                           table = new PdfTable(doc, {
                             bottomMargin: 30,
                           });
-  
+
                           pdfName = Math.floor(
                             Math.random() * (999999 - 100000) + 100000
                           );
@@ -10510,7 +10611,7 @@ router.post("/filter-consultation-records", (req, res) => {
                               path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
                             )
                           );
-  
+
                           doc.image(
                             path.resolve(
                               __dirname,
@@ -10520,33 +10621,33 @@ router.post("/filter-consultation-records", (req, res) => {
                             20,
                             { width: 130 }
                           );
-  
+
                           doc.fontSize(13);
                           doc.font("Times-Bold");
                           doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("P.O BOX 56 - 01004,", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("KANJUKU", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.font("Times-Roman");
                           doc.moveDown();
                           doc.text(`${date}     ${time}`, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.fontSize(11);
                           doc.font("Times-Roman");
                           doc.text(
@@ -10554,33 +10655,36 @@ router.post("/filter-consultation-records", (req, res) => {
                             75,
                             180
                           );
-  
+
                           doc.moveDown();
                           doc.text(`EMAIL:           ${email[0].email}`);
-  
+
                           doc.moveDown();
                           doc.text(`PHONE NO:    ${results[0].phone_no}`);
-  
+
                           doc.moveDown();
                           doc.text(`LOCATION:    ${results[0].location}`);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
-  
+
                           doc.font("Times-Bold");
                           doc.fontSize(13);
-  
-                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
-                            underline: true,
-                            width: 595,
-                            align: "center",
-                          });
-  
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
                           doc.moveDown();
-  
+
                           table
                             // add some plugins (here, a 'fit-to-width' for a column)
                             .addPlugin(
@@ -10616,9 +10720,9 @@ router.post("/filter-consultation-records", (req, res) => {
                             ]);
                           doc.moveDown();
                           doc.font("Times-Roman");
-  
+
                           table.addBody(details);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
@@ -10628,7 +10732,7 @@ router.post("/filter-consultation-records", (req, res) => {
                             "Total Number of Messages: " + totalMessages,
                             75
                           );
-  
+
                           doc.end();
                           resolve();
                         }
@@ -10641,26 +10745,26 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           generatePdf.then(() => {
-          return res.render("consultation-records", {
-            pdfName:`${pdfName}.pdf`,
-            accountType: req.session.accountType,
-            filterType: "lastWeek",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "selected",
-            lastMonth: "",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            totalMessages: totalMessages,
-            details: details,
+            return res.render("consultation-records", {
+              pdfName: `${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastWeek",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "selected",
+              lastMonth: "",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
           });
         });
-      })
       }
     }
 
@@ -10807,17 +10911,17 @@ router.post("/filter-consultation-records", (req, res) => {
                             ("0" + (d.getMonth() + 1)).slice(-2) +
                             "-" +
                             ("0" + d.getDate()).slice(-2);
-  
+
                           let time =
                             ("0" + d.getHours()).slice(-2) +
                             ":" +
                             ("0" + d.getMinutes()).slice(-2);
-  
+
                           var doc = new PdfDocument();
                           table = new PdfTable(doc, {
                             bottomMargin: 30,
                           });
-  
+
                           pdfName = Math.floor(
                             Math.random() * (999999 - 100000) + 100000
                           );
@@ -10826,7 +10930,7 @@ router.post("/filter-consultation-records", (req, res) => {
                               path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
                             )
                           );
-  
+
                           doc.image(
                             path.resolve(
                               __dirname,
@@ -10836,33 +10940,33 @@ router.post("/filter-consultation-records", (req, res) => {
                             20,
                             { width: 130 }
                           );
-  
+
                           doc.fontSize(13);
                           doc.font("Times-Bold");
                           doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("P.O BOX 56 - 01004,", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("KANJUKU", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.font("Times-Roman");
                           doc.moveDown();
                           doc.text(`${date}     ${time}`, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.fontSize(11);
                           doc.font("Times-Roman");
                           doc.text(
@@ -10870,33 +10974,36 @@ router.post("/filter-consultation-records", (req, res) => {
                             75,
                             180
                           );
-  
+
                           doc.moveDown();
                           doc.text(`EMAIL:           ${email[0].email}`);
-  
+
                           doc.moveDown();
                           doc.text(`PHONE NO:    ${results[0].phone_no}`);
-  
+
                           doc.moveDown();
                           doc.text(`LOCATION:    ${results[0].location}`);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
-  
+
                           doc.font("Times-Bold");
                           doc.fontSize(13);
-  
-                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
-                            underline: true,
-                            width: 595,
-                            align: "center",
-                          });
-  
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
                           doc.moveDown();
-  
+
                           table
                             // add some plugins (here, a 'fit-to-width' for a column)
                             .addPlugin(
@@ -10932,9 +11039,9 @@ router.post("/filter-consultation-records", (req, res) => {
                             ]);
                           doc.moveDown();
                           doc.font("Times-Roman");
-  
+
                           table.addBody(details);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
@@ -10944,7 +11051,7 @@ router.post("/filter-consultation-records", (req, res) => {
                             "Total Number of Messages: " + totalMessages,
                             75
                           );
-  
+
                           doc.end();
                           resolve();
                         }
@@ -10957,25 +11064,25 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           generatePdf.then(() => {
-          return res.render("consultation-records", {
-            pdfName:`${pdfName}.pdf`,
-            accountType: req.session.accountType,
-            filterType: "lastMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            lastMonth: "selected",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            totalMessages: totalMessages,
-            details: details,
+            return res.render("consultation-records", {
+              pdfName: `${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "selected",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
           });
-        })
         });
       } else {
         //// doctor account
@@ -11103,17 +11210,17 @@ router.post("/filter-consultation-records", (req, res) => {
                             ("0" + (d.getMonth() + 1)).slice(-2) +
                             "-" +
                             ("0" + d.getDate()).slice(-2);
-  
+
                           let time =
                             ("0" + d.getHours()).slice(-2) +
                             ":" +
                             ("0" + d.getMinutes()).slice(-2);
-  
+
                           var doc = new PdfDocument();
                           table = new PdfTable(doc, {
                             bottomMargin: 30,
                           });
-  
+
                           pdfName = Math.floor(
                             Math.random() * (999999 - 100000) + 100000
                           );
@@ -11122,7 +11229,7 @@ router.post("/filter-consultation-records", (req, res) => {
                               path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
                             )
                           );
-  
+
                           doc.image(
                             path.resolve(
                               __dirname,
@@ -11132,33 +11239,33 @@ router.post("/filter-consultation-records", (req, res) => {
                             20,
                             { width: 130 }
                           );
-  
+
                           doc.fontSize(13);
                           doc.font("Times-Bold");
                           doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("P.O BOX 56 - 01004,", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.moveDown();
                           doc.text("KANJUKU", {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.font("Times-Roman");
                           doc.moveDown();
                           doc.text(`${date}     ${time}`, {
                             width: 315,
                             align: "center",
                           });
-  
+
                           doc.fontSize(11);
                           doc.font("Times-Roman");
                           doc.text(
@@ -11166,33 +11273,36 @@ router.post("/filter-consultation-records", (req, res) => {
                             75,
                             180
                           );
-  
+
                           doc.moveDown();
                           doc.text(`EMAIL:           ${email[0].email}`);
-  
+
                           doc.moveDown();
                           doc.text(`PHONE NO:    ${results[0].phone_no}`);
-  
+
                           doc.moveDown();
                           doc.text(`LOCATION:    ${results[0].location}`);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
                           doc.moveDown();
-  
+
                           doc.font("Times-Bold");
                           doc.fontSize(13);
-  
-                          doc.text(`'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`, {
-                            underline: true,
-                            width: 595,
-                            align: "center",
-                          });
-  
+
+                          doc.text(
+                            `'${date2}'  TO  '${today}'  CONSULTATIONS REPORT`,
+                            {
+                              underline: true,
+                              width: 595,
+                              align: "center",
+                            }
+                          );
+
                           doc.moveDown();
-  
+
                           table
                             // add some plugins (here, a 'fit-to-width' for a column)
                             .addPlugin(
@@ -11228,9 +11338,9 @@ router.post("/filter-consultation-records", (req, res) => {
                             ]);
                           doc.moveDown();
                           doc.font("Times-Roman");
-  
+
                           table.addBody(details);
-  
+
                           doc.text("", 0);
                           doc.moveDown();
                           doc.moveDown();
@@ -11240,7 +11350,7 @@ router.post("/filter-consultation-records", (req, res) => {
                             "Total Number of Messages: " + totalMessages,
                             75
                           );
-  
+
                           doc.end();
                           resolve();
                         }
@@ -11253,26 +11363,26 @@ router.post("/filter-consultation-records", (req, res) => {
             });
           });
           generatePdf.then(() => {
-          return res.render("consultation-records", {
-            pdfName:`${pdfName}.pdf`,
-            accountType: req.session.accountType,
-            filterType: "lastMonth",
-            all: "",
-            search: "",
-            date: "",
-            month: "",
-            year: "",
-            lastWeek: "",
-            lastMonth: "selected",
-            searchValue: "",
-            dateValue: "",
-            monthValue: "",
-            yearValue: year,
-            totalMessages: totalMessages,
-            details: details,
+            return res.render("consultation-records", {
+              pdfName: `${pdfName}.pdf`,
+              accountType: req.session.accountType,
+              filterType: "lastMonth",
+              all: "",
+              search: "",
+              date: "",
+              month: "",
+              year: "",
+              lastWeek: "",
+              lastMonth: "selected",
+              searchValue: "",
+              dateValue: "",
+              monthValue: "",
+              yearValue: year,
+              totalMessages: totalMessages,
+              details: details,
+            });
           });
         });
-      })
       }
     }
   } else {
@@ -11534,25 +11644,394 @@ router.get("/payment-records", (req, res) => {
               });
             });
             getUserDetails.then((userDetails) => {
-              userDetails.sort((a, b) => b.totalFees - a.totalFees);
-              return res.render("payment-records", {
-                accountType: req.session.accountType,
-                filterType: "all",
-                all: "selected",
-                search: "",
-                date: "",
-                month: "",
-                year: "",
-                lastWeek: "",
-                lastMonth: "",
-                searchValue: "",
-                dateValue: "",
-                monthValue: "",
-                yearValue: year,
-                summary: summary,
-                consultationDetails: consultationDetails,
-                appointmentDetails: appointmentDetails,
-                userDetails: userDetails,
+              const generatePdf = new Promise((resolve, reject) => {
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT email FROM users WHERE user_id=?";
+                    connection.query(
+                      query,
+                      [req.session.userId],
+                      (err, email) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          const query2 =
+                            "SELECT * FROM patient_details WHERE user_id=?";
+                          connection.query(
+                            query2,
+                            [req.session.userId],
+                            (err, results) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                let d = new Date();
+                                let date =
+                                  d.getFullYear() +
+                                  "-" +
+                                  ("0" + (d.getMonth() + 1)).slice(-2) +
+                                  "-" +
+                                  ("0" + d.getDate()).slice(-2);
+
+                                let time =
+                                  ("0" + d.getHours()).slice(-2) +
+                                  ":" +
+                                  ("0" + d.getMinutes()).slice(-2);
+
+                                var doc = new PdfDocument();
+                                table = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+                                table2 = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+                                table3 = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+
+                                pdfName = Math.floor(
+                                  Math.random() * (999999 - 100000) + 100000
+                                );
+                                doc.pipe(
+                                  fs.createWriteStream(
+                                    path.resolve(
+                                      __dirname,
+                                      `../pdfs/${pdfName}.pdf`
+                                    )
+                                  )
+                                );
+
+                                doc.image(
+                                  path.resolve(
+                                    __dirname,
+                                    "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                  ),
+                                  30,
+                                  20,
+                                  { width: 130 }
+                                );
+
+                                doc.fontSize(13);
+                                doc.font("Times-Bold");
+                                doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("P.O BOX 56 - 01004,", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("KANJUKU", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.font("Times-Roman");
+                                doc.moveDown();
+                                doc.text(`${date}     ${time}`, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.fontSize(11);
+                                doc.font("Times-Roman");
+                                doc.text(
+                                  `NAME:            ${results[0].name}`,
+                                  75,
+                                  180
+                                );
+
+                                doc.moveDown();
+                                doc.text(`EMAIL:           ${email[0].email}`);
+
+                                doc.moveDown();
+                                doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                                doc.moveDown();
+                                doc.text(`LOCATION:    ${results[0].location}`);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+
+                                doc.font("Times-Bold");
+                                doc.fontSize(13);
+
+                                doc.text(`FULL PAYMENTS REPORT`, {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.text("CONSULTATIONS PAYMENTS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "amount",
+                                      header: "Amount (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "consultation_expiry_time",
+                                      header: "Consultation Expiry",
+                                      width: 130,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table.addBody(consultationDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "No. Of Consultations: " +
+                                    summary.consultationCount,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  "Total Consultations Payments: Kshs " +
+                                    summary.consultationTotal,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.text("APPOINTMENTS PAYMENTS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table2
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "amount",
+                                      header: "Amount (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "appointment_date",
+                                      header: "Appointment Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "appointment_time",
+                                      header: "Appointment Time",
+                                      width: 100,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table2.addBody(appointmentDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "No. Of Appointments: " +
+                                    summary.appointmentCount,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  "Total Appointments Payments: Kshs " +
+                                    summary.appointmentTotal,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.text(
+                                  `Total Engagements: ${
+                                    summary.appointmentCount +
+                                    summary.consultationCount
+                                  }`,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  `Total Payments: Kshs ${
+                                    summary.appointmentTotal +
+                                    summary.consultationTotal
+                                  }`,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.text("PAYMENTS RANKINGS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table3
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "consultationCount",
+                                      header: "Consultations",
+                                      width: 75,
+                                    },
+                                    {
+                                      id: "consultationFees",
+                                      header: "Consultations Payments (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "appointmentCount",
+                                      header: "Appointments",
+                                      width: 75,
+                                    },
+                                    {
+                                      id: "appointmentFees",
+                                      header: "Appointments Payments (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "totalFees",
+                                      header: "Total Payments (Kshs)",
+                                      width: 70,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table3.addBody(userDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                doc.end();
+                                resolve();
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              generatePdf.then(() => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  pdfName: `${pdfName}.pdf`,
+                  accountType: req.session.accountType,
+                  filterType: "all",
+                  all: "selected",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "",
+                  lastMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
               });
             });
           });
@@ -11810,25 +12289,395 @@ router.get("/payment-records", (req, res) => {
               });
             });
             getUserDetails.then((userDetails) => {
-              userDetails.sort((a, b) => b.totalFees - a.totalFees);
-              return res.render("payment-records", {
-                accountType: req.session.accountType,
-                filterType: "all",
-                all: "selected",
-                search: "",
-                date: "",
-                month: "",
-                year: "",
-                lastWeek: "",
-                lastMonth: "",
-                searchValue: "",
-                dateValue: "",
-                monthValue: "",
-                yearValue: year,
-                summary: summary,
-                consultationDetails: consultationDetails,
-                appointmentDetails: appointmentDetails,
-                userDetails: userDetails,
+              const generatePdf = new Promise((resolve, reject) => {
+                pool.getConnection((err, connection) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    const query = "SELECT email FROM users WHERE user_id=?";
+                    connection.query(
+                      query,
+                      [req.session.userId],
+                      (err, email) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          const query2 =
+                            "SELECT * FROM doctor_details WHERE user_id=?";
+                          connection.query(
+                            query2,
+                            [req.session.userId],
+                            (err, results) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                let d = new Date();
+                                let date =
+                                  d.getFullYear() +
+                                  "-" +
+                                  ("0" + (d.getMonth() + 1)).slice(-2) +
+                                  "-" +
+                                  ("0" + d.getDate()).slice(-2);
+
+                                let time =
+                                  ("0" + d.getHours()).slice(-2) +
+                                  ":" +
+                                  ("0" + d.getMinutes()).slice(-2);
+
+                                var doc = new PdfDocument();
+                                table = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+                                table2 = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+                                table3 = new PdfTable(doc, {
+                                  bottomMargin: 30,
+                                });
+
+                                pdfName = Math.floor(
+                                  Math.random() * (999999 - 100000) + 100000
+                                );
+                                doc.pipe(
+                                  fs.createWriteStream(
+                                    path.resolve(
+                                      __dirname,
+                                      `../pdfs/${pdfName}.pdf`
+                                    )
+                                  )
+                                );
+
+                                doc.image(
+                                  path.resolve(
+                                    __dirname,
+                                    "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                  ),
+                                  30,
+                                  20,
+                                  { width: 130 }
+                                );
+
+                                doc.fontSize(13);
+                                doc.font("Times-Bold");
+                                doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("P.O BOX 56 - 01004,", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("KANJUKU", {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.font("Times-Roman");
+                                doc.moveDown();
+                                doc.text(`${date}     ${time}`, {
+                                  width: 315,
+                                  align: "center",
+                                });
+
+                                doc.fontSize(11);
+                                doc.font("Times-Roman");
+                                doc.text(
+                                  `NAME:            ${results[0].name}`,
+                                  75,
+                                  180
+                                );
+
+                                doc.moveDown();
+                                doc.text(`EMAIL:           ${email[0].email}`);
+
+                                doc.moveDown();
+                                doc.text(`PHONE NO:    ${results[0].phone_no}`);
+
+                                doc.moveDown();
+                                doc.text(`LOCATION:    ${results[0].location}`);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+
+                                doc.font("Times-Bold");
+                                doc.fontSize(13);
+
+                                doc.text(`FULL PAYMENTS REPORT`, {
+                                  underline: true,
+                                  width: 595,
+                                  align: "center",
+                                });
+
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.text("CONSULTATIONS PAYMENTS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "amount",
+                                      header: "Amount (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "consultation_expiry_time",
+                                      header: "Consultation Expiry",
+                                      width: 130,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table.addBody(consultationDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "No. Of Consultations: " +
+                                    summary.consultationCount,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  "Total Consultations Payments: Kshs " +
+                                    summary.consultationTotal,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.text("APPOINTMENTS PAYMENTS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table2
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "date",
+                                      header: "Date",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "amount",
+                                      header: "Amount (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "appointment_date",
+                                      header: "Appointment Date",
+                                      width: 100,
+                                    },
+                                    {
+                                      id: "appointment_time",
+                                      header: "Appointment Time",
+                                      width: 100,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table2.addBody(appointmentDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.font("Times-Bold");
+                                doc.text(
+                                  "No. Of Appointments: " +
+                                    summary.appointmentCount,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  "Total Appointments Payments: Kshs " +
+                                    summary.appointmentTotal,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.moveDown();
+
+                                doc.text(
+                                  `Total Engagements: ${
+                                    summary.appointmentCount +
+                                    summary.consultationCount
+                                  }`,
+                                  75
+                                );
+                                doc.moveDown();
+                                doc.text(
+                                  `Total Payments: Kshs ${
+                                    summary.appointmentTotal +
+                                    summary.consultationTotal
+                                  }`,
+                                  75
+                                );
+
+                                doc.moveDown();
+                                doc.moveDown();
+                                doc.text("", 75);
+                                doc.moveDown();
+                                doc.text("PAYMENTS RANKINGS", {
+                                  underline: true,
+                                });
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                table3
+                                  // add some plugins (here, a 'fit-to-width' for a column)
+                                  .addPlugin(
+                                    new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                      {
+                                        column: "name",
+                                      }
+                                    )
+                                  )
+                                  // set defaults to your columns
+                                  .setColumnsDefaults({
+                                    headerBorder: ["B"],
+                                    // border: ["B"],
+                                    padding: [10, 10, 0, 0],
+                                  })
+                                  // add table columns
+                                  .addColumns([
+                                    {
+                                      id: "name",
+                                      header: "Name",
+                                      align: "left",
+                                    },
+                                    {
+                                      id: "consultationCount",
+                                      header: "Consultations",
+                                      width: 75,
+                                    },
+                                    {
+                                      id: "consultationFees",
+                                      header: "Consultations Payments (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "appointmentCount",
+                                      header: "Appointments",
+                                      width: 75,
+                                    },
+                                    {
+                                      id: "appointmentFees",
+                                      header: "Appointments Payments (Kshs)",
+                                      width: 80,
+                                    },
+                                    {
+                                      id: "totalFees",
+                                      header: "Total Payments (Kshs)",
+                                      width: 70,
+                                    },
+                                  ]);
+                                doc.moveDown();
+                                doc.font("Times-Roman");
+
+                                table3.addBody(userDetails);
+
+                                doc.text("", 0);
+                                doc.moveDown();
+
+                                doc.end();
+                                resolve();
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                  connection.release();
+                });
+              });
+              generatePdf.then(() => {
+                userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                return res.render("payment-records", {
+                  pdfName: `${pdfName}.pdf`,
+                  accountType: req.session.accountType,
+                  filterType: "all",
+                  all: "selected",
+                  search: "",
+                  date: "",
+                  month: "",
+                  year: "",
+                  lastWeek: "",
+                  lastMonth: "",
+                  searchValue: "",
+                  dateValue: "",
+                  monthValue: "",
+                  yearValue: year,
+                  summary: summary,
+                  consultationDetails: consultationDetails,
+                  appointmentDetails: appointmentDetails,
+                  userDetails: userDetails,
+                });
               });
             });
           });
@@ -12117,25 +12966,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "date",
-                    all: "",
-                    search: "",
-                    date: "selected",
-                    month: "",
-                    year: "",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: req.body.date,
-                    monthValue: "",
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM patient_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `DATE:  '${req.body.date}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "date",
+                      all: "",
+                      search: "",
+                      date: "selected",
+                      month: "",
+                      year: "",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: req.body.date,
+                      monthValue: "",
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -12402,25 +13632,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "date",
-                    all: "",
-                    search: "",
-                    date: "selected",
-                    month: "",
-                    year: "",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: req.body.date,
-                    monthValue: "",
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM doctor_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `DATE:  '${req.body.date}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "date",
+                      all: "",
+                      search: "",
+                      date: "selected",
+                      month: "",
+                      year: "",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: req.body.date,
+                      monthValue: "",
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -12429,6 +14040,7 @@ router.post("/filter-payment-records", (req, res) => {
         }
       } else {
         return res.render("payment-records", {
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "date",
           all: "",
@@ -12714,25 +14326,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "month",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "selected",
-                    year: "",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: req.body.month,
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM patient_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `MONTH:  '${req.body.month}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "month",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "selected",
+                      year: "",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: req.body.month,
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -12999,25 +14992,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "month",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "selected",
-                    year: "",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: req.body.month,
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM doctor_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `MONTH:  '${req.body.month}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "month",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "selected",
+                      year: "",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: req.body.month,
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -13026,6 +15400,7 @@ router.post("/filter-payment-records", (req, res) => {
         }
       } else {
         return res.render("payment-records", {
+          pdfName: `${pdfName}.pdf`,
           accountType: req.session.accountType,
           filterType: "month",
           all: "",
@@ -13311,25 +15686,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "year",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "",
-                    year: "selected",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: "",
-                    yearValue: req.body.year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM patient_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `YEAR:  '${req.body.year}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "year",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "",
+                      year: "selected",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: "",
+                      yearValue: req.body.year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -13596,25 +16352,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "year",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "",
-                    year: "selected",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: "",
-                    yearValue: req.body.year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM doctor_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `YEAR:  '${req.body.year}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "year",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "",
+                      year: "selected",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: "",
+                      yearValue: req.body.year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -13883,25 +17020,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "year",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "",
-                    year: "selected",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: "",
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM patient_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `YEAR:  '${year}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "year",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "",
+                      year: "selected",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: "",
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -14168,25 +17686,406 @@ router.post("/filter-payment-records", (req, res) => {
                   });
                 });
                 getUserDetails.then((userDetails) => {
-                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                  return res.render("payment-records", {
-                    accountType: req.session.accountType,
-                    filterType: "year",
-                    all: "",
-                    search: "",
-                    date: "",
-                    month: "",
-                    year: "selected",
-                    lastWeek: "",
-                    lastMonth: "",
-                    searchValue: "",
-                    dateValue: "",
-                    monthValue: "",
-                    yearValue: year,
-                    summary: summary,
-                    consultationDetails: consultationDetails,
-                    appointmentDetails: appointmentDetails,
-                    userDetails: userDetails,
+                  const generatePdf = new Promise((resolve, reject) => {
+                    pool.getConnection((err, connection) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        const query = "SELECT email FROM users WHERE user_id=?";
+                        connection.query(
+                          query,
+                          [req.session.userId],
+                          (err, email) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              const query2 =
+                                "SELECT * FROM doctor_details WHERE user_id=?";
+                              connection.query(
+                                query2,
+                                [req.session.userId],
+                                (err, results) => {
+                                  if (err) {
+                                    throw err;
+                                  } else {
+                                    let d = new Date();
+                                    let date =
+                                      d.getFullYear() +
+                                      "-" +
+                                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                                      "-" +
+                                      ("0" + d.getDate()).slice(-2);
+
+                                    let time =
+                                      ("0" + d.getHours()).slice(-2) +
+                                      ":" +
+                                      ("0" + d.getMinutes()).slice(-2);
+
+                                    var doc = new PdfDocument();
+                                    table = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table2 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+                                    table3 = new PdfTable(doc, {
+                                      bottomMargin: 30,
+                                    });
+
+                                    pdfName = Math.floor(
+                                      Math.random() * (999999 - 100000) + 100000
+                                    );
+                                    doc.pipe(
+                                      fs.createWriteStream(
+                                        path.resolve(
+                                          __dirname,
+                                          `../pdfs/${pdfName}.pdf`
+                                        )
+                                      )
+                                    );
+
+                                    doc.image(
+                                      path.resolve(
+                                        __dirname,
+                                        "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                      ),
+                                      30,
+                                      20,
+                                      { width: 130 }
+                                    );
+
+                                    doc.fontSize(13);
+                                    doc.font("Times-Bold");
+                                    doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("P.O BOX 56 - 01004,", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.moveDown();
+                                    doc.text("KANJUKU", {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.font("Times-Roman");
+                                    doc.moveDown();
+                                    doc.text(`${date}     ${time}`, {
+                                      width: 315,
+                                      align: "center",
+                                    });
+
+                                    doc.fontSize(11);
+                                    doc.font("Times-Roman");
+                                    doc.text(
+                                      `NAME:            ${results[0].name}`,
+                                      75,
+                                      180
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `EMAIL:           ${email[0].email}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `PHONE NO:    ${results[0].phone_no}`
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text(
+                                      `LOCATION:    ${results[0].location}`
+                                    );
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+
+                                    doc.font("Times-Bold");
+                                    doc.fontSize(13);
+
+                                    doc.text(
+                                      `YEAR:  '${year}'  PAYMENTS REPORT`,
+                                      {
+                                        ////// header
+                                        underline: true,
+                                        width: 595,
+                                        align: "center",
+                                      }
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("CONSULTATIONS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "consultation_expiry_time",
+                                          header: "Consultation Expiry",
+                                          width: 130,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table.addBody(consultationDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Consultations: " +
+                                        summary.consultationCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Consultations Payments: Kshs " +
+                                        summary.consultationTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("APPOINTMENTS PAYMENTS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table2
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "date",
+                                          header: "Date",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "amount",
+                                          header: "Amount (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointment_date",
+                                          header: "Appointment Date",
+                                          width: 100,
+                                        },
+                                        {
+                                          id: "appointment_time",
+                                          header: "Appointment Time",
+                                          width: 100,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table2.addBody(appointmentDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.font("Times-Bold");
+                                    doc.text(
+                                      "No. Of Appointments: " +
+                                        summary.appointmentCount,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      "Total Appointments Payments: Kshs " +
+                                        summary.appointmentTotal,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Engagements: ${
+                                        summary.appointmentCount +
+                                        summary.consultationCount
+                                      }`,
+                                      75
+                                    );
+                                    doc.moveDown();
+                                    doc.text(
+                                      `Total Payments: Kshs ${
+                                        summary.appointmentTotal +
+                                        summary.consultationTotal
+                                      }`,
+                                      75
+                                    );
+
+                                    doc.moveDown();
+                                    doc.moveDown();
+                                    doc.text("", 75);
+                                    doc.moveDown();
+                                    doc.text("PAYMENTS RANKINGS", {
+                                      underline: true,
+                                    });
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    table3
+                                      // add some plugins (here, a 'fit-to-width' for a column)
+                                      .addPlugin(
+                                        new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                          {
+                                            column: "name",
+                                          }
+                                        )
+                                      )
+                                      // set defaults to your columns
+                                      .setColumnsDefaults({
+                                        headerBorder: ["B"],
+                                        // border: ["B"],
+                                        padding: [10, 10, 0, 0],
+                                      })
+                                      // add table columns
+                                      .addColumns([
+                                        {
+                                          id: "name",
+                                          header: "Name",
+                                          align: "left",
+                                        },
+                                        {
+                                          id: "consultationCount",
+                                          header: "Consultations",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "consultationFees",
+                                          header:
+                                            "Consultations Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "appointmentCount",
+                                          header: "Appointments",
+                                          width: 75,
+                                        },
+                                        {
+                                          id: "appointmentFees",
+                                          header:
+                                            "Appointments Payments (Kshs)",
+                                          width: 80,
+                                        },
+                                        {
+                                          id: "totalFees",
+                                          header: "Total Payments (Kshs)",
+                                          width: 70,
+                                        },
+                                      ]);
+                                    doc.moveDown();
+                                    doc.font("Times-Roman");
+
+                                    table3.addBody(userDetails);
+
+                                    doc.text("", 0);
+                                    doc.moveDown();
+
+                                    doc.end();
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                      connection.release();
+                    });
+                  });
+                  generatePdf.then(() => {
+                    userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                    return res.render("payment-records", {
+                      pdfName: `${pdfName}.pdf`,
+                      accountType: req.session.accountType,
+                      filterType: "year",
+                      all: "",
+                      search: "",
+                      date: "",
+                      month: "",
+                      year: "selected",
+                      lastWeek: "",
+                      lastMonth: "",
+                      searchValue: "",
+                      dateValue: "",
+                      monthValue: "",
+                      yearValue: year,
+                      summary: summary,
+                      consultationDetails: consultationDetails,
+                      appointmentDetails: appointmentDetails,
+                      userDetails: userDetails,
+                    });
                   });
                 });
               });
@@ -14480,25 +18379,404 @@ router.post("/filter-payment-records", (req, res) => {
                 });
               });
               getUserDetails.then((userDetails) => {
-                userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                return res.render("payment-records", {
-                  accountType: req.session.accountType,
-                  filterType: "lastWeek",
-                  all: "",
-                  search: "",
-                  date: "",
-                  month: "",
-                  year: "",
-                  lastWeek: "selected",
-                  lastMonth: "",
-                  searchValue: "",
-                  dateValue: "",
-                  monthValue: "",
-                  yearValue: "",
-                  summary: summary,
-                  consultationDetails: consultationDetails,
-                  appointmentDetails: appointmentDetails,
-                  userDetails: userDetails,
+                const generatePdf = new Promise((resolve, reject) => {
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT email FROM users WHERE user_id=?";
+                      connection.query(
+                        query,
+                        [req.session.userId],
+                        (err, email) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            const query2 =
+                              "SELECT * FROM patient_details WHERE user_id=?";
+                            connection.query(
+                              query2,
+                              [req.session.userId],
+                              (err, results) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  let d = new Date();
+                                  let date =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+
+                                  let time =
+                                    ("0" + d.getHours()).slice(-2) +
+                                    ":" +
+                                    ("0" + d.getMinutes()).slice(-2);
+
+                                  var doc = new PdfDocument();
+                                  table = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table2 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table3 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+
+                                  pdfName = Math.floor(
+                                    Math.random() * (999999 - 100000) + 100000
+                                  );
+                                  doc.pipe(
+                                    fs.createWriteStream(
+                                      path.resolve(
+                                        __dirname,
+                                        `../pdfs/${pdfName}.pdf`
+                                      )
+                                    )
+                                  );
+
+                                  doc.image(
+                                    path.resolve(
+                                      __dirname,
+                                      "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                    ),
+                                    30,
+                                    20,
+                                    { width: 130 }
+                                  );
+
+                                  doc.fontSize(13);
+                                  doc.font("Times-Bold");
+                                  doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("P.O BOX 56 - 01004,", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("KANJUKU", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.font("Times-Roman");
+                                  doc.moveDown();
+                                  doc.text(`${date}     ${time}`, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.fontSize(11);
+                                  doc.font("Times-Roman");
+                                  doc.text(
+                                    `NAME:            ${results[0].name}`,
+                                    75,
+                                    180
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `EMAIL:           ${email[0].email}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `PHONE NO:    ${results[0].phone_no}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `LOCATION:    ${results[0].location}`
+                                  );
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+
+                                  doc.font("Times-Bold");
+                                  doc.fontSize(13);
+
+                                  doc.text(
+                                    `'${date2}'  TO  '${today}'  PAYMENTS REPORT`,
+                                    {
+                                      ////// header
+                                      underline: true,
+                                      width: 595,
+                                      align: "center",
+                                    }
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("CONSULTATIONS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "consultation_expiry_time",
+                                        header: "Consultation Expiry",
+                                        width: 130,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table.addBody(consultationDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Consultations: " +
+                                      summary.consultationCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Consultations Payments: Kshs " +
+                                      summary.consultationTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("APPOINTMENTS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table2
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointment_date",
+                                        header: "Appointment Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "appointment_time",
+                                        header: "Appointment Time",
+                                        width: 100,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table2.addBody(appointmentDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Appointments: " +
+                                      summary.appointmentCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Appointments Payments: Kshs " +
+                                      summary.appointmentTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Engagements: ${
+                                      summary.appointmentCount +
+                                      summary.consultationCount
+                                    }`,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Payments: Kshs ${
+                                      summary.appointmentTotal +
+                                      summary.consultationTotal
+                                    }`,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("PAYMENTS RANKINGS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table3
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "consultationCount",
+                                        header: "Consultations",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "consultationFees",
+                                        header: "Consultations Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointmentCount",
+                                        header: "Appointments",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "appointmentFees",
+                                        header: "Appointments Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "totalFees",
+                                        header: "Total Payments (Kshs)",
+                                        width: 70,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table3.addBody(userDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  doc.end();
+                                  resolve();
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                    connection.release();
+                  });
+                });
+                generatePdf.then(() => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    pdfName: `${pdfName}.pdf`,
+                    accountType: req.session.accountType,
+                    filterType: "lastWeek",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "",
+                    lastWeek: "selected",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: "",
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
                 });
               });
             });
@@ -14770,25 +19048,404 @@ router.post("/filter-payment-records", (req, res) => {
                 });
               });
               getUserDetails.then((userDetails) => {
-                userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                return res.render("payment-records", {
-                  accountType: req.session.accountType,
-                  filterType: "lastWeek",
-                  all: "",
-                  search: "",
-                  date: "",
-                  month: "",
-                  year: "",
-                  lastWeek: "selected",
-                  lastMonth: "",
-                  searchValue: "",
-                  dateValue: "",
-                  monthValue: "",
-                  yearValue: year,
-                  summary: summary,
-                  consultationDetails: consultationDetails,
-                  appointmentDetails: appointmentDetails,
-                  userDetails: userDetails,
+                const generatePdf = new Promise((resolve, reject) => {
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT email FROM users WHERE user_id=?";
+                      connection.query(
+                        query,
+                        [req.session.userId],
+                        (err, email) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            const query2 =
+                              "SELECT * FROM doctor_details WHERE user_id=?";
+                            connection.query(
+                              query2,
+                              [req.session.userId],
+                              (err, results) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  let d = new Date();
+                                  let date =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+
+                                  let time =
+                                    ("0" + d.getHours()).slice(-2) +
+                                    ":" +
+                                    ("0" + d.getMinutes()).slice(-2);
+
+                                  var doc = new PdfDocument();
+                                  table = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table2 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table3 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+
+                                  pdfName = Math.floor(
+                                    Math.random() * (999999 - 100000) + 100000
+                                  );
+                                  doc.pipe(
+                                    fs.createWriteStream(
+                                      path.resolve(
+                                        __dirname,
+                                        `../pdfs/${pdfName}.pdf`
+                                      )
+                                    )
+                                  );
+
+                                  doc.image(
+                                    path.resolve(
+                                      __dirname,
+                                      "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                    ),
+                                    30,
+                                    20,
+                                    { width: 130 }
+                                  );
+
+                                  doc.fontSize(13);
+                                  doc.font("Times-Bold");
+                                  doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("P.O BOX 56 - 01004,", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("KANJUKU", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.font("Times-Roman");
+                                  doc.moveDown();
+                                  doc.text(`${date}     ${time}`, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.fontSize(11);
+                                  doc.font("Times-Roman");
+                                  doc.text(
+                                    `NAME:            ${results[0].name}`,
+                                    75,
+                                    180
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `EMAIL:           ${email[0].email}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `PHONE NO:    ${results[0].phone_no}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `LOCATION:    ${results[0].location}`
+                                  );
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+
+                                  doc.font("Times-Bold");
+                                  doc.fontSize(13);
+
+                                  doc.text(
+                                    `'${date2}'  TO  '${today}'  PAYMENTS REPORT`,
+                                    {
+                                      ////// header
+                                      underline: true,
+                                      width: 595,
+                                      align: "center",
+                                    }
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("CONSULTATIONS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "consultation_expiry_time",
+                                        header: "Consultation Expiry",
+                                        width: 130,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table.addBody(consultationDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Consultations: " +
+                                      summary.consultationCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Consultations Payments: Kshs " +
+                                      summary.consultationTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("APPOINTMENTS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table2
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointment_date",
+                                        header: "Appointment Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "appointment_time",
+                                        header: "Appointment Time",
+                                        width: 100,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table2.addBody(appointmentDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Appointments: " +
+                                      summary.appointmentCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Appointments Payments: Kshs " +
+                                      summary.appointmentTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Engagements: ${
+                                      summary.appointmentCount +
+                                      summary.consultationCount
+                                    }`,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Payments: Kshs ${
+                                      summary.appointmentTotal +
+                                      summary.consultationTotal
+                                    }`,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("PAYMENTS RANKINGS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table3
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "consultationCount",
+                                        header: "Consultations",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "consultationFees",
+                                        header: "Consultations Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointmentCount",
+                                        header: "Appointments",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "appointmentFees",
+                                        header: "Appointments Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "totalFees",
+                                        header: "Total Payments (Kshs)",
+                                        width: 70,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table3.addBody(userDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  doc.end();
+                                  resolve();
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                    connection.release();
+                  });
+                });
+                generatePdf.then(() => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    pdfName: `${pdfName}.pdf`,
+                    accountType: req.session.accountType,
+                    filterType: "lastWeek",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "",
+                    lastWeek: "selected",
+                    lastMonth: "",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
                 });
               });
             });
@@ -15081,25 +19738,404 @@ router.post("/filter-payment-records", (req, res) => {
                 });
               });
               getUserDetails.then((userDetails) => {
-                userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                return res.render("payment-records", {
-                  accountType: req.session.accountType,
-                  filterType: "lastMonth",
-                  all: "",
-                  search: "",
-                  date: "",
-                  month: "",
-                  year: "",
-                  lastWeek: "",
-                  lastMonth: "selected",
-                  searchValue: "",
-                  dateValue: "",
-                  monthValue: "",
-                  yearValue: year,
-                  summary: summary,
-                  consultationDetails: consultationDetails,
-                  appointmentDetails: appointmentDetails,
-                  userDetails: userDetails,
+                const generatePdf = new Promise((resolve, reject) => {
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT email FROM users WHERE user_id=?";
+                      connection.query(
+                        query,
+                        [req.session.userId],
+                        (err, email) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            const query2 =
+                              "SELECT * FROM patient_details WHERE user_id=?";
+                            connection.query(
+                              query2,
+                              [req.session.userId],
+                              (err, results) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  let d = new Date();
+                                  let date =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+
+                                  let time =
+                                    ("0" + d.getHours()).slice(-2) +
+                                    ":" +
+                                    ("0" + d.getMinutes()).slice(-2);
+
+                                  var doc = new PdfDocument();
+                                  table = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table2 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table3 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+
+                                  pdfName = Math.floor(
+                                    Math.random() * (999999 - 100000) + 100000
+                                  );
+                                  doc.pipe(
+                                    fs.createWriteStream(
+                                      path.resolve(
+                                        __dirname,
+                                        `../pdfs/${pdfName}.pdf`
+                                      )
+                                    )
+                                  );
+
+                                  doc.image(
+                                    path.resolve(
+                                      __dirname,
+                                      "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                    ),
+                                    30,
+                                    20,
+                                    { width: 130 }
+                                  );
+
+                                  doc.fontSize(13);
+                                  doc.font("Times-Bold");
+                                  doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("P.O BOX 56 - 01004,", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("KANJUKU", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.font("Times-Roman");
+                                  doc.moveDown();
+                                  doc.text(`${date}     ${time}`, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.fontSize(11);
+                                  doc.font("Times-Roman");
+                                  doc.text(
+                                    `NAME:            ${results[0].name}`,
+                                    75,
+                                    180
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `EMAIL:           ${email[0].email}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `PHONE NO:    ${results[0].phone_no}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `LOCATION:    ${results[0].location}`
+                                  );
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+
+                                  doc.font("Times-Bold");
+                                  doc.fontSize(13);
+
+                                  doc.text(
+                                    `'${date2}'  TO  '${today}'  PAYMENTS REPORT`,
+                                    {
+                                      ////// header
+                                      underline: true,
+                                      width: 595,
+                                      align: "center",
+                                    }
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("CONSULTATIONS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "consultation_expiry_time",
+                                        header: "Consultation Expiry",
+                                        width: 130,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table.addBody(consultationDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Consultations: " +
+                                      summary.consultationCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Consultations Payments: Kshs " +
+                                      summary.consultationTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("APPOINTMENTS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table2
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointment_date",
+                                        header: "Appointment Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "appointment_time",
+                                        header: "Appointment Time",
+                                        width: 100,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table2.addBody(appointmentDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Appointments: " +
+                                      summary.appointmentCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Appointments Payments: Kshs " +
+                                      summary.appointmentTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Engagements: ${
+                                      summary.appointmentCount +
+                                      summary.consultationCount
+                                    }`,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Payments: Kshs ${
+                                      summary.appointmentTotal +
+                                      summary.consultationTotal
+                                    }`,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("PAYMENTS RANKINGS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table3
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "consultationCount",
+                                        header: "Consultations",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "consultationFees",
+                                        header: "Consultations Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointmentCount",
+                                        header: "Appointments",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "appointmentFees",
+                                        header: "Appointments Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "totalFees",
+                                        header: "Total Payments (Kshs)",
+                                        width: 70,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table3.addBody(userDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  doc.end();
+                                  resolve();
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                    connection.release();
+                  });
+                });
+                generatePdf.then(() => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    pdfName: `${pdfName}.pdf`,
+                    accountType: req.session.accountType,
+                    filterType: "lastMonth",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "selected",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
                 });
               });
             });
@@ -15371,25 +20407,404 @@ router.post("/filter-payment-records", (req, res) => {
                 });
               });
               getUserDetails.then((userDetails) => {
-                userDetails.sort((a, b) => b.totalFees - a.totalFees);
-                return res.render("payment-records", {
-                  accountType: req.session.accountType,
-                  filterType: "lastMonth",
-                  all: "",
-                  search: "",
-                  date: "",
-                  month: "",
-                  year: "",
-                  lastWeek: "",
-                  lastMonth: "selected",
-                  searchValue: "",
-                  dateValue: "",
-                  monthValue: "",
-                  yearValue: year,
-                  summary: summary,
-                  consultationDetails: consultationDetails,
-                  appointmentDetails: appointmentDetails,
-                  userDetails: userDetails,
+                const generatePdf = new Promise((resolve, reject) => {
+                  pool.getConnection((err, connection) => {
+                    if (err) {
+                      throw err;
+                    } else {
+                      const query = "SELECT email FROM users WHERE user_id=?";
+                      connection.query(
+                        query,
+                        [req.session.userId],
+                        (err, email) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            const query2 =
+                              "SELECT * FROM doctor_details WHERE user_id=?";
+                            connection.query(
+                              query2,
+                              [req.session.userId],
+                              (err, results) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  let d = new Date();
+                                  let date =
+                                    d.getFullYear() +
+                                    "-" +
+                                    ("0" + (d.getMonth() + 1)).slice(-2) +
+                                    "-" +
+                                    ("0" + d.getDate()).slice(-2);
+
+                                  let time =
+                                    ("0" + d.getHours()).slice(-2) +
+                                    ":" +
+                                    ("0" + d.getMinutes()).slice(-2);
+
+                                  var doc = new PdfDocument();
+                                  table = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table2 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+                                  table3 = new PdfTable(doc, {
+                                    bottomMargin: 30,
+                                  });
+
+                                  pdfName = Math.floor(
+                                    Math.random() * (999999 - 100000) + 100000
+                                  );
+                                  doc.pipe(
+                                    fs.createWriteStream(
+                                      path.resolve(
+                                        __dirname,
+                                        `../pdfs/${pdfName}.pdf`
+                                      )
+                                    )
+                                  );
+
+                                  doc.image(
+                                    path.resolve(
+                                      __dirname,
+                                      "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+                                    ),
+                                    30,
+                                    20,
+                                    { width: 130 }
+                                  );
+
+                                  doc.fontSize(13);
+                                  doc.font("Times-Bold");
+                                  doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("P.O BOX 56 - 01004,", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.moveDown();
+                                  doc.text("KANJUKU", {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.font("Times-Roman");
+                                  doc.moveDown();
+                                  doc.text(`${date}     ${time}`, {
+                                    width: 315,
+                                    align: "center",
+                                  });
+
+                                  doc.fontSize(11);
+                                  doc.font("Times-Roman");
+                                  doc.text(
+                                    `NAME:            ${results[0].name}`,
+                                    75,
+                                    180
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `EMAIL:           ${email[0].email}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `PHONE NO:    ${results[0].phone_no}`
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text(
+                                    `LOCATION:    ${results[0].location}`
+                                  );
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+
+                                  doc.font("Times-Bold");
+                                  doc.fontSize(13);
+
+                                  doc.text(
+                                    `'${date2}'  TO  '${today}'  PAYMENTS REPORT`,
+                                    {
+                                      ////// header
+                                      underline: true,
+                                      width: 595,
+                                      align: "center",
+                                    }
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("CONSULTATIONS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "consultation_expiry_time",
+                                        header: "Consultation Expiry",
+                                        width: 130,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table.addBody(consultationDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Consultations: " +
+                                      summary.consultationCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Consultations Payments: Kshs " +
+                                      summary.consultationTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("APPOINTMENTS PAYMENTS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table2
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "date",
+                                        header: "Date",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "amount",
+                                        header: "Amount (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointment_date",
+                                        header: "Appointment Date",
+                                        width: 100,
+                                      },
+                                      {
+                                        id: "appointment_time",
+                                        header: "Appointment Time",
+                                        width: 100,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table2.addBody(appointmentDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.font("Times-Bold");
+                                  doc.text(
+                                    "No. Of Appointments: " +
+                                      summary.appointmentCount,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    "Total Appointments Payments: Kshs " +
+                                      summary.appointmentTotal,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Engagements: ${
+                                      summary.appointmentCount +
+                                      summary.consultationCount
+                                    }`,
+                                    75
+                                  );
+                                  doc.moveDown();
+                                  doc.text(
+                                    `Total Payments: Kshs ${
+                                      summary.appointmentTotal +
+                                      summary.consultationTotal
+                                    }`,
+                                    75
+                                  );
+
+                                  doc.moveDown();
+                                  doc.moveDown();
+                                  doc.text("", 75);
+                                  doc.moveDown();
+                                  doc.text("PAYMENTS RANKINGS", {
+                                    underline: true,
+                                  });
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  table3
+                                    // add some plugins (here, a 'fit-to-width' for a column)
+                                    .addPlugin(
+                                      new (require("voilab-pdf-table/plugins/fitcolumn"))(
+                                        {
+                                          column: "name",
+                                        }
+                                      )
+                                    )
+                                    // set defaults to your columns
+                                    .setColumnsDefaults({
+                                      headerBorder: ["B"],
+                                      // border: ["B"],
+                                      padding: [10, 10, 0, 0],
+                                    })
+                                    // add table columns
+                                    .addColumns([
+                                      {
+                                        id: "name",
+                                        header: "Name",
+                                        align: "left",
+                                      },
+                                      {
+                                        id: "consultationCount",
+                                        header: "Consultations",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "consultationFees",
+                                        header: "Consultations Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "appointmentCount",
+                                        header: "Appointments",
+                                        width: 75,
+                                      },
+                                      {
+                                        id: "appointmentFees",
+                                        header: "Appointments Payments (Kshs)",
+                                        width: 80,
+                                      },
+                                      {
+                                        id: "totalFees",
+                                        header: "Total Payments (Kshs)",
+                                        width: 70,
+                                      },
+                                    ]);
+                                  doc.moveDown();
+                                  doc.font("Times-Roman");
+
+                                  table3.addBody(userDetails);
+
+                                  doc.text("", 0);
+                                  doc.moveDown();
+
+                                  doc.end();
+                                  resolve();
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                    connection.release();
+                  });
+                });
+                generatePdf.then(() => {
+                  userDetails.sort((a, b) => b.totalFees - a.totalFees);
+                  return res.render("payment-records", {
+                    pdfName: `${pdfName}.pdf`,
+                    accountType: req.session.accountType,
+                    filterType: "lastMonth",
+                    all: "",
+                    search: "",
+                    date: "",
+                    month: "",
+                    year: "",
+                    lastWeek: "",
+                    lastMonth: "selected",
+                    searchValue: "",
+                    dateValue: "",
+                    monthValue: "",
+                    yearValue: year,
+                    summary: summary,
+                    consultationDetails: consultationDetails,
+                    appointmentDetails: appointmentDetails,
+                    userDetails: userDetails,
+                  });
                 });
               });
             });
