@@ -137,8 +137,42 @@ ul{
     overflow-y: scroll;
     background-color: ghostwhite;
     padding: 40px 0px;
+    gap: 70px;
 }
 
+form{
+    align-self: flex-start;
+    width: 100%;
+    background-color: ghostwhite;
+    border-bottom: 2px dashed dimgray;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.records{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.text{
+    width: 90%;
+    max-width: 250px;
+    border: none;
+    border-bottom: 2px solid dimgray;
+    font-size: large;
+    padding: 10px 0px;
+}
+
+input:focus{
+    outline: none !important;
+}
 
 table{
     width: 90%;
@@ -158,14 +192,12 @@ td, th{
 }
 
 .btn{
-    width: 120px;
-    height: 50px;
+    padding: 15px 10px;
     background-color: white;
     color: darkslategray;
     border: 2px solid darkslategray;
     font-size: medium;
     transition: all .3s ease;
-    margin-top: 30px;
     border-radius: 5px;
     cursor: pointer;
 }
