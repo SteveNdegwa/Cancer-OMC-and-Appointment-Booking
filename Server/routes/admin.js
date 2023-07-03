@@ -784,10 +784,191 @@ router.get("/view-patients", (req, res) => {
       return res.render("view-patients", {
         pdfName: `${pdfName}.pdf`,
         details: details,
+        searchValue: "",
       });
     });
   });
 });
+
+router.post("/view-patients", (req, res) => {
+  const getDetails = new Promise((resolve, reject) => {
+    let details = [];
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (dob like ?) or (phone_no like ?) or (location like ?)";
+        connection.query(query,
+          [
+          "%" + req.body.search + "%",
+          "%" + req.body.search + "%",
+          "%" + req.body.search + "%",
+          "%" + req.body.search + "%",
+          "%" + req.body.search + "%",
+        ],
+         (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            if (results.length) {
+              resolve(results);
+            } else {
+              resolve(details);
+            }
+          }
+        });
+      }
+      connection.release();
+    });
+  });
+
+  getDetails.then((details) => {
+    const generatePdf = new Promise((resolve, reject) => {
+      let d = new Date();
+      let date =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+
+      let time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      var doc = new PdfDocument();
+      table = new PdfTable(doc, {
+        bottomMargin: 30,
+      });
+
+      pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+      doc.pipe(
+        fs.createWriteStream(path.resolve(__dirname, `../pdfs/${pdfName}.pdf`))
+      );
+
+      doc.image(
+        path.resolve(
+          __dirname,
+          "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+        ),
+        30,
+        20,
+        { width: 130 }
+      );
+
+      doc.fontSize(13);
+      doc.font("Times-Bold");
+      doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("P.O BOX 56 - 01004,", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("KANJUKU", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.font("Times-Roman");
+      doc.moveDown();
+      doc.text(`${date}     ${time}`, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.fontSize(11);
+      doc.font("Times-Roman");
+      doc.text(`NAME:            Administrator`, 75, 180);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+
+      doc.font("Times-Bold");
+      doc.fontSize(13);
+
+      doc.text(`PATIENTS'  '${req.body.search}'  SEARCH RESULTS REPORT`, {
+        underline: true,
+        width: 595,
+        align: "center",
+      });
+
+      doc.moveDown();
+
+      table
+        // add some plugins (here, a 'fit-to-width' for a column)
+        .addPlugin(
+          new (require("voilab-pdf-table/plugins/fitcolumn"))({
+            column: "name",
+          })
+        )
+        // set defaults to your columns
+        .setColumnsDefaults({
+          headerBorder: ["B"],
+          // border: ["B"],
+          padding: [10, 10, 0, 0],
+        })
+        // add table columns
+        .addColumns([
+          {
+            id: "name",
+            header: "Patient's Name",
+            align: "left",
+          },
+          {
+            id: "gender",
+            header: "Gender",
+            width: 70,
+          },
+          {
+            id: "dob",
+            header: "D.O.B",
+            width: 70,
+          },
+          {
+            id: "location",
+            header: "Location",
+            width: 70,
+          },
+          {
+            id: "phone_no",
+            header: "Phone Number",
+            width: 70,
+          },
+        ]);
+      doc.moveDown();
+      doc.font("Times-Roman");
+
+      table.addBody(details);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.font("Times-Bold");
+      doc.text("Number of patients: " + details.length, 75);
+
+      doc.end();
+      resolve();
+    });
+    generatePdf.then(() => {
+      return res.render("view-patients", {
+        pdfName: `${pdfName}.pdf`,
+        details: details,
+        searchValue: req.body.search,
+      });
+    });
+  });
+});
+
+
 
 router.get("/admin-profile", (req, res) => {
   pool.getConnection((err, connection) => {
