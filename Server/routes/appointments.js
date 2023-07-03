@@ -75,7 +75,35 @@ router.post("/customize-appointment-slots", (req, res) => {
       })
     } else {
       /// submit button
-      let days = [];
+      const checkAppointments = new Promise((resolve, reject) => {
+        let appointmentsPresent = false;
+        pool.getConnection((err,connection)=>{
+          if(err){throw err}
+          else{
+            const query = "SELECT * FROM appointments WHERE doctor_id = ?";
+            connection.query(query, [req.session.userId],(err,results)=>{
+              if(err){throw err}
+              else{
+                if(results.length){
+                  appointmentsPresent = true;
+                  resolve(appointmentsPresent);
+                }else{
+                  resolve(appointmentsPresent);
+                }
+              }
+            })
+          }
+          connection.release();
+        })
+      })
+      checkAppointments.then((appointmentsPresent)=>{
+        if(appointmentsPresent == true){
+          req.flash("appointmentSlotsMessage", "Please Fulfill All Outstanding Appointments Before Updating Appointment Slots");
+          return res.render("appointment-slots", {
+            message: req.flash("appointmentSlotsMessage"),
+          });
+        }else{
+          let days = [];
       if (req.body.sunday == "on") {
         days.push("sunday");
       }
@@ -156,10 +184,12 @@ router.post("/customize-appointment-slots", (req, res) => {
         });
       } else {
         req.flash("appointmentSlotsMessage", "No Days Selected");
-        res.render("appointment-slots", {
+        return res.render("appointment-slots", {
           message: req.flash("appointmentSlotsMessage"),
         });
       }
+        }
+      })
     }
   } else {
     return res.redirect("/login");
