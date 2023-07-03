@@ -150,6 +150,7 @@ form{
     justify-content: center;
     align-items: center;
     gap: 20px;
+    padding-bottom: 30px;
 }
 
 .records{
@@ -200,6 +201,7 @@ td, th{
     transition: all .3s ease;
     border-radius: 5px;
     cursor: pointer;
+    background-color: ghostwhite;
 }
 
 
