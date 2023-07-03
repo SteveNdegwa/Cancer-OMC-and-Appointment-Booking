@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/icons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/icons/site.webmanifest" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/view-patients.css" />
+    <title>View Patients</title>
+  </head>
+  <body>
+    <ul class="menu">
+      <li class="menu-items">
+        <div class="item-wrap" id="">
+          <i class="fa-sharp fa-solid fa-house fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin" class="item" id="">Overview</a>
+        </div>
+      </li>
+      <li class="menu-items">
+        <div class="item-wrap" id="selected">
+          <i class="fa-sharp fa-solid fa-bed-pulse fa-2x" id="icon" style="color: #ffff; background-color: slategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin/view-patients" class="item" id="selected">Patients</a>
+        </div>
+      </li>
+      <li class="menu-items" id="doctor-menu">
+        <div class="item-wrap">
+          <i class="fa-solid fa-user-doctor fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item">Doctors</a>
+        </div>
+        <ul class="sub-menu-1">
+          <li class="sub-menu-items">
+            <a href="/admin/view-unverified-doctors" class="sub-item">Unverified</a>
+          </li>
+          <li class="sub-menu-items">
+            <a href="/admin/view-verified-doctors" class="sub-item">Verified</a>
+          </li>
+        </ul>
+      </li>
+      <li class="menu-items" id="payment-menu">
+        <div class="item-wrap">
+          <i class="fa-solid fa-credit-card fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="" class="item">Payments</a>
+        </div>
+        <ul class="sub-menu-2">
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Consultations</a>
+          </li>
+          <li class="sub-menu-items">
+            <a href="" class="sub-item">Appointments</a>
+          </li>
+        </ul>
+      </li>
+      <li class="menu-items">
+        <div class="item-wrap" id="">
+          <i class="fa-sharp fa-solid fa-money-check-dollar fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin/subscriptions" class="item" id="">Subscriptions</a>
+        </div>
+      </li>
+      <li class="menu-items"  id="my-profile">
+        <div class="item-wrap">
+          
+          <a href="/admin/admin-profile"  class="fa-sharp fa-solid fa-user fa-2x"  id="" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px; cursor: pointer;"></a>
+        </div>
+      </li>
+    </ul>
+
+    <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
+
+    <div class="container">
+      <form action="" method="post"></form>
+       <% if (details.length) { %>
+        <h1 class="header">Patients</h1>
+        <table>
+           <tr>
+             <th>Name</th>
+             <th>Gender</th>
+             <th>D.O.B</th>
+             <th>Location</th>
+             <th>Phone Number</th>
+           </tr>
+           <% details.forEach(patient => { %>
+            <tr>
+             <td><%= patient.name %></td>
+             <td><%= patient.gender %></td>
+             <td><%= patient.dob %></td>
+             <td><%= patient.location %></td>
+             <td><%= patient.phone_no %></td>
+           </tr>
+           <% }) %>
+         </table>
+         <button type="button" class="btn" onclick="pdfOpen()">Download PDF</button>
+       <% }else{ %>
+        <h1 class="no-records">No Records</h1>
+       <% } %>
+    </div>
+
+    <script>
+      const pdfOpen = () =>{
+      let name = document.getElementById("pdf-name").innerText;
+      window.open("/"+name)
+    }
+  </script>
+  </body>
+</html>
