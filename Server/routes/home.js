@@ -19,8 +19,8 @@ router.get("/", (req, res) => {
         if (err) console.log(err);
         else {
           const query =
-            "SELECT * FROM doctor_details WHERE subscription_expiry >= ?";
-          connection.query(query, [date1], (err, results) => {
+            "SELECT * FROM doctor_details WHERE subscription_expiry >= ? AND verification_status = ?";
+          connection.query(query, [date1, "true"], (err, results) => {
             if (err) throw err;
             resolve(results);
           });
@@ -370,8 +370,8 @@ router.get("/doctors", (req, res) => {
     if (err) console.log(err);
     else {
       const query =
-        "SELECT user_id, name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details WHERE subscription_expiry >= ?";
-      connection.query(query, [date1], (err, results) => {
+        "SELECT user_id, name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details WHERE subscription_expiry >= ? AND verification_status = ?";
+      connection.query(query, [date1, "true"], (err, results) => {
         if (err) console.log(err);
         else {
           console.log(results);
@@ -543,12 +543,15 @@ router.post("/doctors", (req, res) => {
 
 router.post("/search-doctors", (req, res) => {
   pool.getConnection((err, connection) => {
+    let date1 = new Date();
     const query =
-      "SELECT * FROM doctor_details WHERE(user_id like ?) or (name like ?) or (gender like ?) or (licence_no like ?) or (cancer_speciality like ?) or (clinic_location like ?) or (clinic_phone_no like ?) or (clinic_email like ?)";
+      "SELECT * FROM doctor_details WHERE  subscription_expiry >= ? AND verification_status = ? AND (user_id like ?) or (name like ?) or (gender like ?) or (licence_no like ?) or (cancer_speciality like ?) or (clinic_location like ?) or (clinic_phone_no like ?) or (clinic_email like ?)";
     console.log(req.body.search);
     connection.query(
       query,
       [
+        date1,
+        "true",
         "%" + req.body.search + "%",
         "%" + req.body.search + "%",
         "%" + req.body.search + "%",
