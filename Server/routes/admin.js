@@ -5,6 +5,13 @@ const pool = require("../server.js");
 
 const path = require("path");
 
+var PdfTable = require("voilab-pdf-table");
+var PdfDocument = require("pdfkit");
+
+const fs = require("fs");
+
+let pdfName = "";
+
 router.get("/", (req, res) => {
   const getUsersCount = new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
@@ -75,7 +82,7 @@ router.get("/", (req, res) => {
                         appointmentsSum: appointmentsSum,
                         appointmentsCount: appointmentsCount,
                         total: consultationsSum + appointmentsSum,
-                        totalCount: consultationsCount+appointmentsCount,
+                        totalCount: consultationsCount + appointmentsCount,
                       };
                       console.log(revenue);
                       resolve(revenue);
@@ -306,7 +313,7 @@ router.get("/", (req, res) => {
           let doctorsEngagementsData = [...doctorsData].sort(
             (a, b) => b.totalEngagements - a.totalEngagements
           );
-          patientsData.sort((a,b)=> b.totalEngagements-a.totalEngagements);
+          patientsData.sort((a, b) => b.totalEngagements - a.totalEngagements);
           res.render("admin", {
             usersCount: usersCount,
             revenue: revenue,
@@ -386,6 +393,438 @@ router.post("/view-verified-doctors", (req, res) => {
       }
     });
 
+    connection.release();
+  });
+});
+
+router.get("/subscriptions", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    } else {
+      const query = "SELECT * FROM subscription_details";
+      connection.query(query, (err, results) => {
+        if (err) {
+          throw err;
+        } else {
+          res.render("subscriptions", { details: results[0] });
+        }
+      });
+    }
+    connection.release();
+  });
+});
+
+router.post("/subscriptions", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    } else {
+      const query =
+        "UPDATE subscription_details SET business_no=?, days=?, amount=?";
+      connection.query(
+        query,
+        [req.body.business_no, req.body.length, req.body.amount],
+        (err, data) => {
+          if (err) {
+            throw err;
+          } else {
+            const query2 = "SELECT * FROM subscription_details";
+            connection.query(query2, (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                res.render("subscriptions", { details: results[0] });
+              }
+            });
+          }
+        }
+      );
+    }
+    connection.release();
+  });
+});
+
+router.get("/view-subscriptions", (req, res) => {
+  const getDetails = new Promise((resolve, reject) => {
+    let details = [];
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const date = new Date();
+        const query = "SELECT * FROM subscriptions WHERE expiry_date>= ?";
+        connection.query(query, [date], (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            if (results.length) {
+              for (let i = 0; i < results.length; i++) {
+                const query2 =
+                  "SELECT name FROM doctor_details WHERE user_id= ?";
+                connection.query(
+                  query2,
+                  [results[i].doctor_id],
+                  (err, name) => {
+                    results[i].name = name[0].name;
+                    details.push(results[i]);
+
+                    if (i == results.length - 1) {
+                      resolve(details);
+                    }
+                  }
+                );
+              }
+            } else {
+              resolve(details);
+            }
+          }
+        });
+      }
+      connection.release();
+    });
+  });
+
+  getDetails.then((details) => {
+    const generatePdf = new Promise((resolve, reject) => {
+      let d = new Date();
+      let date =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+
+      let time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      var doc = new PdfDocument();
+      table = new PdfTable(doc, {
+        bottomMargin: 30,
+      });
+
+      pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+      doc.pipe(
+        fs.createWriteStream(path.resolve(__dirname, `../pdfs/${pdfName}.pdf`))
+      );
+
+      doc.image(
+        path.resolve(
+          __dirname,
+          "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+        ),
+        30,
+        20,
+        { width: 130 }
+      );
+
+      doc.fontSize(13);
+      doc.font("Times-Bold");
+      doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("P.O BOX 56 - 01004,", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("KANJUKU", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.font("Times-Roman");
+      doc.moveDown();
+      doc.text(`${date}     ${time}`, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.fontSize(11);
+      doc.font("Times-Roman");
+      doc.text(`NAME:            Administrator`, 75, 180);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+
+      doc.font("Times-Bold");
+      doc.fontSize(13);
+
+      doc.text("SUBSCRIPTIONS REPORT", {
+        underline: true,
+        width: 595,
+        align: "center",
+      });
+
+      doc.moveDown();
+
+      table
+        // add some plugins (here, a 'fit-to-width' for a column)
+        .addPlugin(
+          new (require("voilab-pdf-table/plugins/fitcolumn"))({
+            column: "name",
+          })
+        )
+        // set defaults to your columns
+        .setColumnsDefaults({
+          headerBorder: ["B"],
+          // border: ["B"],
+          padding: [10, 10, 0, 0],
+        })
+        // add table columns
+        .addColumns([
+          {
+            id: "name",
+            header: "Doctor's Name",
+            align: "left",
+          },
+          {
+            id: "days",
+            header: "Subscription Days",
+            width: 90,
+          },
+          {
+            id: "amount",
+            header: "Subscription Amount",
+            width: 90,
+          },
+          {
+            id: "expiry_date",
+            header: "Subscription Expiry",
+            width: 90,
+          },
+        ]);
+      doc.moveDown();
+      doc.font("Times-Roman");
+
+      table.addBody(details);
+
+      doc.text("", 0);
+
+      doc.end();
+      resolve();
+    });
+    generatePdf.then(() => {
+      return res.render("view-subscriptions", {
+        pdfName: `${pdfName}.pdf`,
+        details: details,
+      });
+    });
+  });
+});
+
+router.get("/view-patients", (req, res) => {
+  const getDetails = new Promise((resolve, reject) => {
+    let details = [];
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM patient_details";
+        connection.query(query, (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            if (results.length) {
+              resolve(results);
+            } else {
+              resolve(details);
+            }
+          }
+        });
+      }
+      connection.release();
+    });
+  });
+
+  getDetails.then((details) => {
+    const generatePdf = new Promise((resolve, reject) => {
+      let d = new Date();
+      let date =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+
+      let time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      var doc = new PdfDocument();
+      table = new PdfTable(doc, {
+        bottomMargin: 30,
+      });
+
+      pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+      doc.pipe(
+        fs.createWriteStream(path.resolve(__dirname, `../pdfs/${pdfName}.pdf`))
+      );
+
+      doc.image(
+        path.resolve(
+          __dirname,
+          "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+        ),
+        30,
+        20,
+        { width: 130 }
+      );
+
+      doc.fontSize(13);
+      doc.font("Times-Bold");
+      doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("P.O BOX 56 - 01004,", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("KANJUKU", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.font("Times-Roman");
+      doc.moveDown();
+      doc.text(`${date}     ${time}`, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.fontSize(11);
+      doc.font("Times-Roman");
+      doc.text(`NAME:            Administrator`, 75, 180);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+
+      doc.font("Times-Bold");
+      doc.fontSize(13);
+
+      doc.text("PATIENTS REPORT", {
+        underline: true,
+        width: 595,
+        align: "center",
+      });
+
+      doc.moveDown();
+
+      table
+        // add some plugins (here, a 'fit-to-width' for a column)
+        .addPlugin(
+          new (require("voilab-pdf-table/plugins/fitcolumn"))({
+            column: "name",
+          })
+        )
+        // set defaults to your columns
+        .setColumnsDefaults({
+          headerBorder: ["B"],
+          // border: ["B"],
+          padding: [10, 10, 0, 0],
+        })
+        // add table columns
+        .addColumns([
+          {
+            id: "name",
+            header: "Patient's Name",
+            align: "left",
+          },
+          {
+            id: "gender",
+            header: "Gender",
+            width: 70,
+          },
+          {
+            id: "dob",
+            header: "D.O.B",
+            width: 70,
+          },
+          {
+            id: "location",
+            header: "Location",
+            width: 70,
+          },
+          {
+            id: "phone_no",
+            header: "Phone Number",
+            width: 70,
+          },
+        ]);
+      doc.moveDown();
+      doc.font("Times-Roman");
+
+      table.addBody(details);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.font("Times-Bold");
+      doc.text("Number of patients: " + details.length, 75);
+
+      doc.end();
+      resolve();
+    });
+    generatePdf.then(() => {
+      return res.render("view-patients", {
+        pdfName: `${pdfName}.pdf`,
+        details: details,
+      });
+    });
+  });
+});
+
+router.get("/admin-profile", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    } else {
+      const query = "SELECT * FROM users WHERE user_name=?";
+      connection.query(query, ["Administrator"], (err, results) => {
+        if (err) {
+          throw err;
+        } else {
+          res.render("admin-profile", { password: results[0].password });
+        }
+      });
+    }
+    connection.release();
+  });
+});
+
+router.post("/admin-profile", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    } else {
+      const query = "UPDATE users SET password=? WHERE user_name=?";
+      connection.query(
+        query,
+        [req.body.password, "Administrator"],
+        (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            res.render("admin-profile", { password: req.body.password });
+          }
+        }
+      );
+    }
     connection.release();
   });
 });
