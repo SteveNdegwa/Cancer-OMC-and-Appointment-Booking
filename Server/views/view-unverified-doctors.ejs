@@ -32,15 +32,21 @@
   <body>
     <ul class="menu">
       <li class="menu-items">
-        <div class="item-wrap">
+        <div class="item-wrap" id="">
           <i class="fa-sharp fa-solid fa-house fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
           <a href="/admin" class="item" id="">Overview</a>
+        </div>
+      </li>
+      <li class="menu-items">
+        <div class="item-wrap" id="">
+          <i class="fa-sharp fa-solid fa-bed-pulse fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin/view-patients" class="item" id="">Patients</a>
         </div>
       </li>
       <li class="menu-items" id="doctor-menu">
         <div class="item-wrap" id="selected">
           <i class="fa-solid fa-user-doctor fa-2x" id="icon" style="color: #ffff; background-color: slategray; padding: 0px 10px; line-height: 80px;"></i>
-          <a href="" class="item" id="selected">Doctors</a>
+          <a href="/admin/view-unverified-doctors" class="item" id="selected">Doctors</a>
         </div>
         <ul class="sub-menu-1">
           <li class="sub-menu-items">
@@ -52,23 +58,30 @@
         </ul>
       </li>
       <li class="menu-items" id="payment-menu">
-        <div class="item-wrap">
+        <div class="item-wrap" id="">
           <i class="fa-solid fa-credit-card fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
-          <a href="" class="item">Payments</a>
+          <a href="/admin/view-consultation-payments" class="item" id="">Payments</a>
         </div>
         <ul class="sub-menu-2">
           <li class="sub-menu-items">
-            <a href="" class="sub-item">Consultations</a>
+            <a href="/admin/view-consultation-payments" class="sub-item" id="">Consultations</a>
           </li>
           <li class="sub-menu-items">
-            <a href="" class="sub-item">Appointments</a>
+            <a href="/admin/view-appointment-payments" class="sub-item">Appointments</a>
           </li>
         </ul>
+      </li>
+      <li class="menu-items">
+        <div class="item-wrap" id="">
+          <i class="fa-sharp fa-solid fa-money-check-dollar fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
+          <a href="/admin/subscriptions" class="item" id="">Subscriptions</a>
+        </div>
+        
       </li>
       <li class="menu-items"  id="my-profile">
         <div class="item-wrap">
           
-          <a href="" class="fa-sharp fa-solid fa-user fa-2x"  id="" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px; cursor: pointer;"></a>
+          <a href="/admin/admin-profile" class="fa-sharp fa-solid fa-user fa-2x"  id="" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px; cursor: pointer;"></a>
         </div>
       </li>
     </ul>

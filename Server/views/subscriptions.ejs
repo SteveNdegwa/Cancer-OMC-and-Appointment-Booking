@@ -43,7 +43,7 @@
       <li class="menu-items" id="doctor-menu">
         <div class="item-wrap">
           <i class="fa-solid fa-user-doctor fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
-          <a href="" class="item">Doctors</a>
+          <a href="/admin/view-unverified-doctors" class="item">Doctors</a>
         </div>
         <ul class="sub-menu-1">
           <li class="sub-menu-items">
@@ -55,16 +55,16 @@
         </ul>
       </li>
       <li class="menu-items" id="payment-menu">
-        <div class="item-wrap">
+        <div class="item-wrap" id="">
           <i class="fa-solid fa-credit-card fa-2x" id="icon" style="color: #ffff; background-color: darkslategray; padding: 0px 10px; line-height: 80px;"></i>
-          <a href="" class="item">Payments</a>
+          <a href="/admin/view-consultation-payments" class="item" id="">Payments</a>
         </div>
         <ul class="sub-menu-2">
           <li class="sub-menu-items">
-            <a href="" class="sub-item">Consultations</a>
+            <a href="/admin/view-consultation-payments" class="sub-item" id="">Consultations</a>
           </li>
           <li class="sub-menu-items">
-            <a href="" class="sub-item">Appointments</a>
+            <a href="/admin/view-appointment-payments" class="sub-item">Appointments</a>
           </li>
         </ul>
       </li>
@@ -82,7 +82,6 @@
         </div>
       </li>
     </ul>
-
     <div class="container">
         <a href="/admin/view-subscriptions" class="link" target="_blank">View Subscriptions</a>
         <form action="/admin/subscriptions" method="post" id="form">
