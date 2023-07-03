@@ -10,6 +10,9 @@ var PdfDocument = require("pdfkit");
 
 const fs = require("fs");
 
+const yearDate = new Date();
+let year = yearDate.getFullYear();
+
 let pdfName = "";
 
 router.get("/", (req, res) => {
@@ -354,13 +357,17 @@ router.post("/view-unverified-doctors", (req, res) => {
       if (err) throw err;
       else {
         const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
-        connection.query(query2, ["active", req.body.doctor_id], (err, data2) => {
-          if (err) throw err;
-          else {
-            console.log("Verified Successfully");
-            return res.redirect("/admin/view-unverified-doctors");
+        connection.query(
+          query2,
+          ["active", req.body.doctor_id],
+          (err, data2) => {
+            if (err) throw err;
+            else {
+              console.log("Verified Successfully");
+              return res.redirect("/admin/view-unverified-doctors");
+            }
           }
-        });
+        );
       }
     });
 
@@ -393,13 +400,17 @@ router.post("/view-verified-doctors", (req, res) => {
       if (err) throw err;
       else {
         const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
-        connection.query(query2, ["inactive", req.body.doctor_id], (err, data2) => {
-          if (err) throw err;
-          else {
-            console.log("Unverified Successfully");
-            return res.redirect("/admin/view-verified-doctors");
+        connection.query(
+          query2,
+          ["inactive", req.body.doctor_id],
+          (err, data2) => {
+            if (err) throw err;
+            else {
+              console.log("Unverified Successfully");
+              return res.redirect("/admin/view-verified-doctors");
+            }
           }
-        });
+        );
       }
     });
 
@@ -762,17 +773,17 @@ router.get("/view-patients", (req, res) => {
           {
             id: "dob",
             header: "D.O.B",
-            width: 70,
+            width: 80,
           },
           {
             id: "location",
             header: "Location",
-            width: 70,
+            width: 80,
           },
           {
             id: "phone_no",
             header: "Phone Number",
-            width: 70,
+            width: 80,
           },
         ]);
       doc.moveDown();
@@ -943,17 +954,17 @@ router.post("/view-patients", (req, res) => {
           {
             id: "dob",
             header: "D.O.B",
-            width: 70,
+            width: 80,
           },
           {
             id: "location",
             header: "Location",
-            width: 70,
+            width: 80,
           },
           {
             id: "phone_no",
             header: "Phone Number",
-            width: 70,
+            width: 80,
           },
         ]);
       doc.moveDown();
@@ -1019,6 +1030,3485 @@ router.post("/admin-profile", (req, res) => {
     }
     connection.release();
   });
+});
+
+router.get("/view-consultation-payments", (req, res) => {
+  let paymentsTotal = 0;
+  const getDetails = new Promise((resolve, reject) => {
+    let details = [];
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM consultations_stk_push WHERE status = ?";
+        connection.query(
+          query,
+          ["The service request is processed successfully."],
+          (err, results) => {
+            if (err) {
+              throw err;
+            } else {
+              if (results.length) {
+                for (let i = 0; i < results.length; i++) {
+                  paymentsTotal = paymentsTotal + results[i].amount;
+
+                  const query2 =
+                    "SELECT name FROM patient_details WHERE user_id = ?";
+                  connection.query(
+                    query2,
+                    [results[i].patient_id],
+                    (err, name1) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        results[i].patient_name = name1[0].name;
+
+                        const query3 =
+                          "SELECT name FROM doctor_details WHERE user_id = ?";
+                        connection.query(
+                          query3,
+                          [results[i].doctor_id],
+                          (err, name2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              results[i].doctor_name = name2[0].name;
+
+                              details.push(results[i]);
+
+                              if (i == results.length - 1) {
+                                resolve(details);
+                              }
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+              } else {
+                resolve(details);
+              }
+            }
+          }
+        );
+      }
+
+      connection.release();
+    });
+  });
+
+  getDetails.then((details) => {
+    const generatePdf = new Promise((resolve, reject) => {
+      let d = new Date();
+      let date =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+
+      let time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      var doc = new PdfDocument();
+      table = new PdfTable(doc, {
+        bottomMargin: 30,
+      });
+
+      pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+      doc.pipe(
+        fs.createWriteStream(path.resolve(__dirname, `../pdfs/${pdfName}.pdf`))
+      );
+
+      doc.image(
+        path.resolve(
+          __dirname,
+          "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+        ),
+        30,
+        20,
+        { width: 130 }
+      );
+
+      doc.fontSize(13);
+      doc.font("Times-Bold");
+      doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("P.O BOX 56 - 01004,", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("KANJUKU", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.font("Times-Roman");
+      doc.moveDown();
+      doc.text(`${date}     ${time}`, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.fontSize(11);
+      doc.font("Times-Roman");
+      doc.text(`NAME:            Administrator`, 75, 180);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+
+      doc.font("Times-Bold");
+      doc.fontSize(13);
+
+      doc.text(`ALL CONSULTATION PAYMENTS REPORT`, {
+        underline: true,
+        width: 595,
+        align: "center",
+      });
+
+      doc.moveDown();
+
+      table
+        // add some plugins (here, a 'fit-to-width' for a column)
+        .addPlugin(
+          new (require("voilab-pdf-table/plugins/fitcolumn"))({
+            column: "checkout_id",
+          })
+        )
+        // set defaults to your columns
+        .setColumnsDefaults({
+          headerBorder: ["B"],
+          // border: ["B"],
+          padding: [10, 10, 0, 0],
+        })
+        // add table columns
+        .addColumns([
+          {
+            id: "checkout_id",
+            header: "Checkout Id",
+            align: "left",
+          },
+          {
+            id: "patient_name",
+            header: "Patient's Name",
+            width: 70,
+          },
+          {
+            id: "doctor_name",
+            header: "Doctor's Name",
+            width: 70,
+          },
+          {
+            id: "date",
+            header: "Date",
+            width: 70,
+          },
+          {
+            id: "amount",
+            header: "Amount",
+            width: 70,
+          },
+          {
+            id: "consultation_expiry_time",
+            header: "Consultation Expiry",
+            width: 70,
+          },
+        ]);
+      doc.moveDown();
+      doc.font("Times-Roman");
+
+      table.addBody(details);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.font("Times-Bold");
+      doc.text("Number of payments: " + details.length, 75);
+      doc.moveDown();
+      doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+      doc.end();
+      resolve();
+    });
+    generatePdf.then(() => {
+      return res.render("view-consultation-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "all",
+        all: "selected",
+        search: "",
+        date: "",
+        month: "",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: paymentsTotal,
+        details: details,
+      });
+    });
+  });
+});
+
+router.post("/view-consultation-payments", (req, res) => {
+  if (req.body.select == "all") {
+    return res.redirect("/admin/view-consultation-payments");
+  }
+
+  if (req.body.select == "date") {
+    if (req.body.date) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM consultations_stk_push WHERE status = ? AND date = ?";
+            connection.query(
+              query,
+              ["The service request is processed successfully.", req.body.date],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`DATE:  '${req.body.date}'  CONSULTATION PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 70,
+              },
+              {
+                id: "consultation_expiry_time",
+                header: "Consultation Expiry",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-consultation-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "date",
+            all: "",
+            search: "",
+            date: "selected",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: req.body.date,
+            monthValue: "",
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      return res.render("view-consultation-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "date",
+        all: "",
+        search: "",
+        date: "selected",
+        month: "",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: 0,
+        details: [],
+      });
+    }
+  }
+
+  if (req.body.select == "month") {
+    if (req.body.month) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM consultations_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + req.body.month + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(
+            `MONTH:  '${req.body.month}'  CONSULTATION PAYMENTS REPORT`,
+            {
+              underline: true,
+              width: 595,
+              align: "center",
+            }
+          );
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 70,
+              },
+              {
+                id: "consultation_expiry_time",
+                header: "Consultation Expiry",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-consultation-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "month",
+            all: "",
+            search: "",
+            date: "",
+            month: "selected",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: req.body.month,
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      return res.render("view-consultation-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "month",
+        all: "",
+        search: "",
+        date: "",
+        month: "selected",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: 0,
+        details: [],
+      });
+    }
+  }
+
+  if (req.body.select == "year") {
+    if (req.body.year) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM consultations_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + req.body.year + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`YEAR:  '${req.body.year}'  CONSULTATION PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 70,
+              },
+              {
+                id: "consultation_expiry_time",
+                header: "Consultation Expiry",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-consultation-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "year",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "selected",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: req.body.year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM consultations_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + year + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`YEAR:  '${year}'  CONSULTATION PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 70,
+              },
+              {
+                id: "consultation_expiry_time",
+                header: "Consultation Expiry",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-consultation-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "year",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "selected",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    }
+  }
+
+  if (req.body.select == "last-week") {
+    let d = new Date();
+    let y = new Date(d.getTime() - 1440 * 7 * 60000);
+
+    let today =
+      d.getFullYear() +
+      "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + d.getDate()).slice(-2);
+    let date2 =
+      y.getFullYear() +
+      "-" +
+      ("0" + (y.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + y.getDate()).slice(-2);
+
+    let paymentsTotal = 0;
+    const getDetails = new Promise((resolve, reject) => {
+      let details = [];
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query =
+            "SELECT * FROM consultations_stk_push WHERE status = ? AND date BETWEEN ? AND ?";
+          connection.query(
+            query,
+            ["The service request is processed successfully.", date2, today],
+            (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                if (results.length) {
+                  for (let i = 0; i < results.length; i++) {
+                    paymentsTotal = paymentsTotal + results[i].amount;
+
+                    const query2 =
+                      "SELECT name FROM patient_details WHERE user_id = ?";
+                    connection.query(
+                      query2,
+                      [results[i].patient_id],
+                      (err, name1) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          results[i].patient_name = name1[0].name;
+
+                          const query3 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query3,
+                            [results[i].doctor_id],
+                            (err, name2) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].doctor_name = name2[0].name;
+
+                                details.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } else {
+                  resolve(details);
+                }
+              }
+            }
+          );
+        }
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`'${date2}'  TO  '${today}'  CONSULTATION PAYMENTS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "checkout_id",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "checkout_id",
+              header: "Checkout Id",
+              align: "left",
+            },
+            {
+              id: "patient_name",
+              header: "Patient's Name",
+              width: 70,
+            },
+            {
+              id: "doctor_name",
+              header: "Doctor's Name",
+              width: 70,
+            },
+            {
+              id: "date",
+              header: "Date",
+              width: 70,
+            },
+            {
+              id: "amount",
+              header: "Amount",
+              width: 70,
+            },
+            {
+              id: "consultation_expiry_time",
+              header: "Consultation Expiry",
+              width: 70,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of payments: " + details.length, 75);
+        doc.moveDown();
+        doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+        doc.end();
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-consultation-payments", {
+          pdfName: `${pdfName}.pdf`,
+          filterType: "lastWeek",
+          all: "",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "selected",
+          lastMonth: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          paymentsTotal: paymentsTotal,
+          details: details,
+        });
+      });
+    });
+  }
+
+  if (req.body.select == "last-month") {
+    let d = new Date();
+    let y = new Date(d.getTime() - 1440 * 30 * 60000);
+
+    let today =
+      d.getFullYear() +
+      "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + d.getDate()).slice(-2);
+    let date2 =
+      y.getFullYear() +
+      "-" +
+      ("0" + (y.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + y.getDate()).slice(-2);
+
+    let paymentsTotal = 0;
+    const getDetails = new Promise((resolve, reject) => {
+      let details = [];
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query =
+            "SELECT * FROM consultations_stk_push WHERE status = ? AND date BETWEEN ? AND ?";
+          connection.query(
+            query,
+            ["The service request is processed successfully.", date2, today],
+            (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                if (results.length) {
+                  for (let i = 0; i < results.length; i++) {
+                    paymentsTotal = paymentsTotal + results[i].amount;
+
+                    const query2 =
+                      "SELECT name FROM patient_details WHERE user_id = ?";
+                    connection.query(
+                      query2,
+                      [results[i].patient_id],
+                      (err, name1) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          results[i].patient_name = name1[0].name;
+
+                          const query3 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query3,
+                            [results[i].doctor_id],
+                            (err, name2) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].doctor_name = name2[0].name;
+
+                                details.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } else {
+                  resolve(details);
+                }
+              }
+            }
+          );
+        }
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`'${date2}'  TO  '${today}'  CONSULTATION PAYMENTS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "checkout_id",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "checkout_id",
+              header: "Checkout Id",
+              align: "left",
+            },
+            {
+              id: "patient_name",
+              header: "Patient's Name",
+              width: 70,
+            },
+            {
+              id: "doctor_name",
+              header: "Doctor's Name",
+              width: 70,
+            },
+            {
+              id: "date",
+              header: "Date",
+              width: 70,
+            },
+            {
+              id: "amount",
+              header: "Amount",
+              width: 70,
+            },
+            {
+              id: "consultation_expiry_time",
+              header: "Consultation Expiry",
+              width: 70,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of payments: " + details.length, 75);
+        doc.moveDown();
+        doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+        doc.end();
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-consultation-payments", {
+          pdfName: `${pdfName}.pdf`,
+          filterType: "lastMonth",
+          all: "",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "selected",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          paymentsTotal: paymentsTotal,
+          details: details,
+        });
+      });
+    });
+  }
+});
+
+
+//////// appointments payments
+router.get("/view-appointment-payments", (req, res) => {
+  let paymentsTotal = 0;
+  const getDetails = new Promise((resolve, reject) => {
+    let details = [];
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM appointments_stk_push WHERE status = ?";
+        connection.query(
+          query,
+          ["The service request is processed successfully."],
+          (err, results) => {
+            if (err) {
+              throw err;
+            } else {
+              if (results.length) {
+                for (let i = 0; i < results.length; i++) {
+                  paymentsTotal = paymentsTotal + results[i].amount;
+
+                  const query2 =
+                    "SELECT name FROM patient_details WHERE user_id = ?";
+                  connection.query(
+                    query2,
+                    [results[i].patient_id],
+                    (err, name1) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        results[i].patient_name = name1[0].name;
+
+                        const query3 =
+                          "SELECT name FROM doctor_details WHERE user_id = ?";
+                        connection.query(
+                          query3,
+                          [results[i].doctor_id],
+                          (err, name2) => {
+                            if (err) {
+                              throw err;
+                            } else {
+                              results[i].doctor_name = name2[0].name;
+
+                              details.push(results[i]);
+
+                              if (i == results.length - 1) {
+                                resolve(details);
+                              }
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+              } else {
+                resolve(details);
+              }
+            }
+          }
+        );
+      }
+
+      connection.release();
+    });
+  });
+
+  getDetails.then((details) => {
+    const generatePdf = new Promise((resolve, reject) => {
+      let d = new Date();
+      let date =
+        d.getFullYear() +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("0" + d.getDate()).slice(-2);
+
+      let time =
+        ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      var doc = new PdfDocument();
+      table = new PdfTable(doc, {
+        bottomMargin: 30,
+      });
+
+      pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+      doc.pipe(
+        fs.createWriteStream(path.resolve(__dirname, `../pdfs/${pdfName}.pdf`))
+      );
+
+      doc.image(
+        path.resolve(
+          __dirname,
+          "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+        ),
+        30,
+        20,
+        { width: 130 }
+      );
+
+      doc.fontSize(13);
+      doc.font("Times-Bold");
+      doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("P.O BOX 56 - 01004,", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.moveDown();
+      doc.text("KANJUKU", {
+        width: 315,
+        align: "center",
+      });
+
+      doc.font("Times-Roman");
+      doc.moveDown();
+      doc.text(`${date}     ${time}`, {
+        width: 315,
+        align: "center",
+      });
+
+      doc.fontSize(11);
+      doc.font("Times-Roman");
+      doc.text(`NAME:            Administrator`, 75, 180);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+
+      doc.font("Times-Bold");
+      doc.fontSize(13);
+
+      doc.text(`ALL APPOINTMENTS PAYMENTS REPORT`, {
+        underline: true,
+        width: 595,
+        align: "center",
+      });
+
+      doc.moveDown();
+
+      table
+        // add some plugins (here, a 'fit-to-width' for a column)
+        .addPlugin(
+          new (require("voilab-pdf-table/plugins/fitcolumn"))({
+            column: "checkout_id",
+          })
+        )
+        // set defaults to your columns
+        .setColumnsDefaults({
+          headerBorder: ["B"],
+          // border: ["B"],
+          padding: [10, 10, 0, 0],
+        })
+        // add table columns
+        .addColumns([
+          {
+            id: "checkout_id",
+            header: "Checkout Id",
+            align: "left",
+          },
+          {
+            id: "patient_name",
+            header: "Patient's Name",
+            width: 70,
+          },
+          {
+            id: "doctor_name",
+            header: "Doctor's Name",
+            width: 70,
+          },
+          {
+            id: "date",
+            header: "Date",
+            width: 60,
+          },
+          {
+            id: "amount",
+            header: "Amount",
+            width: 50,
+          },
+          {
+            id: "appointment_date",
+            header: "Appointment Date",
+            width: 70,
+          },
+          {
+            id: "appointment_time",
+            header: "Appointment Time",
+            width: 70,
+          },
+        ]);
+      doc.moveDown();
+      doc.font("Times-Roman");
+
+      table.addBody(details);
+
+      doc.text("", 0);
+      doc.moveDown();
+      doc.moveDown();
+      doc.moveDown();
+      doc.font("Times-Bold");
+      doc.text("Number of payments: " + details.length, 75);
+      doc.moveDown();
+      doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+      doc.end();
+      resolve();
+    });
+    generatePdf.then(() => {
+      return res.render("view-appointment-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "all",
+        all: "selected",
+        search: "",
+        date: "",
+        month: "",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: paymentsTotal,
+        details: details,
+      });
+    });
+  });
+});
+
+router.post("/view-appointment-payments", (req, res) => {
+  if (req.body.select == "all") {
+    return res.redirect("/admin/view-appointment-payments");
+  }
+
+  if (req.body.select == "date") {
+    if (req.body.date) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM appointments_stk_push WHERE status = ? AND date = ?";
+            connection.query(
+              query,
+              ["The service request is processed successfully.", req.body.date],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`DATE:  '${req.body.date}'  APPOINTMENT PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 50,
+              },
+              {
+                id: "appointment_date",
+                header: "Appointment Date",
+                width: 70,
+              },
+              {
+                id: "appointment_time",
+                header: "Appointment Time",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-appointment-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "date",
+            all: "",
+            search: "",
+            date: "selected",
+            month: "",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: req.body.date,
+            monthValue: "",
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      return res.render("view-appointment-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "date",
+        all: "",
+        search: "",
+        date: "selected",
+        month: "",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: 0,
+        details: [],
+      });
+    }
+  }
+
+  if (req.body.select == "month") {
+    if (req.body.month) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM appointments_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + req.body.month + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(
+            `MONTH:  '${req.body.month}'  APPOINTMENT PAYMENTS REPORT`,
+            {
+              underline: true,
+              width: 595,
+              align: "center",
+            }
+          );
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 50,
+              },
+              {
+                id: "appointment_date",
+                header: "Appointment Date",
+                width: 70,
+              },
+              {
+                id: "appointment_time",
+                header: "Appointment Time",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-appointment-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "month",
+            all: "",
+            search: "",
+            date: "",
+            month: "selected",
+            year: "",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: req.body.month,
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      return res.render("view-appointment-payments", {
+        pdfName: `${pdfName}.pdf`,
+        filterType: "month",
+        all: "",
+        search: "",
+        date: "",
+        month: "selected",
+        year: "",
+        lastWeek: "",
+        lastMonth: "",
+        dateValue: "",
+        monthValue: "",
+        yearValue: year,
+        paymentsTotal: 0,
+        details: [],
+      });
+    }
+  }
+
+  if (req.body.select == "year") {
+    if (req.body.year) {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM appointments_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + req.body.year + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`YEAR:  '${req.body.year}'  APPOINTMENT PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 50,
+              },
+              {
+                id: "appointment_date",
+                header: "Appointment Date",
+                width: 70,
+              },
+              {
+                id: "appointment_time",
+                header: "Appointment Time",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-appointment-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "year",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "selected",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: req.body.year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    } else {
+      let paymentsTotal = 0;
+      const getDetails = new Promise((resolve, reject) => {
+        let details = [];
+        pool.getConnection((err, connection) => {
+          if (err) {
+            throw err;
+          } else {
+            const query =
+              "SELECT * FROM appointments_stk_push WHERE status = ? AND (date like ?)";
+            connection.query(
+              query,
+              [
+                "The service request is processed successfully.",
+                "%" + year + "%",
+              ],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  if (results.length) {
+                    for (let i = 0; i < results.length; i++) {
+                      paymentsTotal = paymentsTotal + results[i].amount;
+
+                      const query2 =
+                        "SELECT name FROM patient_details WHERE user_id = ?";
+                      connection.query(
+                        query2,
+                        [results[i].patient_id],
+                        (err, name1) => {
+                          if (err) {
+                            throw err;
+                          } else {
+                            results[i].patient_name = name1[0].name;
+
+                            const query3 =
+                              "SELECT name FROM doctor_details WHERE user_id = ?";
+                            connection.query(
+                              query3,
+                              [results[i].doctor_id],
+                              (err, name2) => {
+                                if (err) {
+                                  throw err;
+                                } else {
+                                  results[i].doctor_name = name2[0].name;
+
+                                  details.push(results[i]);
+
+                                  if (i == results.length - 1) {
+                                    resolve(details);
+                                  }
+                                }
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  } else {
+                    resolve(details);
+                  }
+                }
+              }
+            );
+          }
+
+          connection.release();
+        });
+      });
+
+      getDetails.then((details) => {
+        const generatePdf = new Promise((resolve, reject) => {
+          let d = new Date();
+          let date =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
+
+          let time =
+            ("0" + d.getHours()).slice(-2) +
+            ":" +
+            ("0" + d.getMinutes()).slice(-2);
+
+          var doc = new PdfDocument();
+          table = new PdfTable(doc, {
+            bottomMargin: 30,
+          });
+
+          pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+          doc.pipe(
+            fs.createWriteStream(
+              path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+            )
+          );
+
+          doc.image(
+            path.resolve(
+              __dirname,
+              "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+            ),
+            30,
+            20,
+            { width: 130 }
+          );
+
+          doc.fontSize(13);
+          doc.font("Times-Bold");
+          doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("P.O BOX 56 - 01004,", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.moveDown();
+          doc.text("KANJUKU", {
+            width: 315,
+            align: "center",
+          });
+
+          doc.font("Times-Roman");
+          doc.moveDown();
+          doc.text(`${date}     ${time}`, {
+            width: 315,
+            align: "center",
+          });
+
+          doc.fontSize(11);
+          doc.font("Times-Roman");
+          doc.text(`NAME:            Administrator`, 75, 180);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+
+          doc.font("Times-Bold");
+          doc.fontSize(13);
+
+          doc.text(`YEAR:  '${year}'  APPOINTMENT PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
+
+          doc.moveDown();
+
+          table
+            // add some plugins (here, a 'fit-to-width' for a column)
+            .addPlugin(
+              new (require("voilab-pdf-table/plugins/fitcolumn"))({
+                column: "checkout_id",
+              })
+            )
+            // set defaults to your columns
+            .setColumnsDefaults({
+              headerBorder: ["B"],
+              // border: ["B"],
+              padding: [10, 10, 0, 0],
+            })
+            // add table columns
+            .addColumns([
+              {
+                id: "checkout_id",
+                header: "Checkout Id",
+                align: "left",
+              },
+              {
+                id: "patient_name",
+                header: "Patient's Name",
+                width: 70,
+              },
+              {
+                id: "doctor_name",
+                header: "Doctor's Name",
+                width: 70,
+              },
+              {
+                id: "date",
+                header: "Date",
+                width: 70,
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: 50,
+              },
+              {
+                id: "appointment_date",
+                header: "Appointment Date",
+                width: 70,
+              },
+              {
+                id: "appointment_time",
+                header: "Appointment Time",
+                width: 70,
+              },
+            ]);
+          doc.moveDown();
+          doc.font("Times-Roman");
+
+          table.addBody(details);
+
+          doc.text("", 0);
+          doc.moveDown();
+          doc.moveDown();
+          doc.moveDown();
+          doc.font("Times-Bold");
+          doc.text("Number of payments: " + details.length, 75);
+          doc.moveDown();
+          doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+          doc.end();
+          resolve();
+        });
+        generatePdf.then(() => {
+          return res.render("view-appointment-payments", {
+            pdfName: `${pdfName}.pdf`,
+            filterType: "year",
+            all: "",
+            search: "",
+            date: "",
+            month: "",
+            year: "selected",
+            lastWeek: "",
+            lastMonth: "",
+            dateValue: "",
+            monthValue: "",
+            yearValue: year,
+            paymentsTotal: paymentsTotal,
+            details: details,
+          });
+        });
+      });
+    }
+  }
+
+  if (req.body.select == "last-week") {
+    let d = new Date();
+    let y = new Date(d.getTime() - 1440 * 7 * 60000);
+
+    let today =
+      d.getFullYear() +
+      "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + d.getDate()).slice(-2);
+    let date2 =
+      y.getFullYear() +
+      "-" +
+      ("0" + (y.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + y.getDate()).slice(-2);
+
+    let paymentsTotal = 0;
+    const getDetails = new Promise((resolve, reject) => {
+      let details = [];
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query =
+            "SELECT * FROM appointments_stk_push WHERE status = ? AND date BETWEEN ? AND ?";
+          connection.query(
+            query,
+            ["The service request is processed successfully.", date2, today],
+            (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                if (results.length) {
+                  for (let i = 0; i < results.length; i++) {
+                    paymentsTotal = paymentsTotal + results[i].amount;
+
+                    const query2 =
+                      "SELECT name FROM patient_details WHERE user_id = ?";
+                    connection.query(
+                      query2,
+                      [results[i].patient_id],
+                      (err, name1) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          results[i].patient_name = name1[0].name;
+
+                          const query3 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query3,
+                            [results[i].doctor_id],
+                            (err, name2) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].doctor_name = name2[0].name;
+
+                                details.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } else {
+                  resolve(details);
+                }
+              }
+            }
+          );
+        }
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`'${date2}'  TO  '${today}'  APPOINTMENT PAYMENTS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "checkout_id",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "checkout_id",
+              header: "Checkout Id",
+              align: "left",
+            },
+            {
+              id: "patient_name",
+              header: "Patient's Name",
+              width: 70,
+            },
+            {
+              id: "doctor_name",
+              header: "Doctor's Name",
+              width: 70,
+            },
+            {
+              id: "date",
+              header: "Date",
+              width: 70,
+            },
+            {
+              id: "amount",
+              header: "Amount",
+              width: 50,
+            },
+            {
+              id: "appointment_date",
+              header: "Appointment Date",
+              width: 70,
+            },
+            {
+              id: "appointment_time",
+              header: "Appointment Time",
+              width: 70,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of payments: " + details.length, 75);
+        doc.moveDown();
+        doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+        doc.end();
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-appointment-payments", {
+          pdfName: `${pdfName}.pdf`,
+          filterType: "lastWeek",
+          all: "",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "selected",
+          lastMonth: "",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          paymentsTotal: paymentsTotal,
+          details: details,
+        });
+      });
+    });
+  }
+
+  if (req.body.select == "last-month") {
+    let d = new Date();
+    let y = new Date(d.getTime() - 1440 * 30 * 60000);
+
+    let today =
+      d.getFullYear() +
+      "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + d.getDate()).slice(-2);
+    let date2 =
+      y.getFullYear() +
+      "-" +
+      ("0" + (y.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + y.getDate()).slice(-2);
+
+    let paymentsTotal = 0;
+    const getDetails = new Promise((resolve, reject) => {
+      let details = [];
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query =
+            "SELECT * FROM appointments_stk_push WHERE status = ? AND date BETWEEN ? AND ?";
+          connection.query(
+            query,
+            ["The service request is processed successfully.", date2, today],
+            (err, results) => {
+              if (err) {
+                throw err;
+              } else {
+                if (results.length) {
+                  for (let i = 0; i < results.length; i++) {
+                    paymentsTotal = paymentsTotal + results[i].amount;
+
+                    const query2 =
+                      "SELECT name FROM patient_details WHERE user_id = ?";
+                    connection.query(
+                      query2,
+                      [results[i].patient_id],
+                      (err, name1) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          results[i].patient_name = name1[0].name;
+
+                          const query3 =
+                            "SELECT name FROM doctor_details WHERE user_id = ?";
+                          connection.query(
+                            query3,
+                            [results[i].doctor_id],
+                            (err, name2) => {
+                              if (err) {
+                                throw err;
+                              } else {
+                                results[i].doctor_name = name2[0].name;
+
+                                details.push(results[i]);
+
+                                if (i == results.length - 1) {
+                                  resolve(details);
+                                }
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } else {
+                  resolve(details);
+                }
+              }
+            }
+          );
+        }
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`'${date2}'  TO  '${today}'  APPOINTMENT PAYMENTS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "checkout_id",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "checkout_id",
+              header: "Checkout Id",
+              align: "left",
+            },
+            {
+              id: "patient_name",
+              header: "Patient's Name",
+              width: 70,
+            },
+            {
+              id: "doctor_name",
+              header: "Doctor's Name",
+              width: 70,
+            },
+            {
+              id: "date",
+              header: "Date",
+              width: 70,
+            },
+            {
+              id: "amount",
+              header: "Amount",
+              width: 50,
+            },
+            {
+              id: "appointment_date",
+              header: "Appointment Date",
+              width: 70,
+            },
+            {
+              id: "appointment_time",
+              header: "Appointment Time",
+              width: 70,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of payments: " + details.length, 75);
+        doc.moveDown();
+        doc.text("Total Payments: Kshs " + paymentsTotal, 75);
+        doc.end();
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-appointment-payments", {
+          pdfName: `${pdfName}.pdf`,
+          filterType: "lastMonth",
+          all: "",
+          search: "",
+          date: "",
+          month: "",
+          year: "",
+          lastWeek: "",
+          lastMonth: "selected",
+          dateValue: "",
+          monthValue: "",
+          yearValue: year,
+          paymentsTotal: paymentsTotal,
+          details: details,
+        });
+      });
+    });
+  }
 });
 
 module.exports = router;
