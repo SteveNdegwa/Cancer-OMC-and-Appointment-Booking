@@ -85,9 +85,13 @@
     <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
 
     <div class="container">
-      <form action="" method="post"></form>
        <% if (details.length) { %>
-        <h1 class="header">Patients</h1>
+        <form action="/admin/view-patients" method="post">
+          <input type="text" name="search" id="search" class="text" value="<%= searchValue %>" placeholder="Search">
+          <button class="btn">Search</button>
+        </form>
+        <div class="records">
+          <h1 class="header">Patients</h1>
         <table>
            <tr>
              <th>Name</th>
@@ -107,6 +111,7 @@
            <% }) %>
          </table>
          <button type="button" class="btn" onclick="pdfOpen()">Download PDF</button>
+        </div>
        <% }else{ %>
         <h1 class="no-records">No Records</h1>
        <% } %>
