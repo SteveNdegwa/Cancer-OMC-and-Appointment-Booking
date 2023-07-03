@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/view-subscriptions.css">
+    <title>Consultations Records</title>
+</head>
+<body>
+    <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
+    <div class="records">
+        <% if (details.length) { %>
+         <h1 class="header">Subscriptions</h1>
+         <table>
+            <tr>
+              <th>Name</th>
+              <th>Subscription Days</th>
+              <th>Subscription Amount</th>
+              <th>Subscription Expiry</th>
+            </tr>
+            <% details.forEach(subscription => { %>
+             <tr>
+              <td><%= subscription.name %></td>
+              <td><%= subscription.days %></td>
+              <td><%= subscription.amount %></td>
+              <td><%= subscription.expiry_date %></td>
+            </tr>
+            <% }) %>
+          </table>
+          <button type="button" class="btn" onclick="pdfOpen()">Download PDF</button>
+        <% }else{ %>
+            <h1 class="no-records">No Records</h1>
+        <% } %>
+    </div>
+
+    <script>
+        const pdfOpen = () =>{
+        let name = document.getElementById("pdf-name").innerText;
+        window.open("/"+name)
+      }
+    </script>
+</body>
+</html>

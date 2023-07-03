@@ -1,0 +1,76 @@
+*{
+    background-color: ghostwhite;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0px;
+}
+
+.pdf-name{
+    display: none;
+}
+
+
+.records{
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+
+.btn{
+    padding: 15px 10px;
+    background-color: ghostwhite;
+    color: darkslategray;
+    border: 2px solid darkslategray;
+    font-size: medium;
+    cursor: pointer;
+    transition: all .3s ease;
+    margin: 30px 0px;
+}
+
+.btn:hover{
+    background-color: darkslategray;
+    color: white;
+    border-color: white;
+}
+
+.header{
+    justify-self: flex-start;
+}
+
+.no-records{
+    color: dimgray;
+}
+
+table{
+    width: 90%;
+    background-color: white;
+}
+
+table, th, td{
+    border: 1px solid dimgray;
+    background-color: white;
+}
+
+th{
+    text-align: left;
+}
+td, th{
+ padding: 0px 10px;
+}
