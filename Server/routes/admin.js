@@ -353,9 +353,14 @@ router.post("/view-unverified-doctors", (req, res) => {
     connection.query(query, ["true", req.body.doctor_id], (err, data) => {
       if (err) throw err;
       else {
-        console.log(data);
-        console.log("Verified Successfully");
-        res.redirect("/admin/view-unverified-doctors");
+        const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+        connection.query(query2, ["active", req.body.doctor_id], (err, data2) => {
+          if (err) throw err;
+          else {
+            console.log("Verified Successfully");
+            return res.redirect("/admin/view-unverified-doctors");
+          }
+        });
       }
     });
 
@@ -387,9 +392,14 @@ router.post("/view-verified-doctors", (req, res) => {
     connection.query(query, ["false", req.body.doctor_id], (err, data) => {
       if (err) throw err;
       else {
-        console.log(data);
-        console.log("Unverified Successfully");
-        res.redirect("/admin/view-verified-doctors");
+        const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+        connection.query(query2, ["inactive", req.body.doctor_id], (err, data2) => {
+          if (err) throw err;
+          else {
+            console.log("Unverified Successfully");
+            return res.redirect("/admin/view-verified-doctors");
+          }
+        });
       }
     });
 
@@ -797,26 +807,29 @@ router.post("/view-patients", (req, res) => {
       if (err) {
         throw err;
       } else {
-        const query = "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (dob like ?) or (phone_no like ?) or (location like ?)";
-        connection.query(query,
+        const query =
+          "SELECT * FROM patient_details WHERE (name like ?) or (gender like ?) or (dob like ?) or (phone_no like ?) or (location like ?)";
+        connection.query(
+          query,
           [
-          "%" + req.body.search + "%",
-          "%" + req.body.search + "%",
-          "%" + req.body.search + "%",
-          "%" + req.body.search + "%",
-          "%" + req.body.search + "%",
-        ],
-         (err, results) => {
-          if (err) {
-            throw err;
-          } else {
-            if (results.length) {
-              resolve(results);
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+          ],
+          (err, results) => {
+            if (err) {
+              throw err;
             } else {
-              resolve(details);
+              if (results.length) {
+                resolve(results);
+              } else {
+                resolve(details);
+              }
             }
           }
-        });
+        );
       }
       connection.release();
     });
@@ -967,8 +980,6 @@ router.post("/view-patients", (req, res) => {
     });
   });
 });
-
-
 
 router.get("/admin-profile", (req, res) => {
   pool.getConnection((err, connection) => {
