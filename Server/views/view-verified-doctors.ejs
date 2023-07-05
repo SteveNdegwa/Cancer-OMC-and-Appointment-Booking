@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="/view-unverified-doctors.css">
     <title>Verified Doctors</title>
 </head>
@@ -72,17 +73,23 @@
     </li>
   </ul>
    <div class="container">
+    <% if(message.length > 0 ){ %>
+      <div class="alert alert-<%= type %>" role="alert">
+          <%= message %>
+      </div>
+ <% } %>
+ 
     <% if (doctors.length) { %>
         <h2 class="main-header">Verified Doctors</h2>
      <% doctors.forEach(doctor => { %>
       <form action="/admin/view-verified-doctors" method="post">
         <input type="text" name="doctor_id" id="doctor-id" value="<%= doctor.user_id %>">
-        <h2 class="details"><%= doctor.name %></h2>
-        <h3 class="details">Licence No : <%= doctor.licence_no %></h3>
-        <h4 class="details"><%= doctor.cancer_speciality %></h4>
-        <h4 class="details"><%= doctor.clinic_location %></h4>
-        <h4 class="details"><%= doctor.clinic_email %></h4>
-        <h4 class="details"><%= doctor.phone_no %></h4>
+        <h4 class="details"><%= doctor.name %></h4>
+        <h4 class="details">Licence No : <%= doctor.licence_no %></h4>
+        <h6 class="details"><%= doctor.cancer_speciality %></h6>
+        <h6 class="details"><%= doctor.clinic_location %></h6>
+        <h6 class="details"><%= doctor.clinic_email %></h6>
+        <h6 class="details"><%= doctor.phone_no %></h6>
 
         <button type="submit" class="btn-verified" >Unverify</button>
        
