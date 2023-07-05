@@ -18,6 +18,9 @@ let year = yearDate.getFullYear();
 let pdfName = "";
 
 router.get("/", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   const getUsersCount = new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
@@ -334,7 +337,11 @@ router.get("/", (req, res) => {
   });
 });
 
+let alertType = "";
+
 router.get("/view-unverified-doctors", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+
   pool.getConnection((err, connection) => {
     if (err) throw err;
 
@@ -342,7 +349,7 @@ router.get("/view-unverified-doctors", (req, res) => {
     connection.query(query, ["false"], (err, results) => {
       if (err) throw err;
 
-      res.render("view-unverified-doctors", { doctors: results });
+      res.render("view-unverified-doctors", { doctors: results, message: req.session.unverifiedDoctorsMsg,  type: alertType});
     });
 
     connection.release();
@@ -443,6 +450,8 @@ router.post("/view-unverified-doctors", (req, res) => {
                           if (err) throw err;
                           else {
                             console.log("Verified Successfully");
+                            req.session.unverifiedDoctorsMsg = "Doctor Verified Successfully";
+                            alertType = "success";
                             return res.redirect(
                               "/admin/view-unverified-doctors"
                             );
@@ -454,10 +463,14 @@ router.post("/view-unverified-doctors", (req, res) => {
                 );
               } else {
                 console.log("Doctor Not Verified");
+                req.session.unverifiedDoctorsMsg = "Doctor Not Verifed";
+                alertType = "danger";
                 return res.redirect("/admin/view-unverified-doctors");
               }
             } else {
               console.log("Doctor Not Verified");
+              req.session.unverifiedDoctorsMsg = "Doctor Not Verifed";
+              alertType = "danger";
               return res.redirect("/admin/view-unverified-doctors");
             }
           })();
@@ -469,6 +482,8 @@ router.post("/view-unverified-doctors", (req, res) => {
 });
 
 router.get("/view-verified-doctors", (req, res) => {
+  req.session.unverifiedDoctorsMsg = "";
+
   pool.getConnection((err, connection) => {
     if (err) throw err;
 
@@ -476,7 +491,7 @@ router.get("/view-verified-doctors", (req, res) => {
     connection.query(query, ["true"], (err, results) => {
       if (err) throw err;
 
-      res.render("view-verified-doctors", { doctors: results });
+      res.render("view-verified-doctors", { doctors: results, message: req.session.verifiedDoctorsMsg,  type: alertType });
     });
 
     connection.release();
@@ -500,6 +515,8 @@ router.post("/view-verified-doctors", (req, res) => {
             if (err) throw err;
             else {
               console.log("Unverified Successfully");
+              req.session.verifiedDoctorsMsg = "Doctor Unverified Successfully";
+              alertType = "success";
               return res.redirect("/admin/view-verified-doctors");
             }
           }
@@ -512,6 +529,10 @@ router.post("/view-verified-doctors", (req, res) => {
 });
 
 router.get("/subscriptions", (req, res) => {
+
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   pool.getConnection((err, connection) => {
     if (err) {
       throw err;
@@ -560,6 +581,9 @@ router.post("/subscriptions", (req, res) => {
 });
 
 router.get("/view-subscriptions", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   const getDetails = new Promise((resolve, reject) => {
     let details = [];
     pool.getConnection((err, connection) => {
@@ -735,6 +759,9 @@ router.get("/view-subscriptions", (req, res) => {
 });
 
 router.get("/view-patients", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = ""
+  ;
   const getDetails = new Promise((resolve, reject) => {
     let details = [];
     pool.getConnection((err, connection) => {
@@ -1086,6 +1113,9 @@ router.post("/view-patients", (req, res) => {
 });
 
 router.get("/admin-profile", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   pool.getConnection((err, connection) => {
     if (err) {
       throw err;
@@ -1126,6 +1156,9 @@ router.post("/admin-profile", (req, res) => {
 });
 
 router.get("/view-consultation-payments", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   let paymentsTotal = 0;
   const getDetails = new Promise((resolve, reject) => {
     let details = [];
@@ -2848,6 +2881,9 @@ router.post("/view-consultation-payments", (req, res) => {
 
 //////// appointments payments
 router.get("/view-appointment-payments", (req, res) => {
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
+
   let paymentsTotal = 0;
   const getDetails = new Promise((resolve, reject) => {
     let details = [];
