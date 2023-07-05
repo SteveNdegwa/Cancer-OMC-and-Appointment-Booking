@@ -7,6 +7,8 @@ const pool = require("../server.js");
 
 const emailValidator = require("deep-email-validator");
 
+const puppeteer = require("puppeteer");
+
 router.use(express.static(path.resolve("./public")));
 
 router.get("/patient", (req, res) => {
@@ -304,53 +306,151 @@ router.post("/doctor/professional-details", (req, res) => {
   });
   verifyEmail.then((data) => {
     if (data.valid) {
-      pool.getConnection((err, connection) => {
-        if (err) {
-          req.flash("doctorProfMsg", "Error Accessing The Database");
-          return res.render("doctor-register-professional", {
-            doctorProfMsg: req.flash("doctorProfMsg"),
-            licence: req.body.licence,
-            speciality: req.body.speciality,
-            location: req.body.location,
-            phone: req.body.phone,
-            email: req.body.email,
-          });
-        } else {
-          const query =
-            "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
-
-          connection.query(
-            query,
-            [
-              req.body.licence,
-              req.body.speciality,
-              req.body.location,
-              req.body.phone,
-              req.body.email,
-              req.session.userId,
-            ],
-            (err, data) => {
-              if (err) {
-                req.flash("doctorProfMsg", "Error Saving The Details");
-                return res.render("doctor-register-professional", {
-                  doctorProfMsg: req.flash("doctorProfMsg"),
-                  licence: req.body.licence,
-                  speciality: req.body.speciality,
-                  location: req.body.location,
-                  phone: req.body.phone,
-                  email: req.body.email,
-                });
-              } else {
-                console.log("Doctor's professional details inserted");
-
-                return res.redirect("/register/doctor/payment-details");
+      const saveDetails = new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+          if (err) {
+            req.flash("doctorProfMsg", "Error Accessing The Database");
+            return res.render("doctor-register-professional", {
+              doctorProfMsg: req.flash("doctorProfMsg"),
+              licence: req.body.licence,
+              speciality: req.body.speciality,
+              location: req.body.location,
+              phone: req.body.phone,
+              email: req.body.email,
+            });
+          } else {
+            const query =
+              "UPDATE doctor_details SET licence_no = ?, cancer_speciality = ?, clinic_location = ?, clinic_phone_no = ?, clinic_email = ? WHERE user_id = ?";
+  
+            connection.query(
+              query,
+              [
+                req.body.licence,
+                req.body.speciality,
+                req.body.location,
+                req.body.phone,
+                req.body.email,
+                req.session.userId,
+              ],
+              (err, data) => {
+                if (err) {
+                  req.flash("doctorProfMsg", "Error Saving The Details");
+                  return res.render("doctor-register-professional", {
+                    doctorProfMsg: req.flash("doctorProfMsg"),
+                    licence: req.body.licence,
+                    speciality: req.body.speciality,
+                    location: req.body.location,
+                    phone: req.body.phone,
+                    email: req.body.email,
+                  });
+                } else {
+                  console.log("Doctor's professional details inserted");
+  
+                 resolve();
+                }
               }
-            }
-          );
-        }
+            );
+          }
+  
+          connection.release();
+        });
+      })
 
-        connection.release();
-      });
+      saveDetails.then(()=>{
+        pool.getConnection((err,connection)=>{
+          if(err){throw err}
+          else{
+            const query = "SELECT * FROM doctor_details WHERE user_id=?";
+            connection.query(query,[req.session.userId],(err,results)=>{
+              if(err){throw err}
+              else{
+                (async ()=>{
+                  const browser = await puppeteer.launch({headless: false});
+                  const page = await browser.newPage();
+                  await page.goto("https://kmpdc.go.ke/Registers/MTreg/master_reg.php", {waitUntil: 'load', timeout: 0});
+              
+                  await page.type("#productdataTable_filter input", results[0].name);
+              
+                  await page.select("#productdataTable_length select", "100");
+              
+                  const grabDetails = await page.evaluate(()=>{
+                      const tableRow = document.querySelectorAll(".table.table-bordered.dataTable tr")
+              
+                      let array = [];
+                      tableRow.forEach((row)=>{
+                          let doctor = {};
+                          let tds = row.querySelectorAll("td");
+              
+                          let count = 0;
+                          tds.forEach((td)=>{
+                              if(count == 1){
+                                  doctor.licenceNumber = td.innerText;
+                              }
+                              if(count == 2){
+                                  doctor.name = td.innerText;
+                              }
+                              if(count == 3){
+                                  doctor.qualifications = td.innerText;
+                              }
+                              if(count == 4){
+                                  doctor.speciality = td.innerText;
+                              }
+                              if(count == 8){
+                                  doctor.status = td.innerText;
+                              }
+                              count ++;
+                          })
+              
+                          array.push(doctor);
+                      })
+                     
+                      return array;
+                      
+                  })
+              
+                  console.log(grabDetails);
+
+                  let doctorsList = grabDetails;
+              
+                  await browser.close();
+
+                  if(doctorsList.length){
+                    let verified = false;
+
+                    doctorsList.forEach((doctor)=>{
+                      if(doctor.status == "LICENCED"){
+                        let licenceNo = (doctor.licenceNumber).slice(0,-2);
+                        if((results[0].licence_no).startsWith(licenceNo)){
+                          verified = true;
+                        }
+                      }
+                    })
+
+                    if(verified == true){
+                      const query2 = "UPDATE doctor_details SET verification_status = ? WHERE user_id = ?";
+                      connection.query(query2,["true", req.session.userId],(err,data)=>{
+                        if(err){throw err}
+                        else{
+                          console.log("Doctor Verified");
+                          return res.redirect("/register/doctor/payment-details");
+                        }
+                      })
+                    }else{
+                      console.log("Doctor Not Verified");
+                      return res.redirect("/register/doctor/payment-details");
+                    }
+                  }else{
+                    console.log("Doctor Not Verified");
+                    return res.redirect("/register/doctor/payment-details");
+                  }
+                  
+              })();
+              }
+            })
+          }
+          connection.release();
+        })
+      })
     } else {
       console.log("Invalid email");
       req.flash("doctorProfMsg", "Invalid Email");
