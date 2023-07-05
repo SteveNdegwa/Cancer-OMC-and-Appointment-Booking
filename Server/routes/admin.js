@@ -8,6 +8,8 @@ const path = require("path");
 var PdfTable = require("voilab-pdf-table");
 var PdfDocument = require("pdfkit");
 
+const puppeteer = require("puppeteer");
+
 const fs = require("fs");
 
 const yearDate = new Date();
@@ -349,28 +351,119 @@ router.get("/view-unverified-doctors", (req, res) => {
 
 router.post("/view-unverified-doctors", (req, res) => {
   pool.getConnection((err, connection) => {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    } else {
+      const query = "SELECT * FROM doctor_details WHERE user_id=?";
+      connection.query(query, [req.body.doctor_id], (err, results) => {
+        if (err) {
+          throw err;
+        } else {
+          (async () => {
+            const browser = await puppeteer.launch({ headless: false });
+            const page = await browser.newPage();
+            await page.goto(
+              "https://kmpdc.go.ke/Registers/MTreg/master_reg.php",
+              { waitUntil: "load", timeout: 0 }
+            );
 
-    const query =
-      "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
-    connection.query(query, ["true", req.body.doctor_id], (err, data) => {
-      if (err) throw err;
-      else {
-        const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
-        connection.query(
-          query2,
-          ["active", req.body.doctor_id],
-          (err, data2) => {
-            if (err) throw err;
-            else {
-              console.log("Verified Successfully");
+            await page.type("#productdataTable_filter input", results[0].name);
+
+            await page.select("#productdataTable_length select", "100");
+
+            const grabDetails = await page.evaluate(() => {
+              const tableRow = document.querySelectorAll(
+                ".table.table-bordered.dataTable tr"
+              );
+
+              let array = [];
+              tableRow.forEach((row) => {
+                let doctor = {};
+                let tds = row.querySelectorAll("td");
+
+                let count = 0;
+                tds.forEach((td) => {
+                  if (count == 1) {
+                    doctor.licenceNumber = td.innerText;
+                  }
+                  if (count == 2) {
+                    doctor.name = td.innerText;
+                  }
+                  if (count == 3) {
+                    doctor.qualifications = td.innerText;
+                  }
+                  if (count == 4) {
+                    doctor.speciality = td.innerText;
+                  }
+                  if (count == 8) {
+                    doctor.status = td.innerText;
+                  }
+                  count++;
+                });
+
+                array.push(doctor);
+              });
+
+              return array;
+            });
+
+            console.log(grabDetails);
+
+            let doctorsList = grabDetails;
+
+            // await browser.close();
+
+            if (doctorsList.length) {
+              let verified = false;
+
+              doctorsList.forEach((doctor) => {
+                if (doctor.status == "LICENCED") {
+                  let licenceNo = doctor.licenceNumber.slice(0, -2);
+                  if (results[0].licence_no.startsWith(licenceNo)) {
+                    verified = true;
+                  }
+                }
+              });
+
+              if (verified == true) {
+                const query2 =
+                  "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
+                connection.query(
+                  query2,
+                  ["true", req.body.doctor_id],
+                  (err, data) => {
+                    if (err) throw err;
+                    else {
+                      const query3 =
+                        "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+                      connection.query(
+                        query3,
+                        ["active", req.body.doctor_id],
+                        (err, data2) => {
+                          if (err) throw err;
+                          else {
+                            console.log("Verified Successfully");
+                            return res.redirect(
+                              "/admin/view-unverified-doctors"
+                            );
+                          }
+                        }
+                      );
+                    }
+                  }
+                );
+              } else {
+                console.log("Doctor Not Verified");
+                return res.redirect("/admin/view-unverified-doctors");
+              }
+            } else {
+              console.log("Doctor Not Verified");
               return res.redirect("/admin/view-unverified-doctors");
             }
-          }
-        );
-      }
-    });
-
+          })();
+        }
+      });
+    }
     connection.release();
   });
 });
@@ -2753,7 +2846,6 @@ router.post("/view-consultation-payments", (req, res) => {
   }
 });
 
-
 //////// appointments payments
 router.get("/view-appointment-payments", (req, res) => {
   let paymentsTotal = 0;
@@ -3399,14 +3491,11 @@ router.post("/view-appointment-payments", (req, res) => {
           doc.font("Times-Bold");
           doc.fontSize(13);
 
-          doc.text(
-            `MONTH:  '${req.body.month}'  APPOINTMENT PAYMENTS REPORT`,
-            {
-              underline: true,
-              width: 595,
-              align: "center",
-            }
-          );
+          doc.text(`MONTH:  '${req.body.month}'  APPOINTMENT PAYMENTS REPORT`, {
+            underline: true,
+            width: 595,
+            align: "center",
+          });
 
           doc.moveDown();
 
