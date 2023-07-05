@@ -34,7 +34,11 @@ router.post("/", (req, res) => {
 
       console.log(req.session);
 
-      return res.redirect("/");
+      if (req.session.accountType == "administrator"){
+        return res.redirect("/admin");
+      } else {
+        return res.redirect("/");
+      }
     }
 
     console.log(req.body);
@@ -396,20 +400,24 @@ router.post("/reset-enter-otp", (req, res) => {
             throw err;
           } else {
             const query = "SELECT * FROM users WHERE user_id=?";
-            connection.query(query, [req.session.resetUserId], (err, results) => {
-              if (err) {
-                throw err;
-              } else {
-                req.flash("resetDetailsMessage", "");
-                return res.render("reset-login-details", {
-                  message: req.flash("resetDetailsMessage"),
-                  username: results[0].user_name,
-                  email: results[0].email,
-                  password: results[0].password,
-                  confirm: results[0].password,
-                });
+            connection.query(
+              query,
+              [req.session.resetUserId],
+              (err, results) => {
+                if (err) {
+                  throw err;
+                } else {
+                  req.flash("resetDetailsMessage", "");
+                  return res.render("reset-login-details", {
+                    message: req.flash("resetDetailsMessage"),
+                    username: results[0].user_name,
+                    email: results[0].email,
+                    password: results[0].password,
+                    confirm: results[0].password,
+                  });
+                }
               }
-            });
+            );
           }
           connection.release();
         });
@@ -423,7 +431,6 @@ router.post("/reset-enter-otp", (req, res) => {
     }
   }
 });
-
 
 router.post("/reset-details", (req, res) => {
   const verifyEmail = new Promise((resolve, reject) => {
@@ -474,7 +481,10 @@ router.post("/reset-details", (req, res) => {
 
           emailUsed.then((emailAlreadyUsed) => {
             if (emailAlreadyUsed) {
-              req.flash("resetDetailsMessage", "Email Address Is Already In Use");
+              req.flash(
+                "resetDetailsMessage",
+                "Email Address Is Already In Use"
+              );
               return res.render("reset-login-details", {
                 message: req.flash("resetDetailsMessage"),
                 username: req.body.username,
