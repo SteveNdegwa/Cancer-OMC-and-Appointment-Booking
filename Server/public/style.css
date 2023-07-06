@@ -17,6 +17,10 @@ body{
 .landing-body{
     height: 100vh;
     width: 100%;
+    background-image:url("/icons/pexels-tima-miroshnichenko-5452291.jpg");
+    background-size: cover;
+    background-color : rgba(120, 120, 120, 0.5);
+    color: white;
 }
 
 
@@ -47,7 +51,7 @@ body{
     margin-left: 10px;
     width: 20px;
     height: 3px;
-    background: black;
+    background: white;
     position: relative;
     transition: all .5s ease-out;
 
@@ -57,7 +61,7 @@ body{
     content: "";
     width: 100%;
     height: 100%;
-    background: black;
+    background: white;
     position: absolute;
     top: -5px;
     transition: all .5s ease-out;
@@ -67,7 +71,7 @@ body{
     content: "";
     width: 100%;
     height: 100%;
-    background: black;
+    background: white;
     position: absolute;
     top: 5px;
     transition: all .5s ease-out;
@@ -146,6 +150,10 @@ body{
         opacity: 1;
     }
 
+    .sub-menu{
+        display: none;
+    }
+
     #pages-item{
         display: none;
     }
@@ -177,24 +185,27 @@ body{
         text-align: center;
         text-decoration: none;
         border: 1px solid transparent;
-        color: black;
+        color: white;
     }
     
     .menu-items a:hover{
-        border-color: black;
+        border-color: white;
     }
 
     .sub-menu a:hover{
-        border-color: darkslategray;
+        border-color: white;
     }
     
     .sub-menu{
         display: none;
         width: 120px;
-        border: 1px solid darkslategray;
+        border: 1px solid gray;
     }
     
     #pages-item:hover >.sub-menu{
+        display: block;
+    }
+    #records-item:hover >.sub-menu{
         display: block;
     }
 }
@@ -216,26 +227,23 @@ body{
     align-items: center;
 }
 .landing-body .landing-info span{
-    color: darkslategray;
-    font-size: x-large;
-    font-weight: bolder;
-}
-.landing-body .landing-info span:hover{
     background:-webkit-linear-gradient(white,darkslategray);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-size: x-large;
+    font-weight: bolder;
 }
 
 .landing-body .landing-info .appointment-btn{
     display: block;
     width: auto;
     padding: 0px 15px;
-    color: black;
+    color: white;
     line-height: 60px;
     text-align: center;
     text-decoration: none;
     margin-top: 30px;
-    border: 2px solid black;
+    border: 2px solid white;
     font-family: 'Times New Roman', Times, serif;
     transition: all .3s ease;
 }
@@ -271,6 +279,7 @@ body{
     height: 100%;
     width: 100%;
     margin-bottom: 150px;
+    margin-top: 70px;
 }
 
 .about-body h1{
@@ -284,16 +293,16 @@ body{
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    gap: 30px;
 }
 
 .about-body .about-wrap .about-img{
     width: 100%;
     max-width: 500px;
     height: 500px;
-    margin: 10px;
 }
 
-.about-body .about-wrap .about-img video{
+.about-body .about-wrap .about-img img{
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -302,8 +311,6 @@ body{
 .about-body .about-wrap .about-text{
     width: 100%;
     max-width: 500px;
-    height: 500px;
-    margin: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -338,7 +345,7 @@ body{
         width: 100%;
         text-align: center;
         color: black;
-        margin-bottom: 50px;
+        margin-bottom: 80px;
     }
     
     .doctors-body .doctors-wrap{
