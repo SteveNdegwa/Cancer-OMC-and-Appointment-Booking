@@ -643,18 +643,18 @@ app.get("/chats/chat-rooms", (req, res) => {
                   let y = new Date(d.getTime() - 1440 * 60000);
 
                   let date =
-                    ("0" + d.getDate()).slice(-2) +
+                    d.getFullYear() +
                     "-" +
                     ("0" + (d.getMonth() + 1)).slice(-2) +
                     "-" +
-                    d.getFullYear();
+                    ("0" + d.getDate()).slice(-2) 
 
                   let yesterday =
-                    ("0" + y.getDate()).slice(-2) +
-                    "-" +
-                    ("0" + (y.getMonth() + 1)).slice(-2) +
-                    "-" +
-                    y.getFullYear();
+                  y.getFullYear() +
+                  "-" +
+                  ("0" + (y.getMonth() + 1)).slice(-2) +
+                  "-" +
+                  ("0" + y.getDate()).slice(-2) ;
 
                   if (date == messages[messages.length - 1].date) {
                     rooms[i].date = "Today";
@@ -878,6 +878,8 @@ app.post("/chats/chat-rooms", (req, res) => {
               } else {
                 if (sessionActive == true) {
                   //// session still active
+                  req.session.viewMode = false;
+                  req.session.subscription = true;
                   return res.redirect("/chats/chat");
                 } else {
                   /// session expired
@@ -909,9 +911,12 @@ app.post("/chats/chat-rooms", (req, res) => {
                         } else {
                           if (sessionActive == true) {
                             //// session still active
+                            req.session.subscription = true;
+                            req.session.viewMode = false;
                             return res.redirect("/chats/chat");
                           } else {
                             /// session expired
+                            req.session.subscription = true;
                             req.session.viewMode = true;
                             return res.redirect("/chats/chat");
                           }
