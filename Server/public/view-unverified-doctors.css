@@ -123,7 +123,7 @@ a:hover{
     color: white;
 }
 
-.container{
+#container{
     padding-top: 30px;
     height: 100%;
     flex: 1;

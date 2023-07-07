@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 body{
@@ -140,9 +141,18 @@ input:focus {
     background-color: white;
 }
 
-.doctor-tab .doctor-profile p {
+.doctor-tab .doctor-profile h3 {
     width: 100%;
     text-align: center;
+    margin: 10px 0px;
+    
+}
+
+.fees{
+    margin-top: 20px;
+    font-weight: lighter;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: darkslategray;
 }
 
 .doctor-tab .doctor-details {
