@@ -12,6 +12,7 @@ router.use(express.static(path.resolve("./node_modules")));
 
 router.get("/", (req, res) => {
   if (req.session.authenticated) {
+    let details = [];
     const getDoctorsData = new Promise((resolve, reject) => {
       let date1 = new Date();
 
@@ -22,7 +23,36 @@ router.get("/", (req, res) => {
             "SELECT * FROM doctor_details WHERE subscription_expiry >= ? AND verification_status = ?";
           connection.query(query, [date1, "true"], (err, results) => {
             if (err) throw err;
-            resolve(results);
+            if (results.length) {
+              for (let i = 0; i < results.length; i++) {
+                const query2 =
+                  "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
+                connection.query(
+                  query2,
+                  [results[i].user_id],
+                  (err, results2) => {
+                    if (err) throw err;
+                    else {
+                      results[i].appointment_fee = results2[0].appointment_fee;
+                      if (results2[0].consultation_type == "free") {
+                        results[i].consultation_fee = "Free";
+                      } else {
+                        results[i].consultation_fee =
+                          results2[0].consultation_fee;
+                      }
+
+                      details.push(results[i]);
+
+                      if (i == results.length - 1) {
+                        resolve(details);
+                      }
+                    }
+                  }
+                );
+              }
+            } else {
+              resolve(details);
+            }
           });
         }
         connection.release();
@@ -365,6 +395,7 @@ router.post("/", (req, res) => {
 
 router.get("/doctors", (req, res) => {
   let date1 = new Date();
+  let details = [];
 
   pool.getConnection((err, connection) => {
     if (err) console.log(err);
@@ -372,10 +403,35 @@ router.get("/doctors", (req, res) => {
       const query =
         "SELECT user_id, name, cancer_speciality, clinic_location, clinic_phone_no, clinic_email FROM doctor_details WHERE subscription_expiry >= ? AND verification_status = ?";
       connection.query(query, [date1, "true"], (err, results) => {
-        if (err) console.log(err);
-        else {
-          console.log(results);
-          return res.render("doctors", { details: results });
+        if (results.length) {
+          for (let i = 0; i < results.length; i++) {
+            const query2 =
+              "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
+            connection.query(
+              query2,
+              [results[i].user_id],
+              (err, results2) => {
+                if (err) throw err;
+                else {
+                  results[i].appointment_fee = results2[0].appointment_fee;
+                  if (results2[0].consultation_type == "free") {
+                    results[i].consultation_fee = "Free";
+                  } else {
+                    results[i].consultation_fee =
+                      results2[0].consultation_fee;
+                  }
+
+                  details.push(results[i]);
+
+                  if (i == results.length - 1) {
+                    return res.render("doctors", { details: details });
+                  }
+                }
+              }
+            );
+          }
+        } else {
+          return res.render("doctors", { details: details });
         }
       });
     }
@@ -542,6 +598,7 @@ router.post("/doctors", (req, res) => {
 });
 
 router.post("/search-doctors", (req, res) => {
+  let details =[];
   pool.getConnection((err, connection) => {
     let date1 = new Date();
     const query =
@@ -564,9 +621,37 @@ router.post("/search-doctors", (req, res) => {
       (err, results) => {
         if (err) console.log(err);
         else {
-          console.log(results);
 
-          return res.render("doctors", { details: results });
+          if (results.length) {
+            for (let i = 0; i < results.length; i++) {
+              const query2 =
+                "SELECT * FROM doctor_payment_details WHERE doctor_id = ?";
+              connection.query(
+                query2,
+                [results[i].user_id],
+                (err, results2) => {
+                  if (err) throw err;
+                  else {
+                    results[i].appointment_fee = results2[0].appointment_fee;
+                    if (results2[0].consultation_type == "free") {
+                      results[i].consultation_fee = "Free";
+                    } else {
+                      results[i].consultation_fee =
+                        results2[0].consultation_fee;
+                    }
+
+                    details.push(results[i]);
+
+                    if (i == results.length - 1) {
+                      return res.render("doctors", { details: details });
+                    }
+                  }
+                }
+              );
+            }
+          } else {
+            return res.render("doctors", { details: details });
+          }
         }
       }
     );
