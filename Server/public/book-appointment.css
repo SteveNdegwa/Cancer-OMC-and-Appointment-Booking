@@ -112,20 +112,22 @@ form h2{
     align-items: center;
     margin: 30px 10px;
     margin-bottom: 60px;
+    gap: 30px;
 }
 
 
 .time-wrap{
-    margin-right: 30px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
-.time{
-    margin-right: 10px;
+.time-label{
+    margin-top: 7px;
 }
+
 
 .buttons{
     width: 100%;
