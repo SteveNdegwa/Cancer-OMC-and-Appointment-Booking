@@ -117,6 +117,13 @@
                                 <div class="doctors-profile">
                                     <div class="profile-pic" id="profile-pic-1"></div>
                                 <h2 class="name" id="name-1"><%= doctor.name %></h2>
+                                <h4 class="fees">Appointment Booking Fee :  Kshs <%= doctor.appointment_fee %></h4>
+                                <% if (doctor.consultation_fee  == "Free") { %>
+                                    <h4 class="fees">Online Consultation Fee :  <%= doctor.consultation_fee %></h4>
+                                <% } else {%>
+                                    <h4 class="fees">Online Consultation Fee :  Kshs <%= doctor.consultation_fee %></h4>
+                                <% } %>
+                                
                                 </div>
                                 <div class="doctor-details">
                                     <div class="doctor-speciality">

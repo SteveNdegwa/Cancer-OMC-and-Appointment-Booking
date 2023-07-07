@@ -53,9 +53,15 @@
                                         </h2>
                                         <% } %>
     
-                                            <p id="speciality-details">
+                                            <h3 id="speciality-details">
                                                 <%= character.cancer_speciality %>
-                                            </p>
+                                            </h3>
+                                            <h4 class="fees" id="speciality-details">Appointment Booking Fee :  Kshs <%= character.appointment_fee %></h4>
+                                <% if (character.consultation_fee  == "Free") { %>
+                                    <h4 class="fees" id="speciality-details">Online Consultation Fee :  <%= character.consultation_fee %></h4>
+                                <% } else {%>
+                                    <h4 class="fees" id="speciality-details">Online Consultation Fee :  Kshs <%= character.consultation_fee %></h4>
+                                <% } %>
     
                                             <input type="text" class="id" id="id" name="id"
                                                 value="<%= character.user_id %>">
