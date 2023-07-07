@@ -312,29 +312,71 @@ router.get("/", (req, res) => {
             });
           });
           getPatientsData.then((patientsData) => {
-            let doctorsConsultationsData = [...doctorsData].sort(
-              (a, b) => b.consultationsCount - a.consultationsCount
-            ); //// sort array but keep the original intact
-            let doctorsAppointmentsData = [...doctorsData].sort(
-              (a, b) => b.appointmentsCount - a.appointmentsCount
-            );
-            let doctorsRevenueData = [...doctorsData].sort(
-              (a, b) => b.totalRevenue - a.totalRevenue
-            );
-            let doctorsEngagementsData = [...doctorsData].sort(
-              (a, b) => b.totalEngagements - a.totalEngagements
-            );
-            patientsData.sort(
-              (a, b) => b.totalEngagements - a.totalEngagements
-            );
-            res.render("admin", {
-              usersCount: usersCount,
-              revenue: revenue,
-              doctorsConsultationsData: doctorsConsultationsData,
-              doctorsAppointmentsData: doctorsAppointmentsData,
-              doctorsRevenueData: doctorsRevenueData,
-              doctorsEngagementsData: doctorsEngagementsData,
-              patientsData: patientsData,
+            const getSubscriptions = new Promise((resolve, reject) => {
+              let subscriptions = {
+                totalSubscriptions: 0,
+                totalPaid: 0,
+                activeSubscriptions: 0,
+              };
+              pool.getConnection((err, connection) => {
+                if (err) {
+                  throw err;
+                } else {
+                  const query =
+                    "SELECT COUNT(*) AS count , SUM(amount) AS sum FROM subscriptions";
+                  connection.query(query, (err, result1) => {
+                    if (result1.length) {
+                      subscriptions.totalSubscriptions = result1[0].count;
+                      subscriptions.totalPaid = result1[0].sum;
+
+                      const date = new Date();
+
+                      const query2 =
+                        "SELECT COUNT(*) AS count FROM subscriptions WHERE expiry_date > ?";
+                      connection.query(query2, [date], (err, result2) => {
+                        if (result2.length) {
+                          subscriptions.activeSubscriptions = result2[0].count;
+
+                          resolve(subscriptions);
+                        } else {
+                          resolve(subscriptions);
+                        }
+                      });
+                    } else {
+                      resolve(subscriptions);
+                    }
+                  });
+                }
+                connection.release();
+              });
+            });
+
+            getSubscriptions.then((subscriptions) => {
+              let doctorsConsultationsData = [...doctorsData].sort(
+                (a, b) => b.consultationsCount - a.consultationsCount
+              ); //// sort array but keep the original intact
+              let doctorsAppointmentsData = [...doctorsData].sort(
+                (a, b) => b.appointmentsCount - a.appointmentsCount
+              );
+              let doctorsRevenueData = [...doctorsData].sort(
+                (a, b) => b.totalRevenue - a.totalRevenue
+              );
+              let doctorsEngagementsData = [...doctorsData].sort(
+                (a, b) => b.totalEngagements - a.totalEngagements
+              );
+              patientsData.sort(
+                (a, b) => b.totalEngagements - a.totalEngagements
+              );
+              res.render("admin", {
+                usersCount: usersCount,
+                revenue: revenue,
+                doctorsConsultationsData: doctorsConsultationsData,
+                doctorsAppointmentsData: doctorsAppointmentsData,
+                doctorsRevenueData: doctorsRevenueData,
+                doctorsEngagementsData: doctorsEngagementsData,
+                patientsData: patientsData,
+                subscriptions: subscriptions,
+              });
             });
           });
         });
@@ -351,22 +393,176 @@ router.get("/view-unverified-doctors", (req, res) => {
   if (req.session.authenticated) {
     req.session.verifiedDoctorsMsg = "";
 
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-
-      const query =
-        "SELECT * FROM doctor_details WHERE verification_status = ?";
-      connection.query(query, ["false"], (err, results) => {
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
         if (err) throw err;
 
-        res.render("view-unverified-doctors", {
-          doctors: results,
+        const query =
+          "SELECT * FROM doctor_details WHERE verification_status = ?";
+        connection.query(query, ["false"], (err, results) => {
+          if (err) throw err;
+
+          resolve(results);
+        });
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`ALL UNVERIFIED DOCTORS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "name",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "name",
+              header: "Name",
+              align: "left",
+            },
+            {
+              id: "licence_no",
+              header: "Licence No.",
+              width: 60,
+            },
+            {
+              id: "cancer_speciality",
+              header: "Cancer Speciality",
+              width: 70,
+            },
+            {
+              id: "clinic_location",
+              header: "Clinic's Location",
+              width: 70,
+            },
+            {
+              id: "clinic_email",
+              header: "Clinic's Email",
+              width: 90,
+            },
+            {
+              id: "phone_no",
+              header: "Phone No.",
+              width: 75,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of doctors: " + details.length, 75);
+        doc.end();
+
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-unverified-doctors", {
+          pdfName: `${pdfName}.pdf`,
+          searchValue: "",
+          doctors: details,
           message: req.session.unverifiedDoctorsMsg,
           type: alertType,
         });
       });
-
-      connection.release();
     });
   } else {
     return res.redirect("/login");
@@ -374,151 +570,500 @@ router.get("/view-unverified-doctors", (req, res) => {
 });
 
 router.post("/view-unverified-doctors", (req, res) => {
-  pool.getConnection((err, connection) => {
-    if (err) {
-      throw err;
-    } else {
-      const query = "SELECT * FROM doctor_details WHERE user_id=?";
-      connection.query(query, [req.body.doctor_id], (err, results) => {
-        if (err) {
-          throw err;
-        } else {
-          (async () => {
-            const browser = await puppeteer.launch({ headless: false });
-            const page = await browser.newPage();
-            await page.goto(
-              "https://kmpdc.go.ke/Registers/MTreg/master_reg.php",
-              { waitUntil: "load", timeout: 0 }
-            );
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
 
-            await page.type("#productdataTable_filter input", results[0].name);
+  if (req.body.searchBtn == "") {
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
 
-            await page.select("#productdataTable_length select", "100");
+        const query =
+          "SELECT * FROM doctor_details WHERE verification_status = ? AND (name like ?) OR (cancer_speciality like ?) OR (clinic_location like ?) OR (clinic_email like ?) OR (phone_no like ?) OR (licence_no like ?)";
+        connection.query(
+          query,
+          [
+            "false",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+          ],
+          (err, results) => {
+            if (err) throw err;
 
-            const grabDetails = await page.evaluate(() => {
-              const tableRow = document.querySelectorAll(
-                ".table.table-bordered.dataTable tr"
+            resolve(results);
+          }
+        );
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(
+          `UNVERIFIED DOCTORS'  '${req.body.search}'  SEARCH RESULTS REPORT`,
+          {
+            underline: true,
+            width: 595,
+            align: "center",
+          }
+        );
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "name",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "name",
+              header: "Name",
+              align: "left",
+            },
+            {
+              id: "licence_no",
+              header: "Licence No.",
+              width: 60,
+            },
+            {
+              id: "cancer_speciality",
+              header: "Cancer Speciality",
+              width: 70,
+            },
+            {
+              id: "clinic_location",
+              header: "Clinic's Location",
+              width: 70,
+            },
+            {
+              id: "clinic_email",
+              header: "Clinic's Email",
+              width: 90,
+            },
+            {
+              id: "phone_no",
+              header: "Phone No.",
+              width: 75,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of doctors: " + details.length, 75);
+        doc.end();
+
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-unverified-doctors", {
+          pdfName: `${pdfName}.pdf`,
+          searchValue: req.body.search,
+          doctors: details,
+          message: req.session.unverifiedDoctorsMsg,
+          type: alertType,
+        });
+      });
+    });
+  } else {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        throw err;
+      } else {
+        const query = "SELECT * FROM doctor_details WHERE user_id=?";
+        connection.query(query, [req.body.doctor_id], (err, results) => {
+          if (err) {
+            throw err;
+          } else {
+            (async () => {
+              const browser = await puppeteer.launch({ headless: false });
+              const page = await browser.newPage();
+              await page.goto(
+                "https://kmpdc.go.ke/Registers/MTreg/master_reg.php",
+                { waitUntil: "load", timeout: 0 }
               );
 
-              let array = [];
-              tableRow.forEach((row) => {
-                let doctor = {};
-                let tds = row.querySelectorAll("td");
+              await page.type(
+                "#productdataTable_filter input",
+                results[0].name
+              );
 
-                let count = 0;
-                tds.forEach((td) => {
-                  if (count == 1) {
-                    doctor.licenceNumber = td.innerText;
-                  }
-                  if (count == 2) {
-                    doctor.name = td.innerText;
-                  }
-                  if (count == 3) {
-                    doctor.qualifications = td.innerText;
-                  }
-                  if (count == 4) {
-                    doctor.speciality = td.innerText;
-                  }
-                  if (count == 8) {
-                    doctor.status = td.innerText;
-                  }
-                  count++;
+              await page.select("#productdataTable_length select", "100");
+
+              const grabDetails = await page.evaluate(() => {
+                const tableRow = document.querySelectorAll(
+                  ".table.table-bordered.dataTable tr"
+                );
+
+                let array = [];
+                tableRow.forEach((row) => {
+                  let doctor = {};
+                  let tds = row.querySelectorAll("td");
+
+                  let count = 0;
+                  tds.forEach((td) => {
+                    if (count == 1) {
+                      doctor.licenceNumber = td.innerText;
+                    }
+                    if (count == 2) {
+                      doctor.name = td.innerText;
+                    }
+                    if (count == 3) {
+                      doctor.qualifications = td.innerText;
+                    }
+                    if (count == 4) {
+                      doctor.speciality = td.innerText;
+                    }
+                    if (count == 8) {
+                      doctor.status = td.innerText;
+                    }
+                    count++;
+                  });
+
+                  array.push(doctor);
                 });
 
-                array.push(doctor);
+                return array;
               });
 
-              return array;
-            });
+              console.log(grabDetails);
 
-            console.log(grabDetails);
+              let doctorsList = grabDetails;
 
-            let doctorsList = grabDetails;
+              // await browser.close();
 
-            // await browser.close();
+              if (doctorsList.length) {
+                let verified = false;
 
-            if (doctorsList.length) {
-              let verified = false;
-
-              doctorsList.forEach((doctor) => {
-                if (doctor.status == "LICENCED") {
-                  let licenceNo = doctor.licenceNumber.slice(0, -2);
-                  if (results[0].licence_no.startsWith(licenceNo)) {
-                    verified = true;
-                  }
-                }
-              });
-
-              if (verified == true) {
-                const query2 =
-                  "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
-                connection.query(
-                  query2,
-                  ["true", req.body.doctor_id],
-                  (err, data) => {
-                    if (err) throw err;
-                    else {
-                      const query3 =
-                        "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
-                      connection.query(
-                        query3,
-                        ["active", req.body.doctor_id],
-                        (err, data2) => {
-                          if (err) throw err;
-                          else {
-                            console.log("Verified Successfully");
-                            req.session.unverifiedDoctorsMsg =
-                              "Doctor Verified Successfully";
-                            alertType = "success";
-                            return res.redirect(
-                              "/admin/view-unverified-doctors"
-                            );
-                          }
-                        }
-                      );
+                doctorsList.forEach((doctor) => {
+                  if (doctor.status == "LICENCED") {
+                    let licenceNo = doctor.licenceNumber.slice(0, -2);
+                    if (results[0].licence_no.startsWith(licenceNo)) {
+                      verified = true;
                     }
                   }
-                );
+                });
+
+                if (verified == true) {
+                  const query2 =
+                    "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
+                  connection.query(
+                    query2,
+                    ["true", req.body.doctor_id],
+                    (err, data) => {
+                      if (err) throw err;
+                      else {
+                        const query3 =
+                          "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+                        connection.query(
+                          query3,
+                          ["active", req.body.doctor_id],
+                          (err, data2) => {
+                            if (err) throw err;
+                            else {
+                              console.log("Verified Successfully");
+                              req.session.unverifiedDoctorsMsg =
+                                "Doctor Verified Successfully";
+                              alertType = "success";
+                              return res.redirect(
+                                "/admin/view-unverified-doctors"
+                              );
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                } else {
+                  console.log("Doctor Not Verified");
+                  req.session.unverifiedDoctorsMsg = "Doctor Not Verifed";
+                  alertType = "danger";
+                  return res.redirect("/admin/view-unverified-doctors");
+                }
               } else {
                 console.log("Doctor Not Verified");
                 req.session.unverifiedDoctorsMsg = "Doctor Not Verifed";
                 alertType = "danger";
                 return res.redirect("/admin/view-unverified-doctors");
               }
-            } else {
-              console.log("Doctor Not Verified");
-              req.session.unverifiedDoctorsMsg = "Doctor Not Verifed";
-              alertType = "danger";
-              return res.redirect("/admin/view-unverified-doctors");
-            }
-          })();
-        }
-      });
-    }
-    connection.release();
-  });
+            })();
+          }
+        });
+      }
+      connection.release();
+    });
+  }
 });
 
 router.get("/view-verified-doctors", (req, res) => {
   if (req.session.authenticated) {
     req.session.unverifiedDoctorsMsg = "";
 
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-
-      const query =
-        "SELECT * FROM doctor_details WHERE verification_status = ?";
-      connection.query(query, ["true"], (err, results) => {
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
         if (err) throw err;
 
-        res.render("view-verified-doctors", {
-          doctors: results,
+        const query =
+          "SELECT * FROM doctor_details WHERE verification_status = ?";
+        connection.query(query, ["true"], (err, results) => {
+          if (err) throw err;
+
+          resolve(results);
+        });
+
+        connection.release();
+      });
+    });
+
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(`ALL VERIFIED DOCTORS REPORT`, {
+          underline: true,
+          width: 595,
+          align: "center",
+        });
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "name",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "name",
+              header: "Name",
+              align: "left",
+            },
+            {
+              id: "licence_no",
+              header: "Licence No.",
+              width: 60,
+            },
+            {
+              id: "cancer_speciality",
+              header: "Cancer Speciality",
+              width: 70,
+            },
+            {
+              id: "clinic_location",
+              header: "Clinic's Location",
+              width: 70,
+            },
+            {
+              id: "clinic_email",
+              header: "Clinic's Email",
+              width: 90,
+            },
+            {
+              id: "phone_no",
+              header: "Phone No.",
+              width: 75,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of doctors: " + details.length, 75);
+        doc.end();
+
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-verified-doctors", {
+          pdfName: `${pdfName}.pdf`,
+          searchValue: "",
+          doctors: details,
           message: req.session.verifiedDoctorsMsg,
           type: alertType,
         });
       });
-
-      connection.release();
     });
   } else {
     return res.redirect("/login");
@@ -526,33 +1071,226 @@ router.get("/view-verified-doctors", (req, res) => {
 });
 
 router.post("/view-verified-doctors", (req, res) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
+  req.session.verifiedDoctorsMsg = "";
+  req.session.unverifiedDoctorsMsg = "";
 
-    const query =
-      "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
-    connection.query(query, ["false", req.body.doctor_id], (err, data) => {
-      if (err) throw err;
-      else {
-        const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+  if (req.body.searchBtn == "") {
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+
+        const query =
+          "SELECT * FROM doctor_details WHERE verification_status = ? AND (name like ?) OR (cancer_speciality like ?) OR (clinic_location like ?) OR (clinic_email like ?) OR (phone_no like ?) OR (licence_no like ?)";
         connection.query(
-          query2,
-          ["inactive", req.body.doctor_id],
-          (err, data2) => {
+          query,
+          [
+            "true",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+            "%" + req.body.search + "%",
+          ],
+          (err, results) => {
             if (err) throw err;
-            else {
-              console.log("Unverified Successfully");
-              req.session.verifiedDoctorsMsg = "Doctor Unverified Successfully";
-              alertType = "success";
-              return res.redirect("/admin/view-verified-doctors");
-            }
+
+            resolve(results);
           }
         );
-      }
+
+        connection.release();
+      });
     });
 
-    connection.release();
-  });
+    getDetails.then((details) => {
+      const generatePdf = new Promise((resolve, reject) => {
+        let d = new Date();
+        let date =
+          d.getFullYear() +
+          "-" +
+          ("0" + (d.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + d.getDate()).slice(-2);
+
+        let time =
+          ("0" + d.getHours()).slice(-2) +
+          ":" +
+          ("0" + d.getMinutes()).slice(-2);
+
+        var doc = new PdfDocument();
+        table = new PdfTable(doc, {
+          bottomMargin: 30,
+        });
+
+        pdfName = Math.floor(Math.random() * (999999 - 100000) + 100000);
+        doc.pipe(
+          fs.createWriteStream(
+            path.resolve(__dirname, `../pdfs/${pdfName}.pdf`)
+          )
+        );
+
+        doc.image(
+          path.resolve(
+            __dirname,
+            "../public/icons/css-high-resolution-logo-black-on-white-background.png"
+          ),
+          30,
+          20,
+          { width: 130 }
+        );
+
+        doc.fontSize(13);
+        doc.font("Times-Bold");
+        doc.text("CANCER SUPPORT SYSTEM", 180, 30, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("P.O BOX 56 - 01004,", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.moveDown();
+        doc.text("KANJUKU", {
+          width: 315,
+          align: "center",
+        });
+
+        doc.font("Times-Roman");
+        doc.moveDown();
+        doc.text(`${date}     ${time}`, {
+          width: 315,
+          align: "center",
+        });
+
+        doc.fontSize(11);
+        doc.font("Times-Roman");
+        doc.text(`NAME:            Administrator`, 75, 180);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.font("Times-Bold");
+        doc.fontSize(13);
+
+        doc.text(
+          `VERIFIED DOCTORS'  '${req.body.search}'  SEARCH RESULTS REPORT`,
+          {
+            underline: true,
+            width: 595,
+            align: "center",
+          }
+        );
+
+        doc.moveDown();
+
+        table
+          // add some plugins (here, a 'fit-to-width' for a column)
+          .addPlugin(
+            new (require("voilab-pdf-table/plugins/fitcolumn"))({
+              column: "name",
+            })
+          )
+          // set defaults to your columns
+          .setColumnsDefaults({
+            headerBorder: ["B"],
+            // border: ["B"],
+            padding: [10, 10, 0, 0],
+          })
+          // add table columns
+          .addColumns([
+            {
+              id: "name",
+              header: "Name",
+              align: "left",
+            },
+            {
+              id: "licence_no",
+              header: "Licence No.",
+              width: 60,
+            },
+            {
+              id: "cancer_speciality",
+              header: "Cancer Speciality",
+              width: 70,
+            },
+            {
+              id: "clinic_location",
+              header: "Clinic's Location",
+              width: 70,
+            },
+            {
+              id: "clinic_email",
+              header: "Clinic's Email",
+              width: 90,
+            },
+            {
+              id: "phone_no",
+              header: "Phone No.",
+              width: 75,
+            },
+          ]);
+        doc.moveDown();
+        doc.font("Times-Roman");
+
+        table.addBody(details);
+
+        doc.text("", 0);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.font("Times-Bold");
+        doc.text("Number of doctors: " + details.length, 75);
+        doc.end();
+
+        resolve();
+      });
+      generatePdf.then(() => {
+        return res.render("view-verified-doctors", {
+          pdfName: `${pdfName}.pdf`,
+          searchValue: req.body.search,
+          doctors: details,
+          message: req.session.verifiedDoctorsMsg,
+          type: alertType,
+        });
+      });
+    });
+  } else {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+
+      const query =
+        "UPDATE doctor_details SET verification_status = ? WHERE user_id =?";
+      connection.query(query, ["false", req.body.doctor_id], (err, data) => {
+        if (err) throw err;
+        else {
+          const query2 = "UPDATE chat_rooms SET status = ? WHERE doctor_id =?";
+          connection.query(
+            query2,
+            ["inactive", req.body.doctor_id],
+            (err, data2) => {
+              if (err) throw err;
+              else {
+                console.log("Unverified Successfully");
+                req.session.verifiedDoctorsMsg =
+                  "Doctor Unverified Successfully";
+                alertType = "success";
+                return res.redirect("/admin/view-verified-doctors");
+              }
+            }
+          );
+        }
+      });
+
+      connection.release();
+    });
+  }
 });
 
 router.get("/subscriptions", (req, res) => {
