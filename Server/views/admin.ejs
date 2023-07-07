@@ -100,13 +100,19 @@
         </div>
         <div class="details-wrap">
           <h2>Revenue</h2>
-          <h4>Consultations: Shs <%= revenue.consultationsSum %></h4>
+          <h4>Paid Consultations: Shs <%= revenue.consultationsSum %></h4>
           <h4>Appointments: Shs <%= revenue.appointmentsSum %></h4>
           <h4>Total: Shs <%= revenue.total %></h4>
         </div>
+        <div class="details-wrap">
+          <h2>Subscriptions</h2>
+          <h4>Total Renewals: <%= subscriptions.totalSubscriptions %></h4>
+          <h4>Total Paid: Shs <%= subscriptions.totalPaid %></h4>
+          <h4>Active: <%= subscriptions.activeSubscriptions %></h4>
+        </div>
       </div>
       <div class="doctors-wrap">
-        <h2>Doctors' Statistics</h2>
+        <h2>Doctors' Rankings</h2>
         <div class="table-wrap">
           <h3>Revenue</h3>
           <table>
@@ -190,9 +196,9 @@
       </div>
 
       <div class="patients-wrap">
-        <h2>Patients' Statistics</h2>
+        <h2>Patients' Rankings</h2>
         <div class="table-wrap">
-          <h3>Appointments</h3>
+          <h3>Total Engagements</h3>
           <table>
             <tr>
               <th>User Id</th>
