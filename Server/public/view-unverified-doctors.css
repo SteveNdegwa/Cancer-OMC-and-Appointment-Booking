@@ -135,6 +135,10 @@ a:hover{
     overflow-y: scroll;
 }
 
+.pdf-name{
+    display: none;
+}
+
 .no-details{
     line-height: 100vh;
     text-align: center;
@@ -147,7 +151,34 @@ a:hover{
     margin-bottom: 20px;
 }
 
-form{
+#search-form{
+    align-self: flex-start;
+    width: 100%;
+    background-color: ghostwhite;
+    border-bottom: 2px dashed dimgray;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 30px;
+}
+
+.text{
+    width: 90%;
+    max-width: 250px;
+    border: none;
+    border-bottom: 2px solid dimgray;
+    font-size: large;
+    padding: 10px 0px;
+}
+
+input:focus{
+    outline: none !important;
+}
+
+
+#doctor-form{
     height: auto;
     width: 90%;
     display: flex;
@@ -198,6 +229,7 @@ h6{
     cursor: pointer;
     margin-top: 30px;
     transition: all .3s ease;
+    border-radius: 5px;
 }
 
 .btn:hover{
@@ -209,4 +241,18 @@ h6{
 .btn-verified:hover{
     border-color: red;
     color: red;
+}
+
+#pdf-btn{
+    background-color: ghostwhite;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 40px;
+}
+
+#pdf-btn:hover{
+    color: white;
+    background-color: darkslategray;
+    border-color: white;
 }
