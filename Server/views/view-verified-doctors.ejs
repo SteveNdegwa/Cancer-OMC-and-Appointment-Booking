@@ -73,6 +73,13 @@
     </li>
   </ul>
    <div class="container">
+    <p class="pdf-name" id="pdf-name"><%= pdfName %></p>
+
+    <form action="/admin/view-verified-doctors" method="post" id="search-form" >
+      <input type="text" name="search" id="search" class="text" value="<%= searchValue %>" placeholder="Search">
+      <button class="btn" id="pdf-btn" name="searchBtn">Search</button>
+    </form>
+
     <% if(message.length > 0 ){ %>
       <div class="alert alert-<%= type %>" role="alert">
           <%= message %>
@@ -82,7 +89,7 @@
     <% if (doctors.length) { %>
         <h2 class="main-header">Verified Doctors</h2>
      <% doctors.forEach(doctor => { %>
-      <form action="/admin/view-verified-doctors" method="post">
+      <form action="/admin/view-verified-doctors" method="post" id="doctor-form">
         <input type="text" name="doctor_id" id="doctor-id" value="<%= doctor.user_id %>">
         <h4 class="details"><%= doctor.name %></h4>
         <h4 class="details">Licence No : <%= doctor.licence_no %></h4>
@@ -94,10 +101,20 @@
         <button type="submit" class="btn-verified" >Unverify</button>
        
       </form>
+      
      <% }) %>
+     <button type="button" class="btn" id="pdf-btn" onclick="pdfOpen()">Download PDF</button>
     <% }else{ %>
         <h1 class="no-details">No Records Found</h1>
     <% } %>
    </div>
+
+     
+   <script>
+    const pdfOpen = () =>{
+    let name = document.getElementById("pdf-name").innerText;
+    window.open("/"+name)
+  }
+</script>
 </body>
 </html>
