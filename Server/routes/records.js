@@ -11625,6 +11625,7 @@ router.get("/payment-records", (req, res) => {
                                       userDetails.push(users[i]);
 
                                       if (i == users.length - 1) {
+                                        userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                         resolve(userDetails);
                                       }
                                     }
@@ -11635,6 +11636,7 @@ router.get("/payment-records", (req, res) => {
                           );
                         }
                       } else {
+                        userDetails.sort((a, b) => b.totalFees - a.totalFees);
                         resolve(userDetails);
                       }
                     }
@@ -12270,6 +12272,7 @@ router.get("/payment-records", (req, res) => {
                                       userDetails.push(users[i]);
 
                                       if (i == users.length - 1) {
+                                        userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                         resolve(userDetails);
                                       }
                                     }
@@ -12280,6 +12283,7 @@ router.get("/payment-records", (req, res) => {
                           );
                         }
                       } else {
+                        userDetails.sort((a, b) => b.totalFees - a.totalFees);
                         resolve(userDetails);
                       }
                     }
@@ -12947,6 +12951,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -12957,6 +12962,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -13613,6 +13619,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -13623,6 +13630,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -14307,6 +14315,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -14317,6 +14326,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -14973,6 +14983,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -14983,6 +14994,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -15667,6 +15679,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -15677,6 +15690,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -16333,6 +16347,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -16343,6 +16358,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -17001,6 +17017,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -17011,6 +17028,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -17667,6 +17685,7 @@ router.post("/filter-payment-records", (req, res) => {
                                           userDetails.push(users[i]);
 
                                           if (i == users.length - 1) {
+                                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                             resolve(userDetails);
                                           }
                                         }
@@ -17677,6 +17696,7 @@ router.post("/filter-payment-records", (req, res) => {
                               );
                             }
                           } else {
+                            userDetails.sort((a, b) => b.totalFees - a.totalFees);
                             resolve(userDetails);
                           }
                         }
@@ -18360,6 +18380,7 @@ router.post("/filter-payment-records", (req, res) => {
                                         userDetails.push(users[i]);
 
                                         if (i == users.length - 1) {
+                                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                           resolve(userDetails);
                                         }
                                       }
@@ -18370,6 +18391,7 @@ router.post("/filter-payment-records", (req, res) => {
                             );
                           }
                         } else {
+                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                           resolve(userDetails);
                         }
                       }
@@ -19029,6 +19051,7 @@ router.post("/filter-payment-records", (req, res) => {
                                         userDetails.push(users[i]);
 
                                         if (i == users.length - 1) {
+                                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                           resolve(userDetails);
                                         }
                                       }
@@ -19039,6 +19062,7 @@ router.post("/filter-payment-records", (req, res) => {
                             );
                           }
                         } else {
+                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                           resolve(userDetails);
                         }
                       }
@@ -19719,6 +19743,7 @@ router.post("/filter-payment-records", (req, res) => {
                                         userDetails.push(users[i]);
 
                                         if (i == users.length - 1) {
+                                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                           resolve(userDetails);
                                         }
                                       }
@@ -19729,6 +19754,7 @@ router.post("/filter-payment-records", (req, res) => {
                             );
                           }
                         } else {
+                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                           resolve(userDetails);
                         }
                       }
@@ -20388,6 +20414,7 @@ router.post("/filter-payment-records", (req, res) => {
                                         userDetails.push(users[i]);
 
                                         if (i == users.length - 1) {
+                                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                                           resolve(userDetails);
                                         }
                                       }
@@ -20398,6 +20425,7 @@ router.post("/filter-payment-records", (req, res) => {
                             );
                           }
                         } else {
+                          userDetails.sort((a, b) => b.totalFees - a.totalFees);
                           resolve(userDetails);
                         }
                       }
