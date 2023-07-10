@@ -86,6 +86,7 @@ h6{
     font-size: 17px;
     transition: all .3s ease;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 h3{
@@ -202,12 +203,18 @@ input:focus{
     font-size: large;
     border-radius: 10px;
     transition: all .3s ease;
+    border-radius: 5px;
 }
 
 .btn:hover{
     border-color: white;
     background-color: darkslategray;
     color: white;
+}
+
+.link{
+
+    margin-bottom: 20px;
 }
 
 .submit-buttons{
@@ -233,7 +240,7 @@ input:focus{
     font-size: 17px;
     transition: all .3s ease-out;
     cursor: pointer;
-
+    border-radius: 5px;
 }
 
 .submit:hover, .reset-days:hover{
