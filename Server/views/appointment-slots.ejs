@@ -22,8 +22,11 @@
         <div class="select-times">
             <h2 class="main-h2">Customize Appointments</h2>
 
+            <a href="/appointments/view-appointment-slots" target="_blank" class="link">View Saved Appointment Slots</a>
+
+            
             <% if(message.length > 0 ){ %>
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-<%= alertType %>" role="alert">
                     <%= message %>
                 </div>
            <% } %>
