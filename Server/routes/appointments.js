@@ -7,6 +7,7 @@ const unirest = require("unirest");
 const axios = require("axios");
 
 const path = require("path");
+const { log } = require("console");
 
 let nowDate = new Date();
 let month = "";
@@ -44,6 +45,7 @@ router.get("/customize-appointment-slots", (req, res) => {
     req.flash("appointmentSlotsMessage", "");
     res.render("appointment-slots", {
       message: req.flash("appointmentSlotsMessage"),
+      alertType: "success"
     });
   } else {
     res.redirect("/login");
@@ -52,58 +54,35 @@ router.get("/customize-appointment-slots", (req, res) => {
 
 router.post("/customize-appointment-slots", (req, res) => {
   if (req.session.authenticated) {
-    if (req.body.next == "") { /// skip button
-      pool.getConnection((err,connection)=>{
-        if(err){throw err;}
-        else{
-          const query = "SELECT subscription_expiry FROM doctor_details WHERE user_id= ?";
-          connection.query(query,[req.session.userId],(err,result)=>{
-            if(err){throw err;}
-            else{
+    if (req.body.next == "") {
+      /// skip button
+      pool.getConnection((err, connection) => {
+        if (err) {
+          throw err;
+        } else {
+          const query =
+            "SELECT subscription_expiry FROM doctor_details WHERE user_id= ?";
+          connection.query(query, [req.session.userId], (err, result) => {
+            if (err) {
+              throw err;
+            } else {
               let date1 = new Date();
               let date2 = new Date(result[0].subscription_expiry);
 
-              if(date1.getTime() > date2.getTime()){
-                return res.redirect("/subscription")
-              }else{
-                return res.redirect("/")
+              if (date1.getTime() > date2.getTime()) {
+                return res.redirect("/subscription");
+              } else {
+                return res.redirect("/");
               }
             }
-          })
+          });
         }
         connection.release();
-      })
+      });
     } else {
       /// submit button
-      const checkAppointments = new Promise((resolve, reject) => {
-        let appointmentsPresent = false;
-        pool.getConnection((err,connection)=>{
-          if(err){throw err}
-          else{
-            const query = "SELECT * FROM appointments WHERE doctor_id = ?";
-            connection.query(query, [req.session.userId],(err,results)=>{
-              if(err){throw err}
-              else{
-                if(results.length){
-                  appointmentsPresent = true;
-                  resolve(appointmentsPresent);
-                }else{
-                  resolve(appointmentsPresent);
-                }
-              }
-            })
-          }
-          connection.release();
-        })
-      })
-      checkAppointments.then((appointmentsPresent)=>{
-        if(appointmentsPresent == true){
-          req.flash("appointmentSlotsMessage", "Please Fulfill All Outstanding Appointments Before Updating Appointment Slots");
-          return res.render("appointment-slots", {
-            message: req.flash("appointmentSlotsMessage"),
-          });
-        }else{
-          let days = [];
+
+      let days = [];
       if (req.body.sunday == "on") {
         days.push("sunday");
       }
@@ -136,51 +115,166 @@ router.post("/customize-appointment-slots", (req, res) => {
 
       let timeJson = JSON.stringify(time);
 
+      let weekdays = [
+        "sunday",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+      ];
+
       if (days.length > 0) {
         pool.getConnection((err, connection) => {
           if (err) console.log(err);
           else {
+            let daysAffected = false;
+            let daysList = "";
+
             const save = new Promise((resolve, reject) => {
               days.forEach((day) => {
-                const query =
-                  "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
-                connection.query(
-                  query,
-                  [req.session.userId, day],
-                  (err, result) => {
-                    if (err) console.log(err);
+                const checkAppointments = new Promise((resolve, reject) => {
+                  let appointmentsPresent = false;
 
-                    if (result.length) {
-                      const query =
-                        "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
-                      connection.query(
-                        query,
-                        [timeJson, req.session.userId, day],
-                        (err, data) => {
-                          if (err) console.log(err);
-                          else {
-                            console.log(`${day} updated successfully`);
+                  let date = new Date();
+                  const query =
+                    "SELECT * FROM appointments WHERE doctor_id = ? AND date > ?";
+                  connection.query(
+                    query,
+                    [req.session.userId, date],
+                    (err, results) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        if (results.length) {
+                          console.log(results);
+                          for (let i = 0; i < results.length; i++) {
+                            let date = new Date(results[i].date);
+                            let dayIndex = date.getDay();
+
+                            if (weekdays[dayIndex] == day) {
+                              appointmentsPresent = true;
+                            }
+
+                            if (i == results.length - 1) {
+                              resolve(appointmentsPresent);
+                            }
                           }
+                        } else {
+                          resolve(appointmentsPresent);
                         }
-                      );
+                      }
+                    }
+                  );
+                });
+
+                checkAppointments.then((appointmentsPresent) => {
+                  if (appointmentsPresent == true) {
+                    daysAffected = true;
+
+                    if (daysList == "") {
+                      daysList = day;
                     } else {
-                      const query =
-                        "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
-                      const values = [req.session.userId, day, timeJson];
-                      connection.query(query, [values], (err, data) => {
-                        if (err) console.log(err);
-                        else {
-                          console.log(`${day} inserted successfully`);
-                        }
+                      daysList = daysList + `, ${day}`;
+                    }
+                    if (days[days.length - 1] == day) {
+                      req.flash(
+                        "appointmentSlotsMessage",
+                        `Please fulfill all outstanding  ${daysList}'s  appointments before updating  ${daysList}'s  appointment slots`
+                      );
+                      return res.render("appointment-slots", {
+                        message: req.flash("appointmentSlotsMessage"),
+                        alertType: "danger"
                       });
                     }
+                  } else {
+                    const query =
+                      "SELECT * FROM appointment_slots WHERE doctor_id= ? AND day = ?";
+                    connection.query(
+                      query,
+                      [req.session.userId, day],
+                      (err, result) => {
+                        if (err) console.log(err);
+
+                        if (result.length) {
+                          const query =
+                            "UPDATE appointment_slots SET slots=? WHERE doctor_id =? AND day =?";
+                          connection.query(
+                            query,
+                            [timeJson, req.session.userId, day],
+                            (err, data) => {
+                              if (err) console.log(err);
+                              else {
+                                console.log(`${day} updated successfully`);
+
+                                if (days[days.length - 1] == day) {
+                                  if (daysAffected == true) {
+                                    req.flash(
+                                      "appointmentSlotsMessage",
+                                      `Please fulfill all outstanding  ${daysList}'s  appointments before updating  ${daysList}'s  appointment slots`
+                                    );
+                                    return res.render("appointment-slots", {
+                                      message: req.flash(
+                                        "appointmentSlotsMessage"
+                                      ),
+                                      alertType: "danger"
+                                    });
+                                  } else {
+                                    req.flash("appointmentSlotsMessage", "All slots updated successfully");
+                                    return res.render("appointment-slots", {
+                                      message: req.flash(
+                                        "appointmentSlotsMessage"
+                                      ),
+                                      alertType: "success"
+                                    });
+                                  }
+                                }
+                              }
+                            }
+                          );
+                        } else {
+                          const query =
+                            "INSERT INTO appointment_slots(`doctor_id`, `day`, `slots`) VALUES(?)";
+                          const values = [req.session.userId, day, timeJson];
+                          connection.query(query, [values], (err, data) => {
+                            if (err) console.log(err);
+                            else {
+                              console.log(`${day} inserted successfully`);
+
+                              if (days[days.length - 1] == day) {
+                                if (daysAffected == true) {
+                                  req.flash(
+                                    "appointmentSlotsMessage",
+                                    `Please fulfill all outstanding  ${daysList}'s  appointments before updating  ${daysList}'s  appointment slots`
+                                  );
+                                  return res.render("appointment-slots", {
+                                    message: req.flash(
+                                      "appointmentSlotsMessage"
+                                    ),
+                                    alertType: "danger"
+                                  });
+                                } else {
+                                  req.flash("appointmentSlotsMessage", "All slots updated successfully");
+                                    return res.render("appointment-slots", {
+                                      message: req.flash(
+                                        "appointmentSlotsMessage"
+                                      ),
+                                      alertType: "success"
+                                    });
+                                }
+                              }
+                            }
+                          });
+                        }
+                      }
+                    );
                   }
-                );
+                });
               });
             });
           }
           connection.release();
-          return res.redirect("/appointments/customize-appointment-slots");
         });
       } else {
         req.flash("appointmentSlotsMessage", "No Days Selected");
@@ -188,9 +282,56 @@ router.post("/customize-appointment-slots", (req, res) => {
           message: req.flash("appointmentSlotsMessage"),
         });
       }
-        }
-      })
     }
+  } else {
+    return res.redirect("/login");
+  }
+});
+
+router.get("/view-appointment-slots", (req, res) => {
+  if (req.session.authenticated) {
+    let details = [];
+    let days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    const getDetails = new Promise((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+        else {
+          for (let i = 0; i < days.length; i++) {
+            let slots = [];
+            const query =
+              "SELECT * FROM appointment_slots WHERE doctor_id =? AND day = ?";
+            connection.query(
+              query,
+              [req.session.userId, days[i]],
+              (err, results) => {
+                if (results.length) {
+                  slots = JSON.parse(results[0].slots);
+                  details.push(slots);
+                } else {
+                  details.push(slots);
+                }
+
+                if (i == days.length - 1) {
+                  resolve(details);
+                }
+              }
+            );
+          }
+        }
+        connection.release();
+      });
+    });
+    getDetails.then((details) => {
+      return res.render("view-appointment-slots", { details: details });
+    });
   } else {
     return res.redirect("/login");
   }
@@ -534,12 +675,11 @@ router.post("/input-number", access, async (req, res) => {
             let now = new Date();
 
             let today2 =
-            now.getFullYear() +
-            "-" +
-            ("0" + (now.getMonth() + 1)).slice(-2) +
-            "-" +
-            ("0" + now.getDate()).slice(-2);
-
+              now.getFullYear() +
+              "-" +
+              ("0" + (now.getMonth() + 1)).slice(-2) +
+              "-" +
+              ("0" + now.getDate()).slice(-2);
 
             if (err) throw err;
             const query2 =
@@ -947,16 +1087,30 @@ router.get("/my-appointments", (req, res) => {
                     let y = new Date(d.getTime() - 1440 * 60000);
                     let t = new Date(d.getTime() + 1440 * 60000);
 
-                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
-                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
-                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
+                    let todate =
+                      d.getFullYear() +
+                      "-" +
+                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + d.getDate()).slice(-2);
+                    let yesterday =
+                      y.getFullYear() +
+                      "-" +
+                      ("0" + (y.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + y.getDate()).slice(-2);
+                    let tomorrow =
+                      t.getFullYear() +
+                      "-" +
+                      ("0" + (t.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + t.getDate()).slice(-2);
 
-          
-                    if(data[0].date == todate){
+                    if (data[0].date == todate) {
                       data[0].date = "Today";
-                    }else if(data[0].date == yesterday){
-                      data[0].date= "Yesterday";
-                    }else if(data[0].date == tomorrow){
+                    } else if (data[0].date == yesterday) {
+                      data[0].date = "Yesterday";
+                    } else if (data[0].date == tomorrow) {
                       data[0].date = "Tomorrow";
                     }
 
@@ -1008,8 +1162,13 @@ router.get("/view-appointments", (req, res) => {
         const getDetails = new Promise((resolve, reject) => {
           let appointments = [];
           let d = new Date();
-          
-          let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
+
+          let todate =
+            d.getFullYear() +
+            "-" +
+            ("0" + (d.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + d.getDate()).slice(-2);
 
           const query =
             "SELECT * FROM appointments WHERE doctor_id = ? AND date >= ? ORDER BY date ASC, time ASC";
@@ -1049,16 +1208,31 @@ router.get("/view-appointments", (req, res) => {
                     let d = new Date();
                     let y = new Date(d.getTime() - 1440 * 60000);
                     let t = new Date(d.getTime() + 1440 * 60000);
-    
-                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
-                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
-                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
 
-                    if(result[i].date == todate){
+                    let todate =
+                      d.getFullYear() +
+                      "-" +
+                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + d.getDate()).slice(-2);
+                    let yesterday =
+                      y.getFullYear() +
+                      "-" +
+                      ("0" + (y.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + y.getDate()).slice(-2);
+                    let tomorrow =
+                      t.getFullYear() +
+                      "-" +
+                      ("0" + (t.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + t.getDate()).slice(-2);
+
+                    if (result[i].date == todate) {
                       result[i].date = "Today";
-                    }else if(result[i].date == yesterday){
+                    } else if (result[i].date == yesterday) {
                       result[i].date = "Yesterday";
-                    }else if(result[i].date == tomorrow){
+                    } else if (result[i].date == tomorrow) {
                       result[i].date = "Tomorrow";
                     }
 
@@ -1143,19 +1317,33 @@ router.get("/view-all-appointments", (req, res) => {
                     let d = new Date();
                     let y = new Date(d.getTime() - 1440 * 60000);
                     let t = new Date(d.getTime() + 1440 * 60000);
-    
-                    let todate =  d.getFullYear() + "-"+ ("0" + (d.getMonth() + 1)).slice(-2) + "-"+  ("0" + d.getDate()).slice(-2);
-                    let yesterday = y.getFullYear() +  "-"+  ("0" + (y.getMonth() + 1)).slice(-2) +  "-"+ ("0" + y.getDate()).slice(-2);
-                    let tomorrow = t.getFullYear() +  "-"+ ("0" + (t.getMonth() + 1)).slice(-2) +  "-"+ ("0" + t.getDate()).slice(-2);
 
-                    if(result[i].date == todate){
+                    let todate =
+                      d.getFullYear() +
+                      "-" +
+                      ("0" + (d.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + d.getDate()).slice(-2);
+                    let yesterday =
+                      y.getFullYear() +
+                      "-" +
+                      ("0" + (y.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + y.getDate()).slice(-2);
+                    let tomorrow =
+                      t.getFullYear() +
+                      "-" +
+                      ("0" + (t.getMonth() + 1)).slice(-2) +
+                      "-" +
+                      ("0" + t.getDate()).slice(-2);
+
+                    if (result[i].date == todate) {
                       result[i].date = "Today";
-                    }else if(result[i].date == yesterday){
+                    } else if (result[i].date == yesterday) {
                       result[i].date = "Yesterday";
-                    }else if(result[i].date == tomorrow){
+                    } else if (result[i].date == tomorrow) {
                       result[i].date = "Tomorrow";
                     }
-    
 
                     appointments.push(result[i]);
 
@@ -1169,7 +1357,7 @@ router.get("/view-all-appointments", (req, res) => {
               //// no appointments
               return res.render("view-appointments", {
                 appointments: appointments,
-                name:"All Appointments"
+                name: "All Appointments",
               });
             }
           });
@@ -1179,7 +1367,7 @@ router.get("/view-all-appointments", (req, res) => {
           console.log(appointments);
           return res.render("view-appointments", {
             appointments: appointments,
-            name:"All Appointments"
+            name: "All Appointments",
           });
         });
       }
