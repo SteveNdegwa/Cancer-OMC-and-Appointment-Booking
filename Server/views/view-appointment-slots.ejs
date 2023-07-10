@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/view-appointment-slots.css" />
+    <title>View Appointment Slots</title>
+  </head>
+  <body>
+    <% if (details.length) { %>
+        <h1 class="main-header">Appointment Slots</h1>
+     <div class="day-wrap">
+        <h3 class="day-header">Sunday</h3>
+        <div class="slots-wrap">
+            <% if (details[0].length) { %>
+                <% for( let i = 0; i < details[0].length; i++ ) { %>
+                <h5 class="slots"><%= details[0][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h4 class="no-records">No Slots Available</h4>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Monday</h4>
+        <div class="slots-wrap">
+            <% if (details[1].length) { %>
+                <% for( let i = 0; i < details[1].length; i++ ) { %>
+                <h5 class="slots"><%= details[1][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Tuesday</h4>
+        <div class="slots-wrap">
+            <% if (details[2].length) { %>
+                <% for( let i = 0; i < details[2].length; i++ ) { %>
+                <h5 class="slots"><%= details[2][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Wednesday</h4>
+        <div class="slots-wrap">
+            <% if (details[3].length) { %>
+                <% for( let i = 0; i < details[3].length; i++ ) { %>
+                <h5 class="slots"><%= details[3][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Thursday</h4>
+        <div class="slots-wrap">
+            <% if (details[4].length) { %>
+                <% for( let i = 0; i < details[4].length; i++ ) { %>
+                <h5 class="slots"><%= details[4][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Friday</h4>
+        <div class="slots-wrap">
+            <% if (details[5].length) { %>
+                <% for( let i = 0; i < details[5].length; i++ ) { %>
+                <h5 class="slots"><%= details[5][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+     <div class="day-wrap">
+        <h4 class="day-header">Saturday</h4>
+        <div class="slots-wrap">
+            <% if (details[6].length) { %>
+                <% for( let i = 0; i < details[6].length; i++ ) { %>
+                <h5 class="slots"><%= details[6][i] %></h5>
+                <% } %>
+            <% } else { %>
+                <h3 class="no-records">No Slots Available</h3>
+            <% } %>
+             
+        </div>
+     </div>
+    <% }else{ %>
+        <h3 class="no-records">No Slots Available</h3>
+    <% } %>
+  </body>
+</html>
