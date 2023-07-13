@@ -412,7 +412,7 @@ router.post("/doctor/professional-details", (req, res) => {
 
                   let doctorsList = grabDetails;
               
-                  await browser.close();
+                  // await browser.close();
 
                   if(doctorsList.length){
                     let verified = false;
