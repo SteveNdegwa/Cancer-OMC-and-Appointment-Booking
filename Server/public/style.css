@@ -315,8 +315,14 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: baseline;
-
 }
+
+.about-text h4{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: lighter;
+}
+
+
 
 
 

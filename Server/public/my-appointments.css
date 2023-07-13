@@ -218,3 +218,21 @@ form{
 .ids{
     display: none;
 }
+
+.top-btn{
+    position: fixed;
+    display: block;
+    top: 85%;
+    right: 30px;
+    width: 45px;
+    line-height: 45px;
+    background-color: darkslategray;
+    border-radius: 50%;
+    border: 2px solid white;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 15px;
+    cursor: pointer;
+}
