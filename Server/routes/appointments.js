@@ -45,7 +45,7 @@ router.get("/customize-appointment-slots", (req, res) => {
     req.flash("appointmentSlotsMessage", "");
     res.render("appointment-slots", {
       message: req.flash("appointmentSlotsMessage"),
-      alertType: "success"
+      alertType: "success",
     });
   } else {
     res.redirect("/login");
@@ -138,11 +138,16 @@ router.post("/customize-appointment-slots", (req, res) => {
                   let appointmentsPresent = false;
 
                   let date = new Date();
+                  const date2 =
+                    date.getFullYear() +
+                    "-"+("0" + (date.getMonth() + 1)).slice(-2) +
+                    "-" +
+                    ("0" + date.getDate()).slice(-2);
                   const query =
-                    "SELECT * FROM appointments WHERE doctor_id = ? AND date > ?";
+                    "SELECT * FROM appointments WHERE doctor_id = ? AND date >= ?";
                   connection.query(
                     query,
-                    [req.session.userId, date],
+                    [req.session.userId, date2],
                     (err, results) => {
                       if (err) {
                         throw err;
@@ -185,7 +190,7 @@ router.post("/customize-appointment-slots", (req, res) => {
                       );
                       return res.render("appointment-slots", {
                         message: req.flash("appointmentSlotsMessage"),
-                        alertType: "danger"
+                        alertType: "danger",
                       });
                     }
                   } else {
@@ -218,15 +223,18 @@ router.post("/customize-appointment-slots", (req, res) => {
                                       message: req.flash(
                                         "appointmentSlotsMessage"
                                       ),
-                                      alertType: "danger"
+                                      alertType: "danger",
                                     });
                                   } else {
-                                    req.flash("appointmentSlotsMessage", "All slots updated successfully");
+                                    req.flash(
+                                      "appointmentSlotsMessage",
+                                      "All slots updated successfully"
+                                    );
                                     return res.render("appointment-slots", {
                                       message: req.flash(
                                         "appointmentSlotsMessage"
                                       ),
-                                      alertType: "success"
+                                      alertType: "success",
                                     });
                                   }
                                 }
@@ -252,16 +260,19 @@ router.post("/customize-appointment-slots", (req, res) => {
                                     message: req.flash(
                                       "appointmentSlotsMessage"
                                     ),
-                                    alertType: "danger"
+                                    alertType: "danger",
                                   });
                                 } else {
-                                  req.flash("appointmentSlotsMessage", "All slots updated successfully");
-                                    return res.render("appointment-slots", {
-                                      message: req.flash(
-                                        "appointmentSlotsMessage"
-                                      ),
-                                      alertType: "success"
-                                    });
+                                  req.flash(
+                                    "appointmentSlotsMessage",
+                                    "All slots updated successfully"
+                                  );
+                                  return res.render("appointment-slots", {
+                                    message: req.flash(
+                                      "appointmentSlotsMessage"
+                                    ),
+                                    alertType: "success",
+                                  });
                                 }
                               }
                             }
