@@ -602,7 +602,7 @@ router.post("/search-doctors", (req, res) => {
   pool.getConnection((err, connection) => {
     let date1 = new Date();
     const query =
-      "SELECT * FROM doctor_details WHERE  subscription_expiry >= ? AND verification_status = ? AND (user_id like ?) or (name like ?) or (gender like ?) or (licence_no like ?) or (cancer_speciality like ?) or (clinic_location like ?) or (clinic_phone_no like ?) or (clinic_email like ?)";
+      "SELECT * FROM doctor_details WHERE (subscription_expiry > ? AND verification_status = ?) AND  (user_id like ? OR name like ? OR gender like ? OR licence_no like ? OR cancer_speciality like ? OR clinic_location like ? OR clinic_phone_no like ? OR clinic_email like ? )";
     console.log(req.body.search);
     connection.query(
       query,
